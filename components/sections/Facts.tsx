@@ -58,8 +58,8 @@ export default function Facts() {
                   </div>
                   <div>
                     <h3 className="text-white font-bold text-xl">Softrinx</h3>
-                    <p className="text-emerald-400 text-sm">Best Creative IT Agency And Solutions</p>
-                    <p className="text-emerald-400 text-sm font-bold">Since 2020.</p>
+                    <p className="text-emerald-400 text-sm">Creative IT Agency And Solutions</p>
+                    <p className="text-emerald-400 text-sm font-bold">Since 2024</p>
                   </div>
                 </div>
 

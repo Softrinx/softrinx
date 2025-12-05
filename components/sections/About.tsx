@@ -86,7 +86,7 @@ const About = () => {
             className="w-full lg:w-1/2 opacity-0 translate-x-16 transition-all duration-1000 delay-300"
           >
             <h2 className="text-4xl font-bold mb-6 text-gray-900">
-              Crafting Digital Excellence Since 2013
+              Crafting Digital Excellence Since 2024
             </h2>
 
             <p className="text-lg text-gray-600 mb-6 leading-relaxed">
