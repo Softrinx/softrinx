@@ -65,22 +65,22 @@ export default function Numbers() {
   }, [hasAnimated]);
 
   return (
-    <div className="bg-[#0a0a0a] py-8">
+    <div className="bg-gray-950  py-8">
       <div className="container mx-auto px-4 max-w-7xl">
         <div ref={sectionRef} className="w-full">
           <div className="mb-6 flex items-center justify-start gap-4 px-2">
-            <div className="bg-[#1a1a1a] border border-gray-800 px-5 py-2.5 flex items-center gap-2.5 hover:border-orange-500/50 transition-all duration-300 group">
-              <Star className="w-4 h-4 fill-orange-500 text-orange-500 group-hover:scale-110 transition-transform duration-300" />
-              <span className="text-orange-500 font-bold text-sm">Trustpilot</span>
+            <div className="bg-gray-900 border border-gray-800 px-5 py-2.5 flex items-center gap-2.5 hover:border-orange-500/50 transition-all duration-300 group">
+              <Star className="w-4 h-4 fill-emerald-500 text-emerald-500 group-hover:scale-110 transition-transform duration-300" />
+              <span className="text-emerald-500 font-bold text-sm">Trustpilot</span>
               <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
+                  <Star key={star} className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
                 ))}
               </div>
               <span className="text-white text-sm font-semibold">5.0/5.0</span>
             </div>
 
-            <div className="bg-[#1a1a1a] border border-gray-800 px-5 py-2.5 flex items-center gap-2.5 hover:border-blue-500/50 transition-all duration-300 group">
+            <div className="bg-gray-900 border border-gray-800 px-5 py-2.5 flex items-center gap-2.5 hover:border-blue-500/50 transition-all duration-300 group">
               <div className="flex items-center gap-1">
                 <span className="text-[#4285F4] font-bold text-base group-hover:scale-110 transition-transform duration-300 inline-block">G</span>
                 <span className="text-[#EA4335] font-bold text-base group-hover:scale-110 transition-transform duration-300 inline-block" style={{transitionDelay: '50ms'}}>o</span>
@@ -98,7 +98,7 @@ export default function Numbers() {
             </div>
           </div>
 
-          <div className="bg-[#1a1a1a] border border-gray-800 overflow-hidden">
+          <div className=" border border-gray-800 overflow-hidden">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-800">
               <div className="group relative p-8 text-center hover:bg-gradient-to-br hover:from-blue-500/5 hover:via-transparent hover:to-transparent transition-all duration-500">
                 <div className="absolute inset-0 bg-blue-500/0 group-hover:bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-2xl"></div>
