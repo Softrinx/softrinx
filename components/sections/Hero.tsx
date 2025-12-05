@@ -6,9 +6,9 @@ import Image from 'next/image';
 import { ArrowRight, Target, Zap, Rocket, Award, Building2, Users, Shield, Globe } from 'lucide-react';
 
 const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920&q=80&fit=crop&crop=center',
-  'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1920&q=80&fit=crop&crop=center',
-  'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80&fit=crop&crop=center',
+  'https://images.unsplash.com/photo-1733948351367-b984746adf7f?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1681662850558-bc5a12160681?q=80&w=1199&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1726436467696-9586b2339cc5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 ];
 
 const Hero = () => {
@@ -102,7 +102,7 @@ const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-5 mb-16">
               <Link
                 href="/contact"
-                className="group relative px-10 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/25 hover:-translate-y-1"
+                className="group relative px-10 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-4xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/25 hover:-translate-y-1"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <span className="relative z-10 flex items-center justify-center gap-3 text-lg">
@@ -113,10 +113,10 @@ const Hero = () => {
 
               <Link
                 href="/portfolio"
-                className="group px-10 py-5 bg-white text-gray-500 backdrop-blur-sm font-semibold rounded-xl border border-white/20 hover:border-emerald-400/50 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1"
+                className="group px-10 py-5 bg-blue-500 text-white backdrop-blur-sm font-semibold rounded-4xl border border-white/20 hover:border-emerald-400/50 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1"
               >
                 <span className="flex items-center justify-center gap-3 text-lg">
-                  View Case Studies
+                  View Our Work
                   <span className="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
                   </span>
