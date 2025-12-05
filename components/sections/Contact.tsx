@@ -174,7 +174,7 @@ export default function Contact() {
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-emerald-500 group-hover:rotate-12 transition-transform duration-300" />
                   <span className="text-emerald-600 font-semibold">Call Us Now:</span>
-                  <span className="text-gray-900 font-bold text-lg">+880 123 456 6789</span>
+                  <span className="text-gray-900 font-bold text-lg">+254 750 109798</span>
                 </div>
               </div>
 
@@ -186,7 +186,7 @@ export default function Contact() {
                     <span>Headquarters</span>
                   </button>
                   <p className="text-gray-600 text-sm ml-7">
-                    Softrinx Ltd, Innovation Tower, 123 Tech Boulevard, Dhaka 1212, Bangladesh. 
+                    Softrinx Ltd, Nyeri Kenya.
                     Our main hub where we ideate, innovate, and deliver world-class software solutions.
                   </p>
                 </div>
@@ -197,8 +197,8 @@ export default function Contact() {
                     <span>Development Center</span>
                   </button>
                   <p className="text-gray-600 text-sm ml-7">
-                    456 Silicon Street, Chittagong 4000, Bangladesh. Our dedicated R&D facility 
-                    focused on emerging technologies and cutting-edge software development.
+                    Nyeri, Nairobi Kenya.
+                    Our state-of-the-art development center focused on building scalable and robust software solutions.
                   </p>
                 </div>
 
@@ -208,7 +208,7 @@ export default function Contact() {
                     <span>Email Support</span>
                   </button>
                   <p className="text-gray-600 text-sm ml-7">
-                    Reach us at hello@softrinx.com for general inquiries, or support@softrinx.com 
+                    Reach us at info@softrinx.com for general inquiries, or support@softrinx.com 
                     for technical assistance. We typically respond within 24 hours.
                   </p>
                 </div>
@@ -288,7 +288,7 @@ export default function Contact() {
                     value={formData.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
-                    placeholder="+880 123 456 789"
+                    placeholder="+25412345678"
                   />
                 </div>
 

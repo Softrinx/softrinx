@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Star } from 'lucide-react';
+import Image from 'next/image';
 
 const testimonials = [
   {
@@ -42,16 +43,11 @@ const testimonials = [
 ];
 
 const partners = [
-  { name: 'Mazda', logo: '/logos/mazda.png' },
-  { name: 'Zenvia', logo: '/logos/zenvia.png' },
-  { name: 'Infinera', logo: '/logos/infinera.png' },
-  { name: 'Handycam', logo: '/logos/handycam.png' },
-  { name: 'Idlers', logo: '/logos/idlers.png' },
-  { name: 'Data iQ', logo: '/logos/data-iq.png' },
-  { name: 'Disney', logo: '/logos/disney.png' },
-  { name: 'TechCorp', logo: '/logos/techcorp.png' },
-  { name: 'CloudSys', logo: '/logos/cloudsys.png' },
-  { name: 'NovaTech', logo: '/logos/novatech.png' },
+  { name: 'Healthmaster', logo: '/images/images/hm.png' },
+  { name: 'Uamas', logo: '/images/images/uamas.png' },
+    { name: 'Alx', logo: '/images/images/alx.png' },
+    { name: 'DjAfroStreamBox', logo: '/images/images/afro.png' },
+
 ];
 
 // Profile photo positions (scattered around the screen)
@@ -136,11 +132,13 @@ export default function Testimonials() {
               {partners.concat(partners).map((partner, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 flex items-center justify-center px-12 min-w-[180px] grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
+                  className="flex-shrink-0 flex items-center justify-center px-12 min-w-[180px]  hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
                 >
-                  <img 
+                  <Image
                     src={partner.logo} 
                     alt={partner.name}
+                    width={150}
+                    height={48}
                     className="h-12 w-auto object-contain"
                   />
                 </div>
