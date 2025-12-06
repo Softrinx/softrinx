@@ -153,11 +153,11 @@ export default function ContactPage() {
             className="brightness-[0.2]"
           />
         </div>
-        <div className="container relative z-10 text-center px-4">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 fade-in">
+        <div className="container relative z-10 px-4 text-center">
+          <h1 className="mb-6 text-5xl font-bold text-white md:text-6xl fade-in">
             Let&apos;s <span className="text-gradient">Connect</span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto slide-up">
+          <p className="max-w-3xl mx-auto text-xl text-gray-200 md:text-2xl slide-up">
             Start the conversation about your next software project
           </p>
         </div>
@@ -166,48 +166,48 @@ export default function ContactPage() {
       {/* Contact Details */}
       <section className="py-16 bg-white">
         <div className="container px-4 mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 icon: <Mail size={24} />,
-                title: "Email",
-                info: "hello@softrinx.com",
+                title: "Email Us",
+                info: "info@softrinx.com",
                 detail: "We respond within 24 hours",
                 link: "mailto:hello@softrinx.com",
               },
               {
                 icon: <Phone size={24} />,
                 title: "Phone",
-                info: "+1 (555) 123-4567",
-                detail: "Monday-Friday, 9AM-6PM EST",
+                info: "+254 750 109798",
+                detail: "Available 24/7",
                 link: "tel:+15551234567",
               },
               {
                 icon: <MapPin size={24} />,
                 title: "Location",
-                info: "San Francisco, CA",
-                detail: "123 Tech Plaza, Suite 400",
+                info: "Nyeri, Kenya",
+                detail: "Kimathi",
                 link: "https://maps.google.com",
               },
               {
                 icon: <Clock size={24} />,
                 title: "Working Hours",
-                info: "9AM - 6PM EST",
+                info: "24/7",
                 detail: "Available globally for clients",
                 link: null,
               }
             ].map((contact, index) => (
-              <div key={index} className="bg-gray-50 rounded-lg p-6 text-center hover:shadow-md transition-all">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary-100 text-primary-600 mb-4">
+              <div key={index} className="p-6 text-center transition-all rounded-lg bg-gray-50 hover:shadow-md">
+                <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-primary-100 text-primary-600">
                   {contact.icon}
                 </div>
-                <h3 className="text-lg font-bold mb-2">{contact.title}</h3>
+                <h3 className="mb-2 text-lg font-bold">{contact.title}</h3>
                 {contact.link ? (
                   <a href={contact.link} className="text-primary-600 hover:underline">{contact.info}</a>
                 ) : (
                   <p className="text-gray-800">{contact.info}</p>
                 )}
-                <p className="text-sm text-gray-500 mt-2">{contact.detail}</p>
+                <p className="mt-2 text-sm text-gray-500">{contact.detail}</p>
               </div>
             ))}
           </div>
@@ -218,41 +218,42 @@ export default function ContactPage() {
       <section className="py-20 bg-gray-50">
         <div className="container px-4 mx-auto">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Get In Touch</h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Fill out the form below to discuss your project, or use our interactive quote calculator for an instant estimate.
+            <div className="mb-16 text-center">
+              <h2 className="mb-6 text-4xl font-bold">Get In Touch</h2>
+              <p className="max-w-2xl mx-auto text-lg text-gray-600">
+                Fill out the form below to discuss your project, or Reach out via the provided emails or phone call
               </p>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className="grid grid-cols-1 gap-16 bg-gray-50 lg:grid-cols-2 ">
               {/* Contact Form */}
               <div ref={formRef} className="transform-on-scroll">
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                
+                <div className="overflow-hidden bg-white shadow-lg rounded-xl ">
                   <div className="p-8">
-                    <h3 className="text-2xl font-bold mb-6">Contact Form</h3>
+                    <h3 className="mb-6 text-2xl font-bold">Contact Form</h3>
                     
                     {isSubmitted ? (
-                      <div className="text-center py-10">
-                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <div className="py-10 text-center">
+                        <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full">
                           <Check size={32} className="text-green-600" />
                         </div>
-                        <h4 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h4>
-                        <p className="text-gray-600 mb-6">
+                        <h4 className="mb-2 text-2xl font-bold text-gray-900">Thank You!</h4>
+                        <p className="mb-6 text-gray-600">
                           We&apos;ve received your message and will get back to you within 24 hours.
                         </p>
                         <button 
                           onClick={() => setIsSubmitted(false)} 
-                          className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                          className="px-6 py-3 text-white transition-colors rounded-lg bg-primary-600 hover:bg-primary-700"
                         >
                           Send Another Message
                         </button>
                       </div>
                     ) : (
                       <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">
                           <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="name" className="block mb-1 text-sm font-medium text-gray-700">
                               Your Name *
                             </label>
                             <input
@@ -268,7 +269,7 @@ export default function ContactPage() {
                           </div>
                           
                           <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="email" className="block mb-1 text-sm font-medium text-gray-700">
                               Email Address *
                             </label>
                             <input
@@ -284,37 +285,37 @@ export default function ContactPage() {
                           </div>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">
                           <div>
-                            <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="company" className="block mb-1 text-sm font-medium text-gray-700">
                               Company Name
                             </label>
                             <input
                               id="company"
                               type="text"
-                              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                               placeholder="Your Company"
                               {...register("company")}
                             />
                           </div>
                           
                           <div>
-                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="phone" className="block mb-1 text-sm font-medium text-gray-700">
                               Phone Number
                             </label>
                             <input
                               id="phone"
                               type="tel"
-                              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                              placeholder="+1 (555) 123-4567"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                              placeholder="(+254) 700 000 000"
                               {...register("phone")}
                             />
                           </div>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-3">
                           <div>
-                            <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="service" className="block mb-1 text-sm font-medium text-gray-700">
                               Service Needed *
                             </label>
                             <select
@@ -337,7 +338,7 @@ export default function ContactPage() {
                           </div>
                           
                           <div>
-                            <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="budget" className="block mb-1 text-sm font-medium text-gray-700">
                               Budget Range *
                             </label>
                             <select
@@ -359,7 +360,7 @@ export default function ContactPage() {
                           </div>
                           
                           <div>
-                            <label htmlFor="timeline" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="timeline" className="block mb-1 text-sm font-medium text-gray-700">
                               Timeline *
                             </label>
                             <select
@@ -381,7 +382,7 @@ export default function ContactPage() {
                         </div>
                         
                         <div className="mb-6">
-                          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                          <label htmlFor="message" className="block mb-1 text-sm font-medium text-gray-700">
                             Project Details *
                           </label>
                           <textarea
@@ -398,12 +399,12 @@ export default function ContactPage() {
                         
                         <button
                           type="submit"
-                          className="w-full py-3 px-6 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium flex items-center justify-center transition-colors"
+                          className="flex items-center justify-center w-full px-6 py-3 font-medium text-white transition-colors rounded-lg bg-primary-600 hover:bg-primary-700"
                           disabled={isSubmitting}
                         >
                           {isSubmitting ? (
                             <>
-                              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <svg className="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                               </svg>
@@ -420,170 +421,100 @@ export default function ContactPage() {
                     )}
                   </div>
                 </div>
+                
+
+                
               </div>
+{/*Company emails*/}
+<div className="overflow-hidden bg-white shadow-lg rounded-xl">
+  <div className="p-8">
+    <h3 className="mb-6 text-2xl font-bold">Company Emails</h3>
+
+    <div className="space-y-4">
+      {/* Info Email */}
+      <div className="flex items-start gap-4 p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
+        <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg shrink-0">
+          <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <a href="mailto:info@softrinx.com" className="text-lg font-semibold text-blue-600 hover:text-blue-800">
+            info@softrinx.com
+          </a>
+          <p className="mt-1 text-sm text-gray-600">General info</p>
+        </div>
+      </div>
+
+      {/* Support Email */}
+      <div className="flex items-start gap-4 p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
+        <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg shrink-0">
+          <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <a href="mailto:support@softrinx.com" className="text-lg font-semibold text-blue-600 hover:text-blue-800">
+            support@softrinx.com
+          </a>
+          <p className="mt-1 text-sm text-gray-600">Tech support & customer issues</p>
+        </div>
+      </div>
+
+      {/* Sales Email */}
+      <div className="flex items-start gap-4 p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
+        <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-lg shrink-0">
+          <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <a href="mailto:sales@softrinx.com" className="text-lg font-semibold text-blue-600 hover:text-blue-800">
+            sales@softrinx.com
+          </a>
+          <p className="mt-1 text-sm text-gray-600">Sales & Partnerships</p>
+        </div>
+      </div>
+
+      {/* Accounts Email */}
+      <div className="flex items-start gap-4 p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
+        <div className="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-lg shrink-0">
+          <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <a href="mailto:accounts@softrinx.com" className="text-lg font-semibold text-blue-600 hover:text-blue-800">
+            accounts@softrinx.com
+          </a>
+          <p className="mt-1 text-sm text-gray-600">Billing, invoices, finance</p>
+        </div>
+      </div>
+
+      {/* Admin Email */}
+      <div className="flex items-start gap-4 p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
+        <div className="flex items-center justify-center w-10 h-10 bg-red-100 rounded-lg shrink-0">
+          <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <a href="mailto:admin@softrinx.com" className="text-lg font-semibold text-blue-600 hover:text-blue-800">
+            admin@softrinx.com
+          </a>
+          <p className="mt-1 text-sm text-gray-600">Internal and main business email, for creating accounts on other platforms etc.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
               
-              {/* Quote Calculator */}
-              <div className="transform-on-scroll" style={{ transitionDelay: "200ms" }}>
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                  <div className="p-8">
-                    <h3 className="text-2xl font-bold mb-6">Project Estimator</h3>
-                    <p className="text-gray-600 mb-6">
-                      Get an instant estimate for your project. This calculator provides a ballpark figure based on your selections.
-                    </p>
-                    
-                    <div className="space-y-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          What type of project are you planning?
-                        </label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {[
-                            { id: "web", label: "Web Application" },
-                            { id: "mobile", label: "Mobile App" },
-                            { id: "custom", label: "Custom Software" },
-                            { id: "other", label: "Other / Not Sure" },
-                          ].map((option) => (
-                            <button
-                              key={option.id}
-                              type="button"
-                              className={`px-4 py-3 rounded-lg border ${
-                                quoteOptions.projectType === option.id 
-                                  ? 'bg-primary-50 border-primary-500 text-primary-700' 
-                                  : 'border-gray-300 hover:border-gray-400'
-                              } text-left transition-colors`}
-                              onClick={() => setQuoteOptions(prev => ({ ...prev, projectType: option.id }))}
-                            >
-                              {option.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Which features do you need? (Select all that apply)
-                        </label>
-                        <div className="space-y-2">
-                          {[
-                            { id: "auth", label: "User Authentication" },
-                            { id: "payment", label: "Payment Processing" },
-                            { id: "api", label: "Third-party Integrations" },
-                            { id: "ai", label: "AI/ML Features" },
-                            { id: "analytics", label: "Analytics Dashboard" },
-                            { id: "realtime", label: "Real-time Features" },
-                          ].map((feature) => (
-                            <div 
-                              key={feature.id}
-                              className={`px-4 py-3 rounded-lg border ${
-                                quoteOptions.features.includes(feature.id) 
-                                  ? 'bg-primary-50 border-primary-500' 
-                                  : 'border-gray-300 hover:border-gray-400'
-                              } flex items-center justify-between cursor-pointer transition-colors`}
-                              onClick={() => handleFeatureToggle(feature.id)}
-                            >
-                              <span>{feature.label}</span>
-                              <div className={`w-5 h-5 rounded-sm flex items-center justify-center ${
-                                quoteOptions.features.includes(feature.id) 
-                                  ? 'bg-primary-500' 
-                                  : 'border border-gray-400'
-                              }`}>
-                                {quoteOptions.features.includes(feature.id) && (
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          How complex is your project?
-                        </label>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          {[
-                            { id: "simple", label: "Simple" },
-                            { id: "medium", label: "Moderate" },
-                            { id: "complex", label: "Complex" },
-                          ].map((option) => (
-                            <button
-                              key={option.id}
-                              type="button"
-                              className={`px-4 py-3 rounded-lg border ${
-                                quoteOptions.complexity === option.id 
-                                  ? 'bg-primary-50 border-primary-500 text-primary-700' 
-                                  : 'border-gray-300 hover:border-gray-400'
-                              } text-center transition-colors`}
-                              onClick={() => setQuoteOptions(prev => ({ ...prev, complexity: option.id }))}
-                            >
-                              {option.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          What&apos;s your timeline?
-                        </label>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          {[
-                            { id: "asap", label: "ASAP" },
-                            { id: "3months", label: "3 months" },
-                            { id: "6months", label: "6+ months" },
-                          ].map((option) => (
-                            <button
-                              key={option.id}
-                              type="button"
-                              className={`px-4 py-3 rounded-lg border ${
-                                quoteOptions.timeline === option.id 
-                                  ? 'bg-primary-50 border-primary-500 text-primary-700' 
-                                  : 'border-gray-300 hover:border-gray-400'
-                              } text-center transition-colors`}
-                              onClick={() => setQuoteOptions(prev => ({ ...prev, timeline: option.id }))}
-                            >
-                              {option.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      {quoteRange && (
-                        <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                          <h4 className="text-lg font-bold mb-2">Estimated Project Cost</h4>
-                          <p className="text-3xl font-bold text-primary-600 mb-3">{quoteRange}</p>
-                          <p className="text-sm text-gray-600 mb-4">
-                            This is a ballpark estimate based on your selections. For a detailed quote, please contact us.
-                          </p>
-                          <a 
-                            href="#contact-form" 
-                            className="inline-flex items-center text-primary-600 hover:text-primary-800"
-                            onClick={() => {
-                              // Pre-fill contact form with quote info
-                              setValue("budget", quoteTotal && quoteTotal < 25000 ? "below25k" : 
-                                quoteTotal && quoteTotal < 50000 ? "25k-50k" : 
-                                quoteTotal && quoteTotal < 100000 ? "50k-100k" : 
-                                quoteTotal && quoteTotal < 250000 ? "100k-250k" : "above250k");
-                              
-                              setValue("service", quoteOptions.projectType || "");
-                              setValue("timeline", quoteOptions.timeline === "asap" ? "immediate" : 
-                                quoteOptions.timeline === "3months" ? "1-3months" : "6months+");
-                              
-                              // Scroll to form
-                              formRef.current?.scrollIntoView({ behavior: "smooth" });
-                            }}
-                          >
-                            Get a detailed quote <ChevronRight size={16} className="ml-1" />
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+
+              
             </div>
+            
           </div>
         </div>
       </section>
@@ -591,25 +522,29 @@ export default function ContactPage() {
       {/* Map & Office */}
       <section ref={mapRef} className="py-20 bg-white transform-on-scroll">
         <div className="container px-4 mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Visit Our Office</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <div className="mb-16 text-center">
+            <h2 className="mb-6 text-4xl font-bold">Visit Our Office</h2>
+            <p className="max-w-2xl mx-auto text-lg text-gray-600">
               We&apos;re always happy to meet in person to discuss your project.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
             <div className="lg:col-span-3 rounded-xl overflow-hidden h-[400px] shadow-lg">
-              {/* Google Maps embed would go here in production */}
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <div className="text-center px-4">
-                  <MapPin size={48} className="text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-gray-700 mb-2">Interactive Map</h3>
-                  <p className="text-gray-500">
-                    Google Maps would be embedded here in production.
-                  </p>
-                </div>
-              </div>
+<div className="w-full h-full overflow-hidden rounded-lg">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7245900718594!2d36.960811873682566!3d-0.3927370352995991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x18286779bfd0e3b7%3A0xff724c2b23076240!2sBomas!5e0!3m2!1sen!2ske!4v1765030944031!5m2!1sen!2ske"
+    width="100%"
+    height="100%"
+    style={{ border: 0 }}
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+    title="Softrinx Location Map"
+  />
+</div>
+              
+              
             </div>
             
             <div className="lg:col-span-2 rounded-xl overflow-hidden h-[400px] shadow-lg relative">
@@ -619,18 +554,18 @@ export default function ContactPage() {
                 fill
                 style={{objectFit: "cover"}}
               />
-              <div className="absolute inset-0 bg-black bg-opacity-60 p-8 flex flex-col justify-end">
-                <h3 className="text-2xl font-bold text-white mb-2">San Francisco Office</h3>
-                <p className="text-gray-300 mb-4">
-                  123 Tech Plaza, Suite 400<br />
-                  San Francisco, CA 94105
+              <div className="absolute inset-0 flex flex-col justify-end p-8 bg-black bg-opacity-60">
+                <h3 className="mb-2 text-2xl font-bold text-white">Kenya Office</h3>
+                <p className="mb-4 text-gray-300">
+                  Kimathi<br />
+                  Nyeri, Kenya
                 </p>
-                <div className="flex space-x-4 mt-2">
+                <div className="flex mt-2 space-x-4">
                   <a 
                     href="https://maps.google.com" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 rounded-lg bg-white text-primary-900 text-sm font-medium hover:bg-gray-100 transition-colors"
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium transition-colors bg-white rounded-lg text-primary-900 hover:bg-gray-100"
                   >
                     Get Directions
                   </a>
@@ -644,9 +579,9 @@ export default function ContactPage() {
       {/* FAQ */}
       <section className="py-20 bg-gray-50">
         <div className="container px-4 mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Frequently Asked Questions</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <div className="mb-16 text-center">
+            <h2 className="mb-6 text-4xl font-bold">Frequently Asked Questions</h2>
+            <p className="max-w-2xl mx-auto text-lg text-gray-600">
               Have questions about working with us? Find quick answers below.
             </p>
           </div>
@@ -670,8 +605,8 @@ export default function ContactPage() {
                 answer: "Having a basic outline of your project goals, timeline, budget constraints, and any existing materials (wireframes, requirements docs, etc.) is helpful but not required. We can guide you through the discovery process."
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
-                <h3 className="text-xl font-bold mb-3">{faq.question}</h3>
+              <div key={index} className="p-6 bg-white rounded-lg shadow-sm">
+                <h3 className="mb-3 text-xl font-bold">{faq.question}</h3>
                 <p className="text-gray-600">{faq.answer}</p>
               </div>
             ))}
@@ -680,21 +615,21 @@ export default function ContactPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gray-900 text-white">
+      <section className="py-20 text-white bg-gray-900">
         <div className="container px-4 mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6 max-w-3xl mx-auto">Ready to Transform Your Business with Custom Software?</h2>
-          <p className="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
+          <h2 className="max-w-3xl mx-auto mb-6 text-4xl font-bold">Ready to Transform Your Business with Custom Software?</h2>
+          <p className="max-w-2xl mx-auto mb-10 text-lg text-gray-300">
             Let&apos;s discuss how we can help you achieve your goals and overcome your challenges.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="#contact-form" className="btn-primary px-8 py-4 rounded-lg text-lg font-medium bg-primary-600 hover:bg-primary-700 transition-colors">
+            <a href="#contact-form" className="px-8 py-4 text-lg font-medium transition-colors rounded-lg btn-primary bg-primary-600 hover:bg-primary-700">
               Start Your Project
             </a>
-              <Link href="/portfolio" className="btn-secondary px-8 py-4 rounded-lg text-lg font-medium border-2 border-white hover:bg-white hover:text-gray-900 transition-colors">
+              <Link href="/portfolio" className="px-8 py-4 text-lg font-medium transition-colors border-2 border-white rounded-lg btn-secondary hover:bg-white hover:text-gray-900">
                 See Our Work
               </Link>
       
-              <Link   href="/portfolio" className="btn-secondary px-8 py-4 rounded-lg text-lg font-medium border-2 border-white hover:bg-white hover:text-gray-900 transition-colors">
+              <Link   href="/portfolio" className="px-8 py-4 text-lg font-medium transition-colors border-2 border-white rounded-lg btn-secondary hover:bg-white hover:text-gray-900">
          
               See Our Work
               </Link>
