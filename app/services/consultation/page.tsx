@@ -258,7 +258,7 @@ export default function ConsultationPage() {
                     {step.icon}
                   </div>
                   <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                  <p className="text-gray-600 text-sm">{step.desc}</p>
+                  <p className="text-gray-600 text-sm">{step.description}</p>
                 </div>
               ))}
             </div>
