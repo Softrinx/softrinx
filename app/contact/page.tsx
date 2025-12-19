@@ -204,14 +204,14 @@ export default function ContactPage() {
                 title: "Email Us",
                 info: "info@softrinx.com",
                 detail: "We respond within 24 hours",
-                link: "mailto:hello@softrinx.com",
+                link: "mailto:info@softrinx.com",
               },
               {
                 icon: <Phone size={24} />,
                 title: "Phone",
                 info: "+254 750 109798",
                 detail: "Available 24/7",
-                link: "tel:+15551234567",
+                link: "tel:+254750109798",
               },
               {
                 icon: <MapPin size={24} />,
@@ -616,103 +616,6 @@ export default function ContactPage() {
                         </p>
                       </div>
                     </div>
-
-                    {/* Sales Email */}
-                    <div className="flex items-start gap-4 p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
-                      <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-lg shrink-0">
-                        <svg
-                          className="w-5 h-5 text-purple-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <a
-                          href="mailto:sales@softrinx.com"
-                          className="text-lg font-semibold text-blue-600 hover:text-blue-800"
-                        >
-                          sales@softrinx.com
-                        </a>
-                        <p className="mt-1 text-sm text-gray-600">
-                          Sales & Partnerships
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Accounts Email */}
-                    <div className="flex items-start gap-4 p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
-                      <div className="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-lg shrink-0">
-                        <svg
-                          className="w-5 h-5 text-yellow-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <a
-                          href="mailto:accounts@softrinx.com"
-                          className="text-lg font-semibold text-blue-600 hover:text-blue-800"
-                        >
-                          accounts@softrinx.com
-                        </a>
-                        <p className="mt-1 text-sm text-gray-600">
-                          Billing, invoices, finance
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Admin Email */}
-                    <div className="flex items-start gap-4 p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
-                      <div className="flex items-center justify-center w-10 h-10 bg-red-100 rounded-lg shrink-0">
-                        <svg
-                          className="w-5 h-5 text-red-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <a
-                          href="mailto:admin@softrinx.com"
-                          className="text-lg font-semibold text-blue-600 hover:text-blue-800"
-                        >
-                          admin@softrinx.com
-                        </a>
-                        <p className="mt-1 text-sm text-gray-600">
-                          Internal and main business email, for creating
-                          accounts on other platforms etc.
-                        </p>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -725,7 +628,7 @@ export default function ContactPage() {
       <section ref={mapRef} className="py-20 bg-white transform-on-scroll">
         <div className="container px-4 mx-auto">
           <div className="mb-16 text-center">
-            <h2 className="mb-6 text-4xl font-bold">Visit Our Office</h2>
+            <h2 className="mb-6 text-4xl font-bold">Want to meet up?</h2>
             <p className="max-w-2xl mx-auto text-lg text-gray-600">
               We&apos;re always happy to meet in person to discuss your project.
             </p>
