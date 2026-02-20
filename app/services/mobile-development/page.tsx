@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useInView } from "framer-motion";
 import { 
   Smartphone, CheckCircle2, ArrowRight,
-  Sparkles, Apple, Android, Code,
+  Sparkles, Apple, Bot, Code,
   Zap, Rocket, Layers, Globe
 } from "lucide-react";
 
@@ -41,7 +41,7 @@ export default function MobileDevelopmentPage() {
       features: ["Swift & SwiftUI", "iOS SDK", "App Store optimization", "Native performance"]
     },
     {
-      icon: <Android className="w-10 h-10" />,
+      icon: <Bot className="w-10 h-10" />,
       title: "Android Development",
       description: "Native Android apps using Kotlin and Jetpack Compose for modern UI.",
       features: ["Kotlin & Java", "Jetpack Compose", "Material Design", "Play Store optimization"]
@@ -62,7 +62,7 @@ export default function MobileDevelopmentPage() {
 
   const platforms = [
     { name: "iOS", icon: <Apple className="w-8 h-8" /> },
-    { name: "Android", icon: <Android className="w-8 h-8" /> },
+    { name: "Android", icon: <Bot className="w-8 h-8" /> },
     { name: "React Native", icon: <Code className="w-8 h-8" /> },
     { name: "Flutter", icon: <Globe className="w-8 h-8" /> }
   ];
