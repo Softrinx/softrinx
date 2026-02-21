@@ -85,7 +85,19 @@ const partners = [
 ];
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
-function TestimonialCard({ t, index }) {
+interface Testimonial {
+  id: number;
+  text: string;
+  author: string;
+  role: string;
+  image: string;
+  result: string;
+  category: string;
+  link: string;
+  size: string;
+}
+
+function TestimonialCard({ t, index }: { t: Testimonial; index: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const [hovered, setHovered] = useState(false);
