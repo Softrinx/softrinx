@@ -1,153 +1,183 @@
 "use client";
 
 import { useRef } from 'react';
-import { Target, TrendingUp } from 'lucide-react';
-import Numbers from './numbers';
+import { TrendingUp } from 'lucide-react';
 import Image from 'next/image';
+import { motion, useInView } from 'framer-motion';
+import { useTheme } from '@/contexts/themeContext';
+
+// ─── Scroll reveal ────────────────────────────────────────────────────────────
+function Reveal({ children, delay = 0, y = 24 }: { children: React.ReactNode; delay?: number; y?: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  return (
+    <motion.div ref={ref}
+      initial={{ opacity: 0, y }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay, ease: [0.32, 0.72, 0, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export default function Facts() {
   const sectionRef = useRef(null);
+  const { colors } = useTheme();
 
   return (
-    <>
-      {/* Numbers component - positioned at the top, overlapping */}
-      <Numbers />
-      
-      <section 
-        ref={sectionRef}
-        className="relative pt-48 pb-32 bg-white overflow-hidden min-h-screen"
-      >
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(16 185 129 / 0.15) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
+    <section
+      ref={sectionRef}
+      className="relative pb-32 overflow-hidden"
+      style={{ background: "var(--color-surface)", paddingTop: "80px" }}
+    >
+      {/* Top edge glow */}
+      <div className="absolute top-0 left-0 right-0 pointer-events-none" style={{ zIndex: 10 }}>
+        <div style={{
+          height: "1px",
+          background: `linear-gradient(90deg, transparent 0%, ${colors.emerald}30 20%, ${colors.emerald}80 50%, ${colors.emerald}30 80%, transparent 100%)`,
+        }} />
+        <div style={{
+          height: "120px",
+          background: `linear-gradient(180deg, ${colors.emeraldBg} 0%, transparent 100%)`,
+        }} />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 max-w-7xl">
+      <div className="relative z-10 px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+        <div className="grid items-center grid-cols-1 gap-16 lg:grid-cols-2">
 
-        {/* Main Content Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left Content */}
+          {/* LEFT */}
           <div className="relative">
-            {/* Large background text */}
-            <div className="absolute -left-32 top-0 pointer-events-none w-full">
-              <h3 className="text-[14rem] md:text-[16rem] lg:text-[18rem] font-black text-gray-900/5 tracking-tighter select-none whitespace-nowrap leading-none">
+            {/* Ghost text */}
+            <div className="absolute top-0 overflow-hidden pointer-events-none select-none -left-8">
+              <span className="font-black leading-none" style={{
+                fontSize: "clamp(6rem, 18vw, 16rem)",
+                color: "var(--color-text)",
+                opacity: 0.025,
+                letterSpacing: "-0.05em",
+                whiteSpace: "nowrap",
+              }}>
                 Excellence
-              </h3>
+              </span>
             </div>
 
-            <div className="relative z-10">
-              {/* Why Choose Us badge */}
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-12 h-0.5 bg-emerald-500"></div>
-                <span className="text-emerald-600 font-semibold uppercase text-sm tracking-wider">
-                  Why Choose Us
-                </span>
-              </div>
+            <div className="relative z-10 flex flex-col gap-8">
+              <Reveal delay={0}>
+                <div className="flex items-center gap-3">
+                  <span className="block w-8 h-px" style={{ background: "var(--color-emerald)" }} />
+                  <span style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.15em", color: "var(--color-emerald)", textTransform: "uppercase" }}>
+                    Why Choose Us
+                  </span>
+                </div>
+              </Reveal>
 
-              <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Unlock The Potential<br />Of Your Business.
-              </h2>
+              <Reveal delay={0.08}>
+                <h2 className="font-bold leading-tight" style={{
+                  fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+                  color: "var(--color-text)",
+                  letterSpacing: "-0.03em",
+                }}>
+                  Unlock The Potential<br />Of Your Business.
+                </h2>
+              </Reveal>
 
-              {/* Company Info Box */}
-              <div className="bg-white shadow-2xl rounded-lg p-8 mb-8 border border-dotted border-bottom-2 border-emerald-600">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-xl">S</span>
+              <Reveal delay={0.16}>
+                <div className="p-6 rounded-2xl" style={{
+                  background: "var(--color-card)",
+                  border: `1px solid var(--color-border)`,
+                }}>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center justify-center flex-shrink-0 rounded-full w-11 h-11"
+                      style={{ background: "var(--color-emerald)" }}>
+                      <span className="text-lg font-black" style={{ color: "#040805" }}>S</span>
+                    </div>
+                    <div>
+                      <h3 style={{ color: "var(--color-emerald)", fontWeight: 700, fontSize: "1.1rem" }}>Softrinx</h3>
+                      <p style={{ color: "var(--color-text-label)", fontSize: "0.8rem" }}>Creative IT Agency & Solutions · Since 2024</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-emerald-500 font-bold text-xl">Softrinx</h3>
-                    <p className="text-emerald-400 text-sm">Creative IT Agency And Solutions</p>
-                    <p className="text-emerald-400 text-sm font-bold">Since 2024</p>
+                  <p style={{ color: "var(--color-text-muted)", fontSize: "0.88rem", lineHeight: 1.75 }}>
+                    Transforming businesses through innovative software solutions. From startups to enterprises,
+                    we deliver cutting-edge technology that drives real growth and measurable results.
+                  </p>
+                  <div className="flex items-center gap-4 mt-5">
+                    <div className="flex items-center justify-center w-14 h-14 rounded-xl"
+                      style={{ background: "var(--color-emerald-bg)", border: `1px solid var(--color-emerald-border)` }}>
+                      <span style={{ fontSize: "1.6rem", fontWeight: 900, color: "var(--color-text)" }}>#1</span>
+                    </div>
+                    <a href="/about"
+                      className="transition-all duration-200"
+                      style={{
+                        padding: "0.6rem 1.4rem",
+                        border: `1px solid var(--color-border-mid)`,
+                        color: "var(--color-text-muted)",
+                        borderRadius: "99px",
+                        fontSize: "0.78rem", fontWeight: 600,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                      }}>
+                      Learn More
+                    </a>
                   </div>
                 </div>
-
-                <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                  Transforming businesses through innovative software solutions. From startups to enterprises, 
-                  we deliver cutting-edge technology that drives real growth and measurable results.
-                </p>
-
-                {/* #1 badge */}
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-emerald-500/20 rounded flex items-center justify-center">
-                    <span className="text-4xl font-black text-gray-700">#1</span>
-                  </div>
-                  <button className="px-6 py-3 bg-transparent border border-gray-700 hover:border-emerald-500 text-gray-600 rounded-full text-sm font-semibold transition-all duration-300">
-                    ABOUT MORE
-                  </button>
-                </div>
-              </div>
+              </Reveal>
 
               {/* Metrics */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                    <span className="text-2xl font-black text-gray-900">98%</span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Client Retention</h4>
-                    <p className="text-gray-500 text-sm">Long-term partnerships built on trust and results</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                    <span className="text-2xl font-black text-gray-900">3x</span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Faster Delivery</h4>
-                    <p className="text-gray-500 text-sm">Efficient processes that accelerate time-to-market</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Proven ROI</h4>
-                    <p className="text-gray-500 text-sm">Solutions that drive measurable business growth</p>
-                  </div>
-                </div>
+              <div className="flex flex-col gap-5">
+                {[
+                  { value: "98%", label: "Client Retention", desc: "Long-term partnerships built on trust and results" },
+                  { value: "3x",  label: "Faster Delivery",  desc: "Efficient processes that accelerate time-to-market" },
+                  { icon: <TrendingUp size={22} style={{ color: "var(--color-emerald)" }} />, label: "Proven ROI", desc: "Solutions that drive measurable business growth" },
+                ].map((m, i) => (
+                  <Reveal key={i} delay={0.22 + i * 0.1} y={16}>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-center flex-shrink-0 w-14 h-14 rounded-xl"
+                        style={{ background: "var(--color-card)", border: `1px solid var(--color-border)` }}>
+                        {m.icon ?? <span style={{ fontSize: "1.15rem", fontWeight: 900, color: "var(--color-text)" }}>{m.value}</span>}
+                      </div>
+                      <div>
+                        <p style={{ fontWeight: 700, color: "var(--color-text)", fontSize: "0.95rem" }}>{m.label}</p>
+                        <p style={{ color: "var(--color-text-faint)", fontSize: "0.82rem", marginTop: "2px" }}>{m.desc}</p>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Right Image */}
-          <div className="relative group">
-            {/* Gradient background effects */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
-            
-            {/* Geometric shapes behind image */}
-            <div className="absolute -top-6 -right-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-xl"></div>
-            <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-blue-500/10 rounded-full blur-xl"></div>
-            
-            {/* Border frame effect */}
-            <div className="absolute inset-0 rounded-2xl border-4 border-emerald-500/20 group-hover:border-emerald-500/40 transition-all duration-500"></div>
-            
-            {/* Main image */}
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl">
-              <Image
-                src="/images/images/homee.png"
-                alt="Team collaboration"
-                width={600}
-                height={800}
-                className="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-700"
-              />
-              
-              {/* Overlay gradient on hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          {/* RIGHT — Image */}
+          <Reveal delay={0.1} y={40}>
+            <div className="relative">
+              <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{
+                background: `radial-gradient(ellipse at 60% 40%, ${colors.emeraldBg} 0%, transparent 70%)`,
+              }} />
+              <div className="relative overflow-hidden rounded-2xl"
+                style={{ border: `1px solid var(--color-border)` }}>
+                <Image
+                  src="/images/images/homee.png"
+                  alt="Team collaboration"
+                  width={600} height={800}
+                  className="object-cover w-full"
+                  style={{ height: "clamp(400px, 55vw, 620px)" }}
+                />
+                <div className="absolute bottom-0 left-0 right-0 pointer-events-none"
+                  style={{ height: "30%", background: `linear-gradient(to top, var(--color-surface), transparent)` }} />
+              </div>
+              <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none" style={{
+                borderTop: `2px solid var(--color-emerald-border)`,
+                borderRight: `2px solid var(--color-emerald-border)`,
+                borderRadius: "0 16px 0 0",
+              }} />
+              <div className="absolute bottom-0 left-0 w-16 h-16 pointer-events-none" style={{
+                borderBottom: `2px solid var(--color-emerald-border)`,
+                borderLeft: `2px solid var(--color-emerald-border)`,
+                borderRadius: "0 0 0 16px",
+              }} />
             </div>
-
-            {/* Corner accent */}
-            <div className="absolute top-0 right-0 w-20 h-20 border-t-4 border-r-4 border-emerald-500 rounded-tr-2xl"></div>
-            <div className="absolute bottom-0 left-0 w-20 h-20 border-b-4 border-l-4 border-blue-500 rounded-bl-2xl"></div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
-    </>
   );
 }

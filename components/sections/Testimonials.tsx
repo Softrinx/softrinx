@@ -1,270 +1,427 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { Star } from 'lucide-react';
-import Image from 'next/image';
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { Quote, ArrowUpRight } from "lucide-react";
+import Image from "next/image";
+import { useTheme } from "@/contexts/themeContext";
 
+// ─── Data ─────────────────────────────────────────────────────────────────────
 const testimonials = [
   {
-    text: "I Cannot Express Enough How Satisfied I Am With The Web Development Services Provided By Softrinx. They Are Very Good And User Friendly And They Work Very Nice And Creative",
-    author: "Watson Bekaryn",
-    role: "CEO At atlantis.com",
+    id: 1,
+    text: "Working with Softrinx transformed how we approach digital infrastructure. The cloud migration was seamless, and our uptime improved by 40%. Their team understood our scale challenges from day one.",
+    author: "Wanjiru Kamau",
+    role: "CTO, Safaripay Kenya",
+    image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=200&fit=crop",
+    rating: 5,
+    size: "large", // 2 cols
+  },
+  {
+    id: 2,
+    text: "The mobile app they built for our logistics platform handles 50k+ daily transactions flawlessly. Performance is exceptional, and the UI is intuitive for our drivers.",
+    author: "Kipchoge Mutai",
+    role: "Founder, SwiftMove Logistics",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-    rating: 5
+    rating: 5,
+    size: "small",
   },
   {
-    text: "Outstanding Experience! The Team At Softrinx Delivered Beyond Our Expectations. Their Technical Expertise And Attention To Detail Made Our Project A Huge Success",
-    author: "Sarah Mitchell",
-    role: "CTO At TechVision Inc",
+    id: 3,
+    text: "Their AI integration cut our customer support response time by 65%. The chatbot they built understands context in both English and Swahili — game-changing for our market.",
+    author: "Achieng Omondi",
+    role: "Operations Director, TechHub Nairobi",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
-    rating: 5
+    rating: 5,
+    size: "small",
   },
   {
-    text: "Exceptional Quality And Professional Service. Softrinx Transformed Our Digital Presence With Their Innovative Solutions. Highly Recommend Their Development Services",
-    author: "Michael Chen",
-    role: "Founder Of DataFlow Solutions",
+    id: 4,
+    text: "Our e-commerce platform saw a 120% revenue increase after the rebuild. Page load times dropped from 4.2s to 0.8s. Softrinx delivered beyond every metric we set.",
+    author: "James Mwangi",
+    role: "CEO, Tujuane Marketplace",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
-    rating: 5
+    rating: 5,
+    size: "medium",
   },
   {
-    text: "Working With Softrinx Was A Game Changer For Our Business. Their Custom Software Solution Increased Our Efficiency By 300% And The Support Has Been Outstanding",
-    author: "Emily Rodriguez",
-    role: "Operations Director At Global Ventures",
+    id: 5,
+    text: "The fintech dashboard they created handles real-time data from 12 banks with zero latency. Security implementation exceeded industry standards. Exceptional work.",
+    author: "Faith Nyambura",
+    role: "Product Lead, M-Shwari Digital",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop",
-    rating: 5
+    rating: 5,
+    size: "small",
   },
   {
-    text: "The Mobile App They Built For Us Is Simply Amazing. Intuitive Design, Flawless Performance, And Delivered On Time. Softrinx Is Our Go-To Development Partner",
-    author: "James Anderson",
-    role: "Product Manager At InnovateTech",
+    id: 6,
+    text: "From architecture to deployment, their team owned every detail. The custom CRM they built reduced our onboarding time by 80%. Best dev partner we've worked with.",
+    author: "Daniel Korir",
+    role: "Head of Engineering, Savannah Ventures",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
-    rating: 5
-  }
+    rating: 5,
+    size: "medium",
+  },
 ];
 
 const partners = [
-  { name: 'Healthmaster', logo: '/images/images/hm.png' },
-  { name: 'Uamas', logo: '/images/images/uamas.png' },
-    { name: 'Alx', logo: '/images/images/alx.png' },
-    { name: 'DjAfroStreamBox', logo: '/images/images/afro.png' },
-
+  { name: "Healthmaster", logo: "/images/images/hm.png" },
+  { name: "Uamas", logo: "/images/images/uamas.png" },
+  { name: "Alx", logo: "/images/images/alx.png" },
+  { name: "DjAfroStreamBox", logo: "/images/images/afro.png" },
 ];
 
-// Profile photo positions (scattered around the screen)
-const profilePositions = [
-  { top: '15%', left: '8%', size: 'w-16 h-16', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop' },
-  { top: '25%', right: '12%', size: 'w-20 h-20', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop' },
-  { top: '45%', left: '5%', size: 'w-14 h-14', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop' },
-  { top: '55%', right: '8%', size: 'w-18 h-18', image: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop' },
-  { top: '70%', left: '10%', size: 'w-16 h-16', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop' },
-  { top: '35%', left: '15%', size: 'w-12 h-12', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop' },
-  { top: '60%', right: '15%', size: 'w-14 h-14', image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&h=100&fit=crop' },
-  { top: '80%', right: '20%', size: 'w-16 h-16', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop' },
-];
+// ─── Single testimonial card ──────────────────────────────────────────────────
+function TestimonialCard({
+  t,
+  index,
+}: {
+  t: (typeof testimonials)[0];
+  index: number;
+}) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const [hovered, setHovered] = useState(false);
 
-export default function Testimonials() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.32, 0.72, 0, 1] }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative overflow-hidden group"
+      style={{
+        border: `1px solid var(--color-border)`,
+        background: "var(--color-surface)",
+        gridColumn: t.size === "large" ? "span 2" : "span 1",
+        gridRow: t.size === "medium" ? "span 2" : "span 1",
+        padding: "clamp(1.2rem, 2.5vw, 2rem)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        minHeight: t.size === "large" ? "280px" : t.size === "medium" ? "320px" : "240px",
+      }}
+    >
+      {/* Quote icon — top left */}
+      <motion.div
+        animate={{ opacity: hovered ? 1 : 0.3 }}
+        transition={{ duration: 0.3 }}
+        style={{
+          position: "absolute",
+          top: "1.2rem",
+          right: "1.2rem",
+          color: "var(--color-emerald)",
+        }}
+      >
+        <Quote size={t.size === "large" ? 32 : 24} />
+      </motion.div>
+
+      {/* Testimonial text */}
+      <div>
+        <p
+          style={{
+            fontSize: t.size === "large" ? "clamp(0.95rem, 1.4vw, 1.1rem)" : "clamp(0.82rem, 1.2vw, 0.92rem)",
+            lineHeight: 1.65,
+            color: "var(--color-text)",
+            marginBottom: "1.5rem",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          "{t.text}"
+        </p>
+      </div>
+
+      {/* Author row */}
+      <div className="flex items-center gap-3">
+        <div
+          className="relative overflow-hidden"
+          style={{
+            width: t.size === "large" ? "56px" : "48px",
+            height: t.size === "large" ? "56px" : "48px",
+            border: `2px solid var(--color-emerald-border)`,
+            flexShrink: 0,
+          }}
+        >
+          <img
+            src={t.image}
+            alt={t.author}
+            className="object-cover w-full h-full"
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4
+            style={{
+              fontSize: t.size === "large" ? "0.95rem" : "0.88rem",
+              fontWeight: 700,
+              color: "var(--color-text)",
+              letterSpacing: "-0.01em",
+              marginBottom: "0.15rem",
+            }}
+          >
+            {t.author}
+          </h4>
+          <p
+            style={{
+              fontSize: "0.7rem",
+              fontWeight: 600,
+              color: "var(--color-emerald)",
+              letterSpacing: "0.03em",
+            }}
+          >
+            {t.role}
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom emerald line */}
+      <motion.div
+        className="absolute bottom-0 left-0 h-[2px]"
+        animate={{ width: hovered ? "100%" : "0%" }}
+        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+        style={{ background: "var(--color-emerald)" }}
+      />
+    </motion.div>
+  );
+}
+
+// ─── Partners carousel (no cards, just logos) ─────────────────────────────────
+function PartnersCarousel() {
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-        setIsAnimating(false);
-      }, 500);
-    }, 5000);
+      setOffset((prev) => prev - 0.5); // Smooth continuous scroll
+    }, 16); // ~60fps
 
     return () => clearInterval(interval);
   }, []);
 
-  const currentTestimonial = testimonials[currentIndex];
+  // Double the array to create seamless loop
+  const doubled = [...partners, ...partners, ...partners];
 
   return (
-    <section className="relative py-24 overflow-hidden bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(255 255 255 / 0.15) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
+    <div className="relative overflow-hidden" style={{ height: "100px" }}>
+      {/* Left fade */}
+      <div
+        className="absolute top-0 bottom-0 left-0 z-10 pointer-events-none"
+        style={{
+          width: "120px",
+          background: `linear-gradient(to right, var(--color-bg), transparent)`,
+        }}
+      />
+      {/* Right fade */}
+      <div
+        className="absolute top-0 bottom-0 right-0 z-10 pointer-events-none"
+        style={{
+          width: "120px",
+          background: `linear-gradient(to left, var(--color-bg), transparent)`,
+        }}
+      />
+
+      {/* Scrolling container */}
+      <div
+        className="flex items-center gap-16"
+        style={{
+          transform: `translateX(${offset}px)`,
+          willChange: "transform",
+        }}
+      >
+        {doubled.map((partner, i) => (
+          <div
+            key={i}
+            className="flex-shrink-0 transition-opacity duration-300 opacity-40 hover:opacity-100"
+            style={{
+              filter: "grayscale(1)",
+              transition: "all 0.3s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLDivElement).style.filter = "grayscale(0)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLDivElement).style.filter = "grayscale(1)";
+            }}
+          >
+            <Image
+              src={partner.logo}
+              alt={partner.name}
+              width={140}
+              height={48}
+              className="object-contain"
+              style={{ height: "48px", width: "auto" }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main section ─────────────────────────────────────────────────────────────
+export default function Testimonials() {
+  const { colors } = useTheme();
+  const headerRef = useRef(null);
+  const headerInView = useInView(headerRef, { once: true, margin: "-40px" });
+
+  return (
+    <section
+      style={{
+        background: "var(--color-bg)",
+        paddingTop: "clamp(64px,10vw,100px)",
+        paddingBottom: "clamp(64px,10vw,100px)",
+        position: "relative",
+      }}
+    >
+      {/* Vertical timeline accent — right side */}
+      <div
+        className="absolute top-0 bottom-0 right-0 flex-col items-center hidden lg:flex"
+        style={{
+          width: "1px",
+          background: "var(--color-border)",
+          marginRight: "5vw",
+        }}
+      >
+        {/* Timeline dots */}
+        {[0, 1, 2, 3].map((i) => (
+          <motion.div
+            key={i}
+            initial={{ scale: 0 }}
+            whileInView={{ scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: i * 0.15 }}
+            style={{
+              width: "8px",
+              height: "8px",
+              background: "var(--color-emerald)",
+              border: `2px solid var(--color-bg)`,
+              position: "absolute",
+              top: `${20 + i * 20}%`,
+            }}
+          />
+        ))}
       </div>
 
-      {/* Scattered profile photos with real images */}
-      {profilePositions.map((position, index) => (
+      <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+        {/* Header */}
+        <div ref={headerRef} className="mb-12">
+          <motion.div
+            className="flex items-center gap-3 mb-5"
+            initial={{ opacity: 0, x: -12 }}
+            animate={headerInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+          >
+            <span className="block w-8 h-px" style={{ background: "var(--color-emerald)" }} />
+            <span
+              style={{
+                fontSize: "0.7rem",
+                fontWeight: 600,
+                letterSpacing: "0.15em",
+                color: "var(--color-emerald)",
+                textTransform: "uppercase",
+              }}
+            >
+              Testimonials
+            </span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 16 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.55, delay: 0.07, ease: [0.32, 0.72, 0, 1] }}
+            style={{
+              fontSize: "clamp(2.2rem, 5vw, 4rem)",
+              fontWeight: 900,
+              letterSpacing: "-0.04em",
+              lineHeight: 1.05,
+              color: "var(--color-text)",
+              maxWidth: "800px",
+            }}
+          >
+            What Developers
+            <br />
+            <span style={{ color: "var(--color-emerald)" }}>Are Saying</span>
+          </motion.h2>
+        </div>
+
+        {/* Bento grid — responsive masonry */}
         <div
-          key={index}
-          className={`absolute ${position.size} rounded-full border-2 border-emerald-500/30 backdrop-blur-sm overflow-hidden opacity-60 hover:opacity-100 transition-opacity duration-300 shadow-lg hover:shadow-emerald-500/50`}
+          className="grid gap-px mb-16"
           style={{
-            top: position.top,
-            left: position.left,
-            right: position.right,
-            animation: `float ${3 + index * 0.5}s ease-in-out infinite`,
-            animationDelay: `${index * 0.3}s`
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            background: "var(--color-border)",
           }}
         >
-          <img 
-            src={position.image} 
-            alt={`Profile ${index + 1}`}
-            className="object-cover w-full h-full"
-          />
+          {testimonials.map((t, i) => (
+            <TestimonialCard key={t.id} t={t} index={i} />
+          ))}
         </div>
-      ))}
 
-      <div className="container relative z-10 px-4 mx-auto max-w-7xl">
-        {/* Partners carousel at top */}
-        <div className="mb-20">
-          {/* Header with background text effect */}
-          <div className="relative mb-10 text-center">
-            <div className="absolute w-full -translate-x-1/2 -translate-y-1/2 pointer-events-none left-1/2 top-1/2">
-              <h3 className="text-[10rem] md:text-[14rem] lg:text-[18rem] font-black text-gray-800/20 tracking-tighter select-none whitespace-nowrap text-center leading-none">
-                Collaborations
-              </h3>
-            </div>
-            
-            <h3 className="relative pt-4 text-xl font-bold tracking-tight text-white md:text-2xl">
+        {/* Partners section */}
+        <div className="mt-20">
+          <motion.div
+            className="mb-10 text-center"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <p
+              style={{
+                fontSize: "0.7rem",
+                fontWeight: 600,
+                letterSpacing: "0.15em",
+                color: "var(--color-text-muted)",
+                textTransform: "uppercase",
+                marginBottom: "0.5rem",
+              }}
+            >
+              Trusted by
+            </p>
+            <h3
+              style={{
+                fontSize: "clamp(1.4rem, 2.5vw, 2rem)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                color: "var(--color-text)",
+              }}
+            >
               Our Collaborations
             </h3>
-          </div>
-          
-          <div className="relative py-6 overflow-hidden bg-gray-800/20">
-            <div className="flex animate-scroll">
-              {partners.concat(partners).map((partner, index) => (
-                <div
-                  key={index}
-                  className="flex-shrink-0 flex items-center justify-center px-12 min-w-[180px]  hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
-                >
-                  <Image
-                    src={partner.logo} 
-                    alt={partner.name}
-                    width={150}
-                    height={48}
-                    className="object-contain w-auto h-12"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          </motion.div>
+
+          <PartnersCarousel />
         </div>
 
-        {/* Main testimonial content */}
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Title with large background text effect */}
-          <div className="relative mb-12">
-            <div className="absolute w-full -translate-x-1/2 -translate-y-1/2 pointer-events-none left-1/2 top-1/2">
-              <h3 className="text-[12rem] md:text-[16rem] lg:text-[20rem] font-black text-gray-800/20 tracking-tighter select-none whitespace-nowrap text-center leading-none">
-                Appreciations
-              </h3>
-            </div>
-            
-            <h2 className="relative pt-4 text-5xl font-bold tracking-tight text-white md:text-6xl">
-              Appreciations
-            </h2>
-          </div>
-
-          {/* Trustpilot stars */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="flex items-center gap-1 bg-emerald-600 px-3 py-1.5 rounded">
-              <Star className="w-4 h-4 text-white fill-white" />
-              <span className="text-sm font-bold text-white">Trustpilot</span>
-            </div>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} className="w-5 h-5 fill-emerald-500 text-emerald-500" />
-              ))}
-            </div>
-          </div>
-
-          {/* Testimonial text with animation */}
-          <div className="mb-10 min-h-[200px] flex items-center justify-center">
-            <p 
-              className={`text-gray-300 text-lg md:text-xl leading-relaxed max-w-3xl transition-all duration-500 ${
-                isAnimating ? 'opacity-0 transform scale-95' : 'opacity-100 transform scale-100'
-              }`}
-            >
-              &ldquo;{currentTestimonial.text}&rdquo;
-            </p>
-          </div>
-
-          {/* Author info with profile image and animation */}
-          <div 
-            className={`flex flex-col items-center transition-all duration-500 ${
-              isAnimating ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'
-            }`}
+        {/* Bottom CTA row — link to all testimonials */}
+        <motion.div
+          className="flex justify-center mt-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <a
+            href="/testimonials"
+            className="inline-flex items-center gap-2 px-6 py-3 font-semibold transition-all duration-200 group"
+            style={{
+              border: `1px solid var(--color-emerald-border)`,
+              color: "var(--color-emerald)",
+              fontSize: "0.85rem",
+              letterSpacing: "0.03em",
+            }}
           >
-            <div className="w-20 h-20 mb-4 overflow-hidden rounded-full shadow-lg border-3 border-emerald-500 shadow-emerald-500/30">
-              <img 
-                src={currentTestimonial.image} 
-                alt={currentTestimonial.author}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <h4 className="mb-1 text-2xl font-bold text-white">
-              {currentTestimonial.author}
-            </h4>
-            <p className="font-medium text-emerald-400">
-              {currentTestimonial.role}
-            </p>
-          </div>
-
-          {/* Pagination dots */}
-          <div className="flex items-center justify-center gap-2 mt-12">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setIsAnimating(true);
-                  setTimeout(() => {
-                    setCurrentIndex(index);
-                    setIsAnimating(false);
-                  }, 500);
-                }}
-                className={`transition-all duration-300 rounded-full ${
-                  index === currentIndex
-                    ? 'w-10 h-2.5 bg-emerald-500'
-                    : 'w-2.5 h-2.5 bg-gray-600 hover:bg-emerald-500/50'
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
+            Read All Reviews
+            <motion.span
+              animate={{ x: 0 }}
+              whileHover={{ x: 4, y: -4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ArrowUpRight size={16} />
+            </motion.span>
+          </a>
+        </motion.div>
       </div>
-
-      {/* CSS animations */}
-      <style jsx global>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          25% {
-            transform: translateY(-10px) rotate(2deg);
-          }
-          50% {
-            transform: translateY(-5px) rotate(-2deg);
-          }
-          75% {
-            transform: translateY(-15px) rotate(1deg);
-          }
-        }
-
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
-        }
-
-        .animate-scroll:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </section>
   );
 }

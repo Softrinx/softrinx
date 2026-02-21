@@ -1,201 +1,318 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { useRef, useState } from "react";
+import Link from "next/link";
+import { motion, useInView } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+import { useTheme } from "@/contexts/themeContext";
 
-const caseStudies = [
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const CASES = [
   {
-    id: 1,
-    category: 'CLOUD HOSTING',
-    title: 'Unlocking Scalability, Reliability, And Efficiency.',
-    description: 'Integer pulvinar odio placerat nec rhoncus us, ullamcorper nascetur nascetur auctor taciti senectus.',
-    image: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=800&h=600&fit=crop',
-    side: 'left'
+    number: "01",
+    category: "Cloud Infrastructure",
+    title: "Unlocking Scalability for a Fintech at 10× Growth",
+    result: "99.98% uptime · 3× faster deploys",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=900&h=600&fit=crop",
+    size: "large", // takes 2 cols
   },
   {
-    id: 2,
-    category: 'IT CONSULTING',
-    title: 'Empowering Business Performance Through Expert.',
-    description: 'Transform your business with cutting-edge IT consulting strategies that drive innovation and growth through expert guidance.',
-    image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&h=600&fit=crop',
-    side: 'right'
+    number: "02",
+    category: "Mobile App",
+    title: "Award-Winning Health App, 200k Downloads",
+    result: "4.9★ App Store · 200k users",
+    image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=600&fit=crop",
+    size: "small",
   },
   {
-    id: 3,
-    category: 'E-COMMERCE PLATFORM',
-    title: 'Revolutionizing Online Retail Experience.',
-    description: 'Modern e-commerce platform delivering exceptional user experience and seamless shopping journey for customers worldwide.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
-    side: 'left'
+    number: "03",
+    category: "E-Commerce Platform",
+    title: "Rebuilt Retail Platform, 40% Revenue Uplift",
+    result: "+40% revenue · -60% cart abandonment",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=600&fit=crop",
+    size: "small",
   },
   {
-    id: 4,
-    category: 'MOBILE DEVELOPMENT',
-    title: 'Next-Generation Mobile Application.',
-    description: 'Award-winning mobile application combining stunning design with powerful functionality and user-centric approach.',
-    image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=600&fit=crop',
-    side: 'right'
-  }
+    number: "04",
+    category: "AI Integration",
+    title: "LLM-Powered Support Cut Tickets by Half",
+    result: "52% fewer tickets · $180k saved/yr",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&h=600&fit=crop",
+    size: "large",
+  },
 ];
 
-export default function CaseStudy() {
-  const [visibleCards, setVisibleCards] = useState<number[]>([]);
-  const observerRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const observers = observerRefs.current.map((ref, index) => {
-      if (!ref) return null;
-      
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setVisibleCards(prev => [...new Set([...prev, index])]);
-            }
-          });
-        },
-        { threshold: 0.2 }
-      );
-      
-      observer.observe(ref);
-      return observer;
-    });
-
-    return () => {
-      observers.forEach(observer => observer?.disconnect());
-    };
-  }, []);
+// ─── Single card ──────────────────────────────────────────────────────────────
+function CaseCard({
+  c, index,
+}: {
+  c: (typeof CASES)[0];
+  index: number;
+}) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const [hovered, setHovered] = useState(false);
+  const { colors } = useTheme();
 
   return (
-    <section className="relative py-32 overflow-hidden bg-gradient-to-b from-gray-50 via-white to-gray-100">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(0 0 0 / 0.15) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay: index * 0.08, ease: [0.32, 0.72, 0, 1] }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative overflow-hidden group"
+      style={{
+        border: `1px solid var(--color-border)`,
+        cursor: "pointer",
+        background: "var(--color-surface)",
+        gridColumn: c.size === "large" ? "span 2" : "span 1",
+      }}
+    >
+      {/* Image */}
+      <div className="relative overflow-hidden" style={{ height: c.size === "large" ? "clamp(220px,28vw,340px)" : "clamp(180px,22vw,260px)" }}>
+        <motion.img
+          src={c.image}
+          alt={c.title}
+          className="object-cover w-full h-full"
+          animate={{ scale: hovered ? 1.04 : 1 }}
+          transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+        />
+        {/* Dark scrim — always present, deepens on hover */}
+        <motion.div
+          className="absolute inset-0"
+          animate={{ background: hovered ? "rgba(8,11,9,0.55)" : "rgba(8,11,9,0.25)" }}
+          transition={{ duration: 0.35 }}
+        />
+        {/* Category tag — top left */}
+        <div className="absolute top-4 left-4">
+          <span style={{
+            fontSize: "0.62rem",
+            fontWeight: 700,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--color-emerald)",
+            background: "rgba(8,11,9,0.75)",
+            padding: "0.25rem 0.6rem",
+            border: `1px solid var(--color-emerald-border)`,
+          }}>
+            {c.category}
+          </span>
+        </div>
+        {/* Number — top right */}
+        <div className="absolute top-4 right-4">
+          <span style={{
+            fontSize: "0.65rem",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            color: "rgba(255,255,255,0.4)",
+          }}>
+            {c.number}
+          </span>
+        </div>
       </div>
 
-      {/* Animated gradient orbs */}
-      <div className="absolute rounded-full top-1/4 left-1/4 w-96 h-96 bg-emerald-500/20 blur-3xl animate-pulse"></div>
-      <div className="absolute rounded-full bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+      {/* Content row */}
+      <div className="flex items-start justify-between gap-4 p-5">
+        <div className="flex-1 min-w-0">
+          <h3 style={{
+            fontSize: c.size === "large" ? "clamp(1rem, 1.8vw, 1.25rem)" : "clamp(0.88rem, 1.4vw, 1rem)",
+            fontWeight: 700,
+            letterSpacing: "-0.02em",
+            lineHeight: 1.25,
+            color: "var(--color-text)",
+            marginBottom: "0.5rem",
+          }}>
+            {c.title}
+          </h3>
+          {/* Result pill */}
+          <span style={{
+            fontSize: "0.7rem",
+            fontWeight: 600,
+            color: "var(--color-emerald)",
+            letterSpacing: "0.04em",
+          }}>
+            {c.result}
+          </span>
+        </div>
 
-      <div className="container relative z-10 px-4 mx-auto max-w-7xl">
-        {/* Header with background text */}
-        <div className="relative mb-24 text-center">
-          {/* Large background "Case Study" text */}
-          <div className="absolute w-full overflow-hidden -translate-x-1/2 -translate-y-1/2 pointer-events-none left-1/2 top-1/2">
-            <h3 className="text-[10rem] md:text-[14rem] lg:text-[18rem] font-black text-gray-900/[0.03] tracking-tighter select-none whitespace-nowrap text-center leading-none">
-              Case Study
-            </h3>
+        {/* Arrow — animates on hover */}
+        <motion.div
+          animate={{
+            x: hovered ? 0 : -4,
+            y: hovered ? 0 : 4,
+            opacity: hovered ? 1 : 0.35,
+          }}
+          transition={{ duration: 0.25 }}
+          style={{
+            width: "36px",
+            height: "36px",
+            border: `1px solid var(--color-emerald-border)`,
+            background: hovered ? "var(--color-emerald)" : "transparent",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            transition: "background 0.25s",
+          }}
+        >
+          <ArrowUpRight
+            size={16}
+            style={{ color: hovered ? "#040805" : "var(--color-emerald)" }}
+          />
+        </motion.div>
+      </div>
+
+      {/* Bottom emerald line — slides in on hover */}
+      <motion.div
+        className="absolute bottom-0 left-0 h-[2px]"
+        animate={{ width: hovered ? "100%" : "0%" }}
+        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+        style={{ background: "var(--color-emerald)" }}
+      />
+    </motion.div>
+  );
+}
+
+// ─── Section ──────────────────────────────────────────────────────────────────
+export default function CaseStudy() {
+  const { colors } = useTheme();
+  const headerRef = useRef(null);
+  const headerInView = useInView(headerRef, { once: true, margin: "-40px" });
+
+  return (
+    <section style={{
+      background: "var(--color-bg)",
+      paddingTop: "clamp(64px,10vw,100px)",
+      paddingBottom: "clamp(64px,10vw,100px)",
+      borderTop: `1px solid var(--color-border)`,
+    }}>
+      <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+
+        {/* Header */}
+        <div ref={headerRef} className="flex flex-col justify-between gap-8 mb-12 lg:flex-row lg:items-end">
+          <div>
+            <motion.div
+              className="flex items-center gap-3 mb-5"
+              initial={{ opacity: 0, x: -12 }}
+              animate={headerInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+            >
+              <span className="block w-8 h-px" style={{ background: "var(--color-emerald)" }} />
+              <span style={{
+                fontSize: "0.7rem", fontWeight: 600,
+                letterSpacing: "0.15em", color: "var(--color-emerald)",
+                textTransform: "uppercase",
+              }}>
+                Case Studies
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              animate={headerInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: 0.07, ease: [0.32, 0.72, 0, 1] }}
+              style={{
+                fontSize: "clamp(2.2rem, 5vw, 4rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.0,
+                color: "var(--color-text)",
+              }}
+            >
+              Work That<br />Speaks.
+            </motion.h2>
           </div>
-          
-          {/* Foreground text */}
-          <div className="relative pt-8">
-            <h2 className="mb-6 text-5xl font-bold tracking-tight text-gray-900 md:text-6xl lg:text-7xl">
-              Case Study
-            </h2>
-            <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              Explore our successful projects and see how we deliver exceptional results
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.14 }}
+            className="flex flex-col items-start gap-4 lg:items-end"
+          >
+            <p style={{
+              fontSize: "clamp(0.85rem, 1.3vw, 0.95rem)",
+              lineHeight: 1.75,
+              color: "var(--color-text-muted)",
+              maxWidth: "22rem",
+              textAlign: "right",
+            }}>
+              Real projects. Real metrics. Every case study here came with a deadline, a constraint, and a result we're proud of.
             </p>
-          </div>
-        </div>
-
-        {/* Timeline container */}
-        <div className="relative">
-          {/* Vertical center line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500/40 via-blue-500/40 to-purple-500/40 transform -translate-x-1/2 hidden lg:block"></div>
-
-          {/* Case study cards */}
-          <div className="space-y-32">
-            {caseStudies.map((study, index) => (
-              <div
-                key={study.id}
-                ref={(el) => { observerRefs.current[index] = el; }}
-                className={`relative flex flex-col lg:flex-row items-center gap-8 ${
-                  study.side === 'right' ? 'lg:flex-row-reverse' : ''
-                }`}
+            <Link
+              href="/portfolio"
+              className="inline-flex items-center gap-2 font-semibold transition-colors duration-200 group"
+              style={{ color: "var(--color-emerald)", fontSize: "0.85rem" }}
+            >
+              All work
+              <motion.span
+                animate={{ x: 0 }}
+                whileHover={{ x: 4 }}
+                transition={{ duration: 0.2 }}
               >
-                {/* Content side */}
-                <div className={`w-full lg:w-1/2 ${
-                  visibleCards.includes(index) 
-                    ? 'opacity-100 translate-x-0' 
-                    : study.side === 'left' 
-                      ? 'opacity-0 -translate-x-20' 
-                      : 'opacity-0 translate-x-20'
-                } transition-all duration-1000 ease-out`}
-                style={{ transitionDelay: `${index * 200}ms` }}>
-                  <div className={`${study.side === 'left' ? 'lg:pr-16 lg:text-right' : 'lg:pl-16 lg:text-left'}`}>
-                    <div className={`inline-block px-4 py-1.5 bg-emerald-500/20 border border-emerald-500/40 rounded mb-4 ${study.side === 'left' ? 'lg:float-right lg:clear-right' : ''}`}>
-                      <span className="text-xs font-bold tracking-wider uppercase text-emerald-600">{study.category}</span>
-                    </div>
-                    <h3 className="clear-both mb-4 text-3xl font-bold leading-tight text-gray-900 transition-colors duration-300 md:text-4xl hover:text-emerald-600">
-                      {study.title}
-                    </h3>
-                    <p className="mb-6 text-base leading-relaxed text-gray-600">
-                      {study.description}
-                    </p>
-                    <button className="inline-flex items-center gap-2 px-6 py-3 font-semibold text-gray-900 transition-all duration-300 bg-transparent border-2 border-gray-300 rounded-lg group hover:border-emerald-500 hover:bg-emerald-500/10">
-                      View Details
-                      <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Center connector dot */}
-                <div className="absolute z-20 hidden transform -translate-x-1/2 -translate-y-1/2 lg:block left-1/2 top-1/2">
-                  <div className={`w-5 h-5 rounded-full bg-emerald-500 border-4 border-white shadow-lg ${
-                    visibleCards.includes(index) ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
-                  } transition-all duration-500`}
-                  style={{ transitionDelay: `${index * 200 + 400}ms` }}>
-                    <div className="absolute inset-0 rounded-full opacity-75 bg-emerald-500 animate-ping"></div>
-                  </div>
-                  {/* Horizontal connecting line */}
-                  <div className={`absolute top-1/2 -translate-y-1/2 h-0.5 bg-gradient-to-${study.side === 'left' ? 'r' : 'l'} from-emerald-500/80 to-transparent ${
-                    study.side === 'left' ? 'right-full mr-2.5' : 'left-full ml-2.5'
-                  } ${
-                    visibleCards.includes(index) ? 'w-16 opacity-100' : 'w-0 opacity-0'
-                  } transition-all duration-700`}
-                  style={{ transitionDelay: `${index * 200 + 600}ms` }}></div>
-                </div>
-
-                {/* Image side */}
-                <div className={`w-full lg:w-1/2 ${
-                  visibleCards.includes(index) 
-                    ? 'opacity-100 translate-x-0' 
-                    : study.side === 'left' 
-                      ? 'opacity-0 translate-x-20' 
-                      : 'opacity-0 -translate-x-20'
-                } transition-all duration-1000 ease-out`}
-                style={{ transitionDelay: `${index * 200 + 300}ms` }}>
-                  <div className="relative overflow-hidden transition-all duration-500 border border-gray-200 rounded-lg shadow-xl group hover:border-emerald-500/50 hover:shadow-2xl">
-                    <div className="relative h-[400px] overflow-hidden">
-                      <img 
-                        src={study.image} 
-                        alt={study.title}
-                        className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                      />
-                      {/* Gradient overlay */}
-                      <div className="absolute inset-0 transition-opacity duration-500 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-40 group-hover:opacity-60"></div>
-                      
-                      {/* Hover overlay */}
-                      <div className="absolute inset-0 transition-all duration-500 bg-emerald-500/0 group-hover:bg-emerald-500/10"></div>
-                    </div>
-
-                    {/* Corner accent */}
-                    <div className="absolute top-0 right-0 w-20 h-20 transition-all duration-500 border-t-2 border-r-2 border-emerald-500/0 group-hover:border-emerald-500/60"></div>
-                    <div className="absolute bottom-0 left-0 w-20 h-20 transition-all duration-500 border-b-2 border-l-2 border-blue-500/0 group-hover:border-blue-500/60"></div>
-
-                    {/* Glow effect */}
-                    <div className="absolute inset-0 transition-opacity duration-500 opacity-0 pointer-events-none group-hover:opacity-100">
-                      <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-emerald-500/20 blur-3xl"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                <ArrowUpRight size={15} />
+              </motion.span>
+            </Link>
+          </motion.div>
         </div>
+
+        {/* Grid — 3 columns, large cards span 2 */}
+        <div
+          className="grid gap-px"
+          style={{
+            gridTemplateColumns: "repeat(3, 1fr)",
+            background: "var(--color-border)", // gap color = border lines
+          }}
+        >
+          {CASES.map((c, i) => (
+            <CaseCard key={c.number} c={c} index={i} />
+          ))}
+        </div>
+
+        {/* Bottom row — thin metrics band */}
+        <motion.div
+          className="grid grid-cols-2 mt-px lg:grid-cols-4"
+          style={{
+            background: "var(--color-border)",
+            gap: "1px",
+          }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          {[
+            { value: "50+", label: "Projects Delivered" },
+            { value: "100%", label: "Client Satisfaction" },
+            { value: "15+", label: "Industries" },
+            { value: "3yr", label: "In Business" },
+          ].map((m) => (
+            <div
+              key={m.label}
+              className="flex items-center gap-4 px-6 py-4"
+              style={{ background: "var(--color-surface)" }}
+            >
+              <span style={{
+                fontSize: "clamp(1.2rem, 2vw, 1.6rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                color: "var(--color-text)",
+              }}>
+                {m.value}
+              </span>
+              <span style={{
+                fontSize: "0.72rem",
+                fontWeight: 500,
+                color: "var(--color-text-faint)",
+                letterSpacing: "0.04em",
+                lineHeight: 1.3,
+              }}>
+                {m.label}
+              </span>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

@@ -1,287 +1,464 @@
 "use client";
 
-import { SetStateAction, useEffect, useRef, useState } from 'react';
-import { 
-  Code, Smartphone, Server, BrainCircuit, Database, Shield, Cpu, Cloud, ArrowRight, CheckCircle2, Sparkles
-} from 'lucide-react';
+import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import {
+  Code, Smartphone, Server, BrainCircuit, Database, Shield,
+  ArrowRight, ArrowUpRight,
+} from "lucide-react";
+import { useTheme } from "@/contexts/themeContext";
 
-const services = [
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const SERVICES = [
   {
-    number: '01',
-    icon: <Code className="w-8 h-8" />,
-    title: 'Custom Software Development',
-    description: 'Software development is the process of creating computer software programs that perform specific functions or tasks.',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop',
+    number: "01",
+    icon: Code,
+    title: "Custom Software Development",
+    description:
+      "End-to-end engineering of web platforms, SaaS products, and internal tools — built to your exact specifications with clean, maintainable code.",
+    tags: ["React", "Next.js", "Node.js", "TypeScript"],
   },
   {
-    number: '02',
-    icon: <Smartphone className="w-8 h-8" />,
-    title: 'Mobile App Development',
-    description: 'Native iOS & Android applications and cross-platform solutions that deliver seamless performance.',
-    image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=600&fit=crop',
+    number: "02",
+    icon: Smartphone,
+    title: "Mobile App Development",
+    description:
+      "Native iOS & Android and cross-platform apps with polished UX. We build for performance, offline-first resilience, and App Store success.",
+    tags: ["React Native", "Flutter", "Swift", "Kotlin"],
   },
   {
-    number: '03',
-    icon: <Server className="w-8 h-8" />,
-    title: 'Cloud Solutions',
-    description: 'Cloud solutions refer to the use of cloud computing technology to provide services and solutions over the internet.',
-    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop',
+    number: "03",
+    icon: Server,
+    title: "Cloud Infrastructure",
+    description:
+      "Scalable, cost-efficient cloud architecture on AWS, GCP, or Azure. CI/CD pipelines, containerisation, and zero-downtime deployments.",
+    tags: ["AWS", "Docker", "Kubernetes", "Terraform"],
   },
   {
-    number: '04',
-    icon: <BrainCircuit className="w-8 h-8" />,
-    title: 'AI & Machine Learning',
-    description: 'Cutting-edge AI integration and machine learning solutions to power intelligent business applications.',
-    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop',
+    number: "04",
+    icon: BrainCircuit,
+    title: "AI & Machine Learning",
+    description:
+      "Custom model integration, LLM fine-tuning, and intelligent automation that gives your product a measurable edge over competitors.",
+    tags: ["LLMs", "Python", "TensorFlow", "OpenAI"],
   },
   {
-    number: '05',
-    icon: <Database className="w-8 h-8" />,
-    title: 'Database Architecture',
-    description: 'Robust database design, optimization, and management for efficient data handling at scale.',
-    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&h=600&fit=crop',
+    number: "05",
+    icon: Database,
+    title: "Database Architecture",
+    description:
+      "Robust schema design, query optimisation, and migration strategies for relational and NoSQL databases at any scale.",
+    tags: ["PostgreSQL", "MongoDB", "Redis", "Supabase"],
   },
   {
-    number: '06',
-    icon: <Shield className="w-8 h-8" />,
-    title: 'Cyber Security',
-    description: 'Comprehensive security solutions to protect your applications, data, and infrastructure.',
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=600&fit=crop',
+    number: "06",
+    icon: Shield,
+    title: "Cyber Security",
+    description:
+      "Penetration testing, security audits, and hardening of your stack — so your data and your clients' trust stay protected.",
+    tags: ["Pen Testing", "OWASP", "OAuth", "Encryption"],
   },
 ];
 
-export default function Services() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
+// Infinite carousel rows — duplicate for seamless loop
+const ROW_A = [...SERVICES, ...SERVICES, ...SERVICES];
+const ROW_B = [...SERVICES, ...SERVICES, ...SERVICES].reverse();
 
-  useEffect(() => {
-    if (isPaused) return;
+// ─── Scroll-reveal ────────────────────────────────────────────────────────────
+function Reveal({ children, delay = 0, y = 20 }: { children: React.ReactNode; delay?: number; y?: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div ref={ref}
+      initial={{ opacity: 0, y }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay, ease: [0.32, 0.72, 0, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => {
-        const next = (prev + 1) % services.length;
-        
-        if (scrollContainerRef.current) {
-          const cardWidth = 290;
-          scrollContainerRef.current.scrollTo({
-            left: next * cardWidth,
-            behavior: 'smooth'
-          });
-        }
-        
-        return next;
-      });
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [isPaused]);
-
-  const scrollToCard = (index: SetStateAction<number>) => {
-    setActiveIndex(index);
-    if (scrollContainerRef.current) {
-      const cardWidth = 290;
-      scrollContainerRef.current.scrollTo({
-        left: (index as number) * cardWidth,
-        behavior: 'smooth'
-      });
-    }
-  };
+// ─── Carousel row ─────────────────────────────────────────────────────────────
+function CarouselRow({ items, direction }: { items: typeof ROW_A; direction: "left" | "right" }) {
+  const { colors } = useTheme();
+  const dur = 40; // seconds for one full loop
 
   return (
-    <section className="relative min-h-screen py-32 overflow-hidden bg-gray-950">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(255 255 255 / 0.15) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
-      </div>
+    <div className="w-full overflow-hidden" style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}>
+      <motion.div
+        className="flex gap-4 w-max"
+        animate={{ x: direction === "left" ? ["0%", "-33.333%"] : ["-33.333%", "0%"] }}
+        transition={{ duration: dur, repeat: Infinity, ease: "linear" }}
+      >
+        {items.map((s, i) => {
+          const Icon = s.icon;
+          return (
+            <div
+              key={i}
+              className="flex items-center flex-shrink-0 gap-3 px-5 py-3 rounded-none"
+              style={{
+                border: `1px solid var(--color-border)`,
+                background: "var(--color-card)",
+                minWidth: "240px",
+              }}
+            >
+              <Icon size={16} style={{ color: "var(--color-emerald)", flexShrink: 0 }} />
+              <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--color-text-muted)", whiteSpace: "nowrap" }}>
+                {s.title}
+              </span>
+              <span style={{ fontSize: "0.72rem", color: "var(--color-text-faint)", marginLeft: "auto", flexShrink: 0 }}>
+                {s.number}
+              </span>
+            </div>
+          );
+        })}
+      </motion.div>
+    </div>
+  );
+}
 
-      <div className="container relative z-10 px-4 mx-auto max-w-7xl">
-        {/* Header with stylish background text */}
-        <div className="relative mb-12 text-center">
-          {/* Large background "Services" text */}
-          <div className="absolute w-full -translate-x-1/2 -translate-y-1/2 pointer-events-none left-1/2 top-1/2">
-            <h3 className="text-[14rem] md:text-[18rem] lg:text-[22rem] font-black text-gray-800/20 tracking-tighter select-none whitespace-nowrap text-center leading-none">
-              Services
-            </h3>
+// ─── Services Section ─────────────────────────────────────────────────────────
+export default function Services() {
+  const [active, setActive] = useState(0);
+  const { colors, isDark } = useTheme();
+  const sectionRef = useRef(null);
+
+  // Auto-advance
+  useEffect(() => {
+    const t = setInterval(() => setActive((p) => (p + 1) % SERVICES.length), 5000);
+    return () => clearInterval(t);
+  }, []);
+
+  const ActiveIcon = SERVICES[active].icon;
+
+  return (
+    <section
+      ref={sectionRef}
+      style={{ background: "var(--color-bg)", paddingTop: "clamp(64px,10vw,120px)", paddingBottom: 0 }}
+    >
+      {/* ── Section header ── */}
+      <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+        <Reveal>
+          <div className="flex items-center gap-3 mb-6">
+            <span className="block w-8 h-px" style={{ background: "var(--color-emerald)" }} />
+            <span style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.15em", color: "var(--color-emerald)", textTransform: "uppercase" }}>
+              What We Offer
+            </span>
           </div>
-          
-          {/* Foreground "Our Services" */}
-          <h2 className="relative pt-4 text-5xl font-bold tracking-tight text-white md:text-6xl">
-            Our Services
-          </h2>
+        </Reveal>
+
+        <div className="flex flex-col gap-6 mb-16 lg:flex-row lg:items-end lg:justify-between">
+          <Reveal delay={0.08}>
+            <h2 style={{
+              fontSize: "clamp(2.2rem, 5vw, 4.5rem)",
+              fontWeight: 900,
+              letterSpacing: "-0.04em",
+              lineHeight: 1.0,
+              color: "var(--color-text)",
+            }}>
+              Our<br />Services.
+            </h2>
+          </Reveal>
+          <Reveal delay={0.14}>
+            <p style={{
+              fontSize: "clamp(0.88rem, 1.4vw, 1rem)",
+              lineHeight: 1.8,
+              color: "var(--color-text-muted)",
+              maxWidth: "28rem",
+            }}>
+              From idea to production, we cover the full engineering stack.
+              Every service is delivered with precision, speed, and long-term thinking.
+            </p>
+          </Reveal>
         </div>
 
-        {/* Intro text section */}
-        <div className="max-w-3xl mx-auto mb-16 text-center">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <Sparkles className="w-5 h-5 text-emerald-400" />
-            <span className="text-sm font-semibold tracking-wider uppercase text-emerald-400">What We Offer</span>
-            <Sparkles className="w-5 h-5 text-emerald-400" />
-          </div>
-          <p className="mb-8 text-lg leading-relaxed text-gray-300">
-            We provide cutting-edge technology solutions tailored to your business needs. From concept to deployment, 
-            our expert team delivers innovative services that drive growth and digital transformation.
-          </p>
-          
-          {/* Key features */}
-          <div className="grid grid-cols-1 gap-6 mt-12 md:grid-cols-3">
-            <div className="flex items-start gap-3 text-left">
-              <CheckCircle2 className="flex-shrink-0 w-5 h-5 mt-1 text-emerald-400" />
-              <div>
-                <h4 className="mb-1 font-semibold text-white">Expert Team</h4>
-                <p className="text-sm text-gray-400">Seasoned professionals with years of industry experience</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 text-left">
-              <CheckCircle2 className="flex-shrink-0 w-5 h-5 mt-1 text-emerald-400" />
-              <div>
-                <h4 className="mb-1 font-semibold text-white">Modern Tech Stack</h4>
-                <p className="text-sm text-gray-400">Latest frameworks and cutting-edge technologies</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 text-left">
-              <CheckCircle2 className="flex-shrink-0 w-5 h-5 mt-1 text-emerald-400" />
-              <div>
-                <h4 className="mb-1 font-semibold text-white">24/7 Support</h4>
-                <p className="text-sm text-gray-400">Round-the-clock assistance and maintenance</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Single Row Scrolling Container */}
-        <div 
-          className="relative mb-12"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <div 
-            ref={scrollContainerRef}
-            className="flex gap-5 px-2 pb-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        {/* ── Main interactive panel ── */}
+        <Reveal delay={0.1} y={32}>
+          <div
+            className="grid overflow-hidden lg:grid-cols-2"
+            style={{ border: `1px solid var(--color-border)` }}
           >
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className="group relative bg-gray-900 rounded-lg overflow-hidden border border-gray-800 hover:border-emerald-500/50 transition-all duration-500 cursor-pointer min-w-[260px] h-[340px] snap-center flex-shrink-0 shadow-lg hover:shadow-2xl"
-              >
-                {/* Background image on hover */}
-                <div className="absolute inset-0 transition-opacity duration-700 opacity-0 group-hover:opacity-30">
-                  <img 
-                    src={service.image} 
-                    alt={service.title}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
+            {/* LEFT — accordion list */}
+            <div style={{ borderRight: `1px solid var(--color-border)` }}>
+              {SERVICES.map((s, i) => {
+                const isActive = i === active;
+                const Icon = s.icon;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setActive(i)}
+                    className="w-full text-left transition-all duration-300 group"
+                    style={{
+                      borderBottom: i < SERVICES.length - 1 ? `1px solid var(--color-border)` : "none",
+                      background: isActive ? "var(--color-emerald-bg)" : "transparent",
+                      padding: "clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 3vw, 2rem)",
+                    }}
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Number */}
+                      <span style={{
+                        fontSize: "0.68rem",
+                        fontWeight: 700,
+                        letterSpacing: "0.1em",
+                        color: isActive ? "var(--color-emerald)" : "var(--color-text-faint)",
+                        fontVariantNumeric: "tabular-nums",
+                        transition: "color 0.2s",
+                        flexShrink: 0,
+                        width: "1.5rem",
+                      }}>
+                        {s.number}
+                      </span>
 
-                {/* Gradient overlay on hover */}
-                <div className="absolute inset-0 transition-opacity duration-700 opacity-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900 group-hover:opacity-100"></div>
+                      {/* Icon */}
+                      <div style={{
+                        width: "36px", height: "36px",
+                        border: `1px solid ${isActive ? "var(--color-emerald-border)" : "var(--color-border)"}`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        flexShrink: 0,
+                        transition: "border-color 0.2s",
+                      }}>
+                        <Icon size={16} style={{ color: isActive ? "var(--color-emerald)" : "var(--color-text-faint)", transition: "color 0.2s" }} />
+                      </div>
 
-                {/* Content */}
-                <div className="relative z-10 flex flex-col h-full p-5">
-                  {/* Number */}
-                  <div className="mb-2 text-5xl font-bold text-gray-800 transition-colors duration-300 group-hover:text-gray-700">
-                    {service.number}
+                      {/* Title + desc */}
+                      <div className="flex-1 min-w-0">
+                        <p style={{
+                          fontSize: "clamp(0.82rem, 1.2vw, 0.95rem)",
+                          fontWeight: 700,
+                          color: isActive ? "var(--color-text)" : "var(--color-text-muted)",
+                          transition: "color 0.2s",
+                          marginBottom: isActive ? "0.35rem" : 0,
+                        }}>
+                          {s.title}
+                        </p>
+                        <AnimatePresence>
+                          {isActive && (
+                            <motion.p
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                              style={{
+                                fontSize: "0.78rem",
+                                lineHeight: 1.65,
+                                color: "var(--color-text-muted)",
+                                overflow: "hidden",
+                              }}
+                            >
+                              {s.description}
+                            </motion.p>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Active indicator */}
+                      <div style={{
+                        width: "6px", height: "6px",
+                        borderRadius: "50%",
+                        background: isActive ? "var(--color-emerald)" : "transparent",
+                        border: `1px solid ${isActive ? "var(--color-emerald)" : "var(--color-border)"}`,
+                        flexShrink: 0,
+                        transition: "all 0.25s",
+                      }} />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* RIGHT — detail panel */}
+            <div
+              className="relative flex-col justify-between hidden lg:flex"
+              style={{
+                padding: "clamp(2rem, 4vw, 3rem)",
+                background: "var(--color-surface)",
+                minHeight: "480px",
+              }}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+                  className="flex flex-col h-full gap-6"
+                >
+                  {/* Icon box */}
+                  <div style={{
+                    width: "52px", height: "52px",
+                    border: `1px solid var(--color-emerald-border)`,
+                    background: "var(--color-emerald-bg)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <ActiveIcon size={24} style={{ color: "var(--color-emerald)" }} />
                   </div>
 
-                  <div className="flex flex-col justify-between flex-1">
-                    <div>
-                      {/* Title */}
-                      <h3 className="mb-2 text-base font-bold leading-tight text-white transition-colors duration-300 group-hover:text-emerald-400">
-                        {service.title}
-                      </h3>
+                  {/* Title */}
+                  <h3 style={{
+                    fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+                    fontWeight: 900,
+                    letterSpacing: "-0.04em",
+                    lineHeight: 1.0,
+                    color: "var(--color-text)",
+                  }}>
+                    {SERVICES[active].title}
+                  </h3>
 
-                      {/* Description */}
-                      <p className="mb-3 text-xs leading-relaxed text-gray-400 line-clamp-3">
-                        {service.description}
-                      </p>
-                    </div>
+                  {/* Description */}
+                  <p style={{
+                    fontSize: "clamp(0.88rem, 1.3vw, 1rem)",
+                    lineHeight: 1.8,
+                    color: "var(--color-text-muted)",
+                    maxWidth: "28rem",
+                  }}>
+                    {SERVICES[active].description}
+                  </p>
 
-                    {/* Learn More Link */}
-                    <div className="flex items-center gap-2 mt-auto font-semibold transition-all duration-300 text-emerald-400 group-hover:gap-3">
-                      <span className="text-xs tracking-wider uppercase">Learn More</span>
-                      <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-                    </div>
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2 mt-auto">
+                    {SERVICES[active].tags.map((tag) => (
+                      <span key={tag} style={{
+                        fontSize: "0.7rem",
+                        fontWeight: 600,
+                        letterSpacing: "0.06em",
+                        padding: "0.3rem 0.75rem",
+                        border: `1px solid var(--color-border-mid)`,
+                        color: "var(--color-text-muted)",
+                        textTransform: "uppercase",
+                      }}>
+                        {tag}
+                      </span>
+                    ))}
                   </div>
-                </div>
 
-                {/* Icon in concentric circles bottom right */}
-                <div className="absolute transition-all duration-500 -bottom-8 -right-8 w-28 h-28 opacity-30 group-hover:opacity-100">
-                  {/* Concentric circles */}
-                  <div className="absolute inset-0 transition-colors duration-500 border-2 rounded-full border-emerald-500/20 group-hover:border-emerald-500/40"></div>
-                  <div className="absolute transition-colors duration-500 border-2 rounded-full inset-3 border-emerald-500/30 group-hover:border-emerald-500/50"></div>
-                  <div className="absolute flex items-center justify-center transition-colors duration-500 border-2 rounded-full inset-6 border-emerald-500/40 group-hover:border-emerald-500/60">
-                    {/* Icon in center */}
-                    <div className="transition-all duration-300 text-emerald-500 group-hover:text-emerald-400 group-hover:scale-110">
-                      {service.icon}
-                    </div>
-                  </div>
-                </div>
+                  {/* Learn more */}
+                  <Link
+                    href="/services"
+                    className="inline-flex items-center gap-2 font-semibold transition-colors duration-200 group"
+                    style={{ color: "var(--color-emerald)", fontSize: "0.85rem", letterSpacing: "0.04em" }}
+                  >
+                    Learn more
+                    <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
+                  </Link>
+                </motion.div>
+              </AnimatePresence>
 
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 transition-opacity duration-500 opacity-0 pointer-events-none group-hover:opacity-100">
-                  <div className="absolute bottom-0 right-0 w-40 h-40 rounded-full bg-emerald-500/20 blur-3xl"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Pagination dots */}
-        <div className="flex items-center justify-center gap-2 mb-16">
-          {services.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => scrollToCard(index)}
-              className={`transition-all duration-300 rounded-full border ${
-                index === activeIndex
-                  ? 'w-8 h-2.5 bg-emerald-500 border-emerald-500'
-                  : 'w-2.5 h-2.5 bg-transparent border-gray-600 hover:border-emerald-500'
-              }`}
-              aria-label={`Go to service ${index + 1}`}
-            />
-          ))}
-        </div>
-
-        {/* Bottom CTA section */}
-        <div className="max-w-4xl mx-auto">
-          <div className="relative p-10 overflow-hidden border border-gray-700 bg-gradient-to-br from-gray-900 to-gray-800">
-            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl"></div>
-            <div className="relative z-10 text-center">
-              <h3 className="mb-4 text-3xl font-bold text-white">
-                Ready to Build Something Amazing?
-              </h3>
-              <p className="max-w-2xl mx-auto mb-8 text-gray-300">
-                Let&apos;s transform your ideas into reality. Our team is ready to deliver exceptional solutions 
-                tailored to your unique business needs.
-              </p>
-              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <button className="flex items-center gap-2 px-8 py-4 font-semibold text-white transition-all duration-300 rounded-lg group bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-500/50">
-                  Get Started Today
-                  <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                </button>
-                <button className="px-8 py-4 font-semibold text-white transition-all duration-300 bg-transparent border-2 border-gray-600 rounded-lg hover:border-emerald-500">
-                  View Our Work
-                </button>
+              {/* Progress bar */}
+              <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "var(--color-border)" }}>
+                <motion.div
+                  key={active}
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 5, ease: "linear" }}
+                  style={{ height: "100%", background: "var(--color-emerald)" }}
+                />
               </div>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
 
-      {/* CSS for hiding scrollbar */}
-      <style jsx global>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+      {/* ── Infinite dual carousel ── */}
+      <div style={{ paddingTop: "clamp(3rem, 6vw, 5rem)", paddingBottom: "clamp(3rem, 6vw, 5rem)" }}>
+        <Reveal>
+          <div className="flex flex-col gap-3">
+            <CarouselRow items={ROW_A} direction="left" />
+            <CarouselRow items={ROW_B} direction="right" />
+          </div>
+        </Reveal>
+      </div>
+
+      {/* ── CTA — split sharp panel ── */}
+      <Reveal y={24}>
+        <div
+          className="grid grid-cols-1 lg:grid-cols-2"
+          style={{ borderTop: `1px solid var(--color-border)` }}
+        >
+          {/* Left — emerald */}
+          <div
+            className="relative flex flex-col justify-between overflow-hidden"
+            style={{
+              background: "var(--color-emerald)",
+              padding: "clamp(2.5rem, 5vw, 4rem)",
+              borderRight: `1px solid rgba(255,255,255,0.12)`,
+            }}
+          >
+            {/* Subtle diagonal line texture */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              backgroundImage: "repeating-linear-gradient(45deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 8px)",
+            }} />
+
+            <div className="relative z-10">
+              <p style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "rgba(0,0,0,0.5)", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+                Start a Project
+              </p>
+              <h3 style={{
+                fontSize: "clamp(1.8rem, 4vw, 3rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.0,
+                color: "#040805",
+                marginBottom: "2.5rem",
+              }}>
+                Ready to Build<br />Something Real?
+              </h3>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-3 font-bold transition-all duration-200 group"
+                style={{
+                  background: "#040805",
+                  color: "var(--color-emerald)",
+                  padding: "0.85rem 1.75rem",
+                  fontSize: "0.88rem",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                Get A Quote
+                <ArrowUpRight size={16} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Right — dark surface */}
+          <div
+            className="flex flex-col justify-between"
+            style={{
+              background: "var(--color-surface)",
+              padding: "clamp(2.5rem, 5vw, 4rem)",
+            }}
+          >
+            <div>
+              <p style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "var(--color-text-faint)", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+                Or Learn More
+              </p>
+              <h3 style={{
+                fontSize: "clamp(1.4rem, 3vw, 2.2rem)",
+                fontWeight: 700,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.1,
+                color: "var(--color-text)",
+                marginBottom: "1rem",
+              }}>
+                Explore how we've helped companies ship faster and grow smarter.
+              </h3>
+              <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: "var(--color-text-muted)", maxWidth: "22rem" }}>
+                Our portfolio spans fintech, healthtech, e-commerce, and enterprise SaaS. Real work. Real results.
+              </p>
+            </div>
+            <Link
+              href="/portfolio"
+              className="inline-flex items-center gap-2 mt-8 font-semibold transition-colors duration-200 group"
+              style={{ color: "var(--color-emerald)", fontSize: "0.88rem" }}
+            >
+              View Our Work
+              <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+      </Reveal>
     </section>
   );
 }
