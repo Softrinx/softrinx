@@ -172,7 +172,7 @@ export function HeroSection() {
               >
                 <span className="block w-5 h-px" style={{ background: "var(--color-emerald)" }} />
                 <span style={{ fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.15em", color: "var(--color-emerald)", textTransform: "uppercase" }}>
-                  Software & AI — Nairobi
+                  Software Development
                 </span>
               </motion.div>
 
