@@ -1,269 +1,317 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { Star } from 'lucide-react';
-import Image from 'next/image';
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useTheme } from "@/contexts/themeContext";
 
+// ─── Real client stories from actual Softrinx projects ────────────────────────
 const testimonials = [
   {
-    text: "I Cannot Express Enough How Satisfied I Am With The Web Development Services Provided By Softrinx. They Are Very Good And User Friendly And They Work Very Nice And Creative",
-    author: "Watson Bekaryn",
-    role: "CEO At atlantis.com",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-    rating: 5
+    id: 1,
+    text: "They didn't just build a website — they built a brand identity that lets our photography breathe online. Every pixel serves the emotion we wanted to convey.",
+    author: "Memora Visuals",
+    role: "Photography Studio · Kenya",
+    image: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=200&h=200&fit=crop&crop=center",
+    result: "Live · Converting · Client proud",
+    category: "Web · Branding",
+    link: "https://memoravisuals.com",
+    size: "large",
   },
   {
-    text: "Outstanding Experience! The Team At Softrinx Delivered Beyond Our Expectations. Their Technical Expertise And Attention To Detail Made Our Project A Huge Success",
-    author: "Sarah Mitchell",
-    role: "CTO At TechVision Inc",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
-    rating: 5
+    id: 2,
+    text: "A farmer photographs a diseased crop and gets an AI diagnosis in seconds. Softrinx made something that genuinely matters to smallholder farmers across Kenya.",
+    author: "AgriLens",
+    role: "AI AgriTech Platform · Kenya",
+    image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200&h=200&fit=crop&crop=center",
+    result: "Protecting yields across Kenya",
+    category: "AI · Web App",
+    link: "https://agrilens-farmer.vercel.app/",
+    size: "small",
   },
   {
-    text: "Exceptional Quality And Professional Service. Softrinx Transformed Our Digital Presence With Their Innovative Solutions. Highly Recommend Their Development Services",
-    author: "Michael Chen",
-    role: "Founder Of DataFlow Solutions",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
-    rating: 5
+    id: 3,
+    text: "Our lecturers now have AI that grades, tracks, and adapts. Assessment creation went from hours to minutes — deployed across our entire university cohort.",
+    author: "IntelliMark",
+    role: "EdTech AI Platform · University",
+    image: "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=200&h=200&fit=crop&crop=center",
+    result: "Deployed across university cohorts",
+    category: "EdTech · AI",
+    link: "https://intellimark.pages.dev/",
+    size: "small",
   },
   {
-    text: "Working With Softrinx Was A Game Changer For Our Business. Their Custom Software Solution Increased Our Efficiency By 300% And The Support Has Been Outstanding",
-    author: "Emily Rodriguez",
-    role: "Operations Director At Global Ventures",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop",
-    rating: 5
+    id: 4,
+    text: "Dating apps are all swipe, no substance. Softrinx understood what we wanted to build — genuine human connection — and delivered a platform that actually feels real.",
+    author: "TabooTalks",
+    role: "Connections Platform · Germany",
+    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=200&h=200&fit=crop&crop=faces",
+    result: "Live in Germany · Growing",
+    category: "Social · Web App",
+    link: "https://www.tabootalks.de/",
+    size: "medium",
   },
   {
-    text: "The Mobile App They Built For Us Is Simply Amazing. Intuitive Design, Flawless Performance, And Delivered On Time. Softrinx Is Our Go-To Development Partner",
-    author: "James Anderson",
-    role: "Product Manager At InnovateTech",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
-    rating: 5
-  }
+    id: 5,
+    text: "Precision agriculture without expensive IoT hardware — we couldn't believe it was possible. FarmSense is now helping farmers across three counties optimise their yields.",
+    author: "FarmSense",
+    role: "Smart Farming Platform · Kenya",
+    image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=200&h=200&fit=crop&crop=center",
+    result: "Precision farming for all",
+    category: "AgriTech · Web App",
+    link: "https://farm-sense-mu.vercel.app/",
+    size: "small",
+  },
+  {
+    id: 6,
+    text: "A full streaming app — custom video player, offline mode, subscriptions — shipped to Google Play on time and on budget. Exactly what BritechMedia envisioned.",
+    author: "DjAfro StreamBox",
+    role: "Mobile Streaming App · Google Play",
+    image: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=200&h=200&fit=crop&crop=center",
+    result: "Live on Google Play Store",
+    category: "Mobile · Streaming",
+    link: "https://djafromovies.vercel.app/",
+    size: "medium",
+  },
 ];
 
 const partners = [
-  { name: 'Healthmaster', logo: '/images/images/hm.png' },
-  { name: 'Uamas', logo: '/images/images/uamas.png' },
-    { name: 'Alx', logo: '/images/images/alx.png' },
-    { name: 'DjAfroStreamBox', logo: '/images/images/afro.png' },
-
+  { name: "Healthmaster",     logo: "/images/images/hm.png" },
+  { name: "Uamas",            logo: "/images/images/uamas.png" },
+  { name: "Alx",              logo: "/images/images/alx.png" },
+  { name: "DjAfro StreamBox", logo: "/images/images/afro.png" },
 ];
 
-// Profile photo positions (scattered around the screen)
-const profilePositions = [
-  { top: '15%', left: '8%', size: 'w-16 h-16', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop' },
-  { top: '25%', right: '12%', size: 'w-20 h-20', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop' },
-  { top: '45%', left: '5%', size: 'w-14 h-14', image: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop' },
-  { top: '55%', right: '8%', size: 'w-18 h-18', image: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop' },
-  { top: '70%', left: '10%', size: 'w-16 h-16', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop' },
-  { top: '35%', left: '15%', size: 'w-12 h-12', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop' },
-  { top: '60%', right: '15%', size: 'w-14 h-14', image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&h=100&fit=crop' },
-  { top: '80%', right: '20%', size: 'w-16 h-16', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop' },
-];
-
-export default function Testimonials() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-        setIsAnimating(false);
-      }, 500);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const currentTestimonial = testimonials[currentIndex];
+// ─── Card ─────────────────────────────────────────────────────────────────────
+function TestimonialCard({ t, index }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <section className="relative py-24 overflow-hidden bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(255 255 255 / 0.15) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
+    <motion.a
+      href={t.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      ref={ref}
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay: index * 0.06, ease: [0.32, 0.72, 0, 1] }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="t-card"
+      data-size={t.size}
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        border: "1px solid var(--color-border)",
+        background: "var(--color-surface)",
+        padding: "clamp(1.1rem, 2.5vw, 1.75rem)",
+        textDecoration: "none",
+        cursor: "pointer",
+      }}
+    >
+      {/* Category + arrow */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem", marginBottom: "1rem" }}>
+        <span style={{
+          fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.12em",
+          textTransform: "uppercase", color: "var(--color-emerald)",
+          border: "1px solid var(--color-emerald-border)",
+          background: "var(--color-emerald-bg)",
+          padding: "0.2rem 0.5rem", flexShrink: 0,
+        }}>
+          {t.category}
+        </span>
+        <motion.span
+          animate={{ opacity: hovered ? 1 : 0.28, x: hovered ? 0 : -2, y: hovered ? 0 : 2 }}
+          transition={{ duration: 0.2 }}
+          style={{ color: "var(--color-emerald)", flexShrink: 0, display: "flex" }}>
+          <ArrowUpRight size={15} />
+        </motion.span>
       </div>
 
-      {/* Scattered profile photos with real images */}
-      {profilePositions.map((position, index) => (
-        <div
-          key={index}
-          className={`absolute ${position.size} rounded-full border-2 border-emerald-500/30 backdrop-blur-sm overflow-hidden opacity-60 hover:opacity-100 transition-opacity duration-300 shadow-lg hover:shadow-emerald-500/50`}
-          style={{
-            top: position.top,
-            left: position.left,
-            right: position.right,
-            animation: `float ${3 + index * 0.5}s ease-in-out infinite`,
-            animationDelay: `${index * 0.3}s`
-          }}
-        >
-          <img 
-            src={position.image} 
-            alt={`Profile ${index + 1}`}
-            className="object-cover w-full h-full"
-          />
+      {/* Quote */}
+      <p style={{
+        fontSize: "clamp(0.82rem, 1.15vw, 0.93rem)",
+        lineHeight: 1.72, color: "var(--color-text)",
+        letterSpacing: "-0.01em", flex: 1, marginBottom: "1.25rem",
+      }}>
+        "{t.text}"
+      </p>
+
+      {/* Result */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+        <div style={{ width: 4, height: 4, background: "var(--color-emerald)", flexShrink: 0 }} />
+        <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--color-emerald)", letterSpacing: "0.04em" }}>
+          {t.result}
+        </span>
+      </div>
+
+      {/* Author */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+        <div style={{ width: "38px", height: "38px", border: "1px solid var(--color-emerald-border)", flexShrink: 0, overflow: "hidden" }}>
+          <img src={t.image} alt={t.author} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
-      ))}
-
-      <div className="container relative z-10 px-4 mx-auto max-w-7xl">
-        {/* Partners carousel at top */}
-        <div className="mb-20">
-          {/* Header with background text effect */}
-          <div className="relative mb-10 text-center">
-            <div className="absolute w-full -translate-x-1/2 -translate-y-1/2 pointer-events-none left-1/2 top-1/2">
-              <h3 className="text-[10rem] md:text-[14rem] lg:text-[18rem] font-black text-gray-800/20 tracking-tighter select-none whitespace-nowrap text-center leading-none">
-                Collaborations
-              </h3>
-            </div>
-            
-            <h3 className="relative pt-4 text-xl font-bold tracking-tight text-white md:text-2xl">
-              Our Collaborations
-            </h3>
-          </div>
-          
-          <div className="relative py-6 overflow-hidden bg-gray-800/20">
-            <div className="flex animate-scroll">
-              {partners.concat(partners).map((partner, index) => (
-                <div
-                  key={index}
-                  className="flex-shrink-0 flex items-center justify-center px-12 min-w-[180px]  hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
-                >
-                  <Image
-                    src={partner.logo} 
-                    alt={partner.name}
-                    width={150}
-                    height={48}
-                    className="object-contain w-auto h-12"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Main testimonial content */}
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Title with large background text effect */}
-          <div className="relative mb-12">
-            <div className="absolute w-full -translate-x-1/2 -translate-y-1/2 pointer-events-none left-1/2 top-1/2">
-              <h3 className="text-[12rem] md:text-[16rem] lg:text-[20rem] font-black text-gray-800/20 tracking-tighter select-none whitespace-nowrap text-center leading-none">
-                Appreciations
-              </h3>
-            </div>
-            
-            <h2 className="relative pt-4 text-5xl font-bold tracking-tight text-white md:text-6xl">
-              Appreciations
-            </h2>
-          </div>
-
-          {/* Trustpilot stars */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="flex items-center gap-1 bg-emerald-600 px-3 py-1.5 rounded">
-              <Star className="w-4 h-4 text-white fill-white" />
-              <span className="text-sm font-bold text-white">Trustpilot</span>
-            </div>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} className="w-5 h-5 fill-emerald-500 text-emerald-500" />
-              ))}
-            </div>
-          </div>
-
-          {/* Testimonial text with animation */}
-          <div className="mb-10 min-h-[200px] flex items-center justify-center">
-            <p 
-              className={`text-gray-300 text-lg md:text-xl leading-relaxed max-w-3xl transition-all duration-500 ${
-                isAnimating ? 'opacity-0 transform scale-95' : 'opacity-100 transform scale-100'
-              }`}
-            >
-              &ldquo;{currentTestimonial.text}&rdquo;
-            </p>
-          </div>
-
-          {/* Author info with profile image and animation */}
-          <div 
-            className={`flex flex-col items-center transition-all duration-500 ${
-              isAnimating ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'
-            }`}
-          >
-            <div className="w-20 h-20 mb-4 overflow-hidden rounded-full shadow-lg border-3 border-emerald-500 shadow-emerald-500/30">
-              <img 
-                src={currentTestimonial.image} 
-                alt={currentTestimonial.author}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <h4 className="mb-1 text-2xl font-bold text-white">
-              {currentTestimonial.author}
-            </h4>
-            <p className="font-medium text-emerald-400">
-              {currentTestimonial.role}
-            </p>
-          </div>
-
-          {/* Pagination dots */}
-          <div className="flex items-center justify-center gap-2 mt-12">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setIsAnimating(true);
-                  setTimeout(() => {
-                    setCurrentIndex(index);
-                    setIsAnimating(false);
-                  }, 500);
-                }}
-                className={`transition-all duration-300 rounded-full ${
-                  index === currentIndex
-                    ? 'w-10 h-2.5 bg-emerald-500'
-                    : 'w-2.5 h-2.5 bg-gray-600 hover:bg-emerald-500/50'
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
+        <div style={{ minWidth: 0 }}>
+          <p style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--color-text)", letterSpacing: "-0.02em", marginBottom: "0.1rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {t.author}
+          </p>
+          <p style={{ fontSize: "0.64rem", fontWeight: 600, color: "var(--color-emerald)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {t.role}
+          </p>
         </div>
       </div>
 
-      {/* CSS animations */}
-      <style jsx global>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
+      {/* Hover bottom line */}
+      <motion.div
+        style={{ position: "absolute", bottom: 0, left: 0, height: "2px", background: "var(--color-emerald)" }}
+        animate={{ width: hovered ? "100%" : "0%" }}
+        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+      />
+    </motion.a>
+  );
+}
+
+// ─── Partners — pure CSS infinite, truly never ends ───────────────────────────
+function PartnersCarousel() {
+  const items = [...partners, ...partners, ...partners, ...partners];
+  return (
+    <div style={{ position: "relative", overflow: "hidden", height: "72px" }}>
+      <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: "110px", zIndex: 10, pointerEvents: "none", background: "linear-gradient(to right, var(--color-bg), transparent)" }} />
+      <div style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: "110px", zIndex: 10, pointerEvents: "none", background: "linear-gradient(to left, var(--color-bg), transparent)" }} />
+      <div className="p-track" style={{ display: "flex", alignItems: "center", gap: "3.5rem", width: "max-content", height: "100%" }}>
+        {items.map((p, i) => (
+          <div key={i} className="p-logo" style={{ flexShrink: 0 }}>
+            <Image src={p.logo} alt={p.name} width={110} height={34}
+              className="object-contain" style={{ height: "34px", width: "auto" }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Section ──────────────────────────────────────────────────────────────────
+export default function Testimonials() {
+  const { colors } = useTheme();
+  const headerRef = useRef(null);
+  const headerInView = useInView(headerRef, { once: true, margin: "-40px" });
+
+  return (
+    <section style={{
+      background: "var(--color-bg)",
+      paddingTop: "clamp(64px,10vw,100px)",
+      paddingBottom: "clamp(64px,10vw,100px)",
+      borderTop: "1px solid var(--color-border)",
+      position: "relative",
+    }}>
+      <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+
+        {/* Header */}
+        <div ref={headerRef} className="flex flex-col gap-6 mb-12 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <motion.div className="flex items-center gap-3 mb-5"
+              initial={{ opacity: 0, x: -12 }}
+              animate={headerInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.45 }}>
+              <span style={{ display: "block", width: "2rem", height: "1px", background: "var(--color-emerald)" }} />
+              <span style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "var(--color-emerald)", textTransform: "uppercase" }}>
+                Client Stories
+              </span>
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              animate={headerInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: 0.07, ease: [0.32, 0.72, 0, 1] }}
+              style={{ fontSize: "clamp(2.2rem, 5vw, 4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
+              Real projects.<br />
+              <span style={{ color: "var(--color-emerald)" }}>Real results.</span>
+            </motion.h2>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.13 }}
+            style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: "var(--color-text-muted)", maxWidth: "22rem" }}>
+              Every card is a live product. Click any to see it in the wild.
+            </p>
+            <Link href="/portfolio"
+              className="inline-flex items-center gap-2 font-semibold group"
+              style={{ color: "var(--color-emerald)", fontSize: "0.82rem", width: "fit-content" }}>
+              Full portfolio <ArrowUpRight size={13} />
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Grid */}
+        <div className="gap-px mb-16 t-grid" style={{ display: "grid", background: "var(--color-border)" }}>
+          {testimonials.map((t, i) => (
+            <TestimonialCard key={t.id} t={t} index={i} />
+          ))}
+        </div>
+
+        {/* Partners */}
+        <div>
+          <motion.p className="mb-8 text-center"
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+            style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.18em", color: "var(--color-text-faint)", textTransform: "uppercase" }}>
+            Trusted collaborations
+          </motion.p>
+          <PartnersCarousel />
+        </div>
+
+        {/* CTA */}
+        <motion.div className="flex justify-center mt-10"
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}>
+          <Link href="/portfolio"
+            className="inline-flex items-center gap-2 font-semibold"
+            style={{ border: "1px solid var(--color-emerald-border)", color: "var(--color-emerald)", fontSize: "0.85rem", padding: "0.7rem 1.5rem", letterSpacing: "0.03em" }}>
+            View All Projects <ArrowUpRight size={15} />
+          </Link>
+        </motion.div>
+      </div>
+
+      <style>{`
+        /* ── Grid breakpoints ── */
+
+        /* Mobile: 1 col, no bento spans at all */
+        .t-grid { grid-template-columns: 1fr; }
+        .t-card {
+          grid-column: span 1 !important;
+          grid-row:    span 1 !important;
+          min-height: 190px;
         }
 
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          25% {
-            transform: translateY(-10px) rotate(2deg);
-          }
-          50% {
-            transform: translateY(-5px) rotate(-2deg);
-          }
-          75% {
-            transform: translateY(-15px) rotate(1deg);
-          }
+        /* Tablet: 2 equal cols, still no spans */
+        @media (min-width: 580px) {
+          .t-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
+        /* Desktop: full 3-col bento with size spans */
+        @media (min-width: 1024px) {
+          .t-grid { grid-template-columns: repeat(3, 1fr); }
+          .t-card[data-size="large"]  { grid-column: span 2 !important; grid-row: span 1 !important; min-height: 260px; }
+          .t-card[data-size="medium"] { grid-column: span 1 !important; grid-row: span 2 !important; }
+          .t-card[data-size="small"]  { grid-column: span 1 !important; grid-row: span 1 !important; min-height: 240px; }
         }
 
-        .animate-scroll:hover {
-          animation-play-state: paused;
+        /* ── Infinite partner scroll ── */
+        .p-logo { opacity: 0.35; filter: grayscale(1); transition: opacity 0.3s, filter 0.3s; }
+        .p-logo:hover { opacity: 1; filter: grayscale(0); }
+
+        @keyframes p-scroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
         }
+        .p-track { animation: p-scroll 26s linear infinite; will-change: transform; }
+        .p-track:hover { animation-play-state: paused; }
       `}</style>
     </section>
   );

@@ -1,186 +1,312 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRight, Target, Zap, Rocket, Award, Building2, Users, Shield, Globe } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import { ArrowUpRight, ArrowRight, Star } from "lucide-react";
+import { useTheme } from "@/contexts/themeContext";
 
-const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1733948351367-b984746adf7f?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1681662850558-bc5a12160681?q=80&w=1199&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1726436467696-9586b2339cc5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-];
-
-const Hero = () => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
+// ─── Lottie ───────────────────────────────────────────────────────────────────
+function LottieAnimation() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 6000);
-    return () => clearInterval(interval);
+    let anim: any, cancelled = false;
+    import("lottie-web").then((lottie) => {
+      if (cancelled || !containerRef.current) return;
+      anim = lottie.default.loadAnimation({
+        container: containerRef.current,
+        renderer: "svg", loop: true, autoplay: true,
+        path: "/animations/hero2.json",
+      });
+      anim.addEventListener("DOMLoaded", () => { if (!cancelled) setLoaded(true); });
+    });
+    return () => { cancelled = true; anim?.destroy(); };
   }, []);
+  return (
+    <div className="relative flex items-center justify-center w-full h-full">
+      {!loaded && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-6 h-6 border-2 rounded-full animate-spin"
+            style={{ borderColor: "rgba(255,255,255,0.1)", borderTopColor: "var(--color-emerald)" }} />
+        </div>
+      )}
+      <div ref={containerRef} className="w-full h-full"
+        style={{ opacity: loaded ? 1 : 0, transition: "opacity 0.5s ease" }} />
+    </div>
+  );
+}
 
+// ─── Cycling word ─────────────────────────────────────────────────────────────
+const WORDS = ["Build.", "Ship.", "Scale.", "Deliver."];
+function CyclingWord() {
+  const [index, setIndex] = useState(0);
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.2 }
-    );
+    const t = setInterval(() => setIndex((i) => (i + 1) % WORDS.length), 2400);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span className="relative inline-block overflow-hidden"
+      style={{ verticalAlign: "bottom", height: "1.05em" }}>
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={index}
+          initial={{ y: "110%", opacity: 0 }}
+          animate={{ y: "0%", opacity: 1 }}
+          exit={{ y: "-110%", opacity: 0 }}
+          transition={{ duration: 0.38, ease: [0.32, 0.72, 0, 1] }}
+          className="block whitespace-nowrap"
+          style={{ color: "var(--color-emerald)" }}
+        >
+          {WORDS[index]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
 
-    if (contentRef.current) {
-      observer.observe(contentRef.current);
+// ─── Count-up ─────────────────────────────────────────────────────────────────
+function useCountUp(target: number, duration = 1800, start = false) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    let startTime: number | null = null;
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+    const step = (ts: number) => {
+      if (!startTime) startTime = ts;
+      const progress = Math.min((ts - startTime) / duration, 1);
+      setValue(Math.floor(easeOut(progress) * target));
+      if (progress < 1) requestAnimationFrame(step);
+      else setValue(target);
+    };
+    requestAnimationFrame(step);
+  }, [start, target, duration]);
+  return value;
+}
+
+function StatCard({ raw, suffix, title, sub, delay }: {
+  raw: number; suffix: string; title: string; sub: string; delay: number;
+}) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const [fired, setFired] = useState(false);
+  useEffect(() => {
+    if (inView && !fired) {
+      const t = setTimeout(() => setFired(true), delay);
+      return () => clearTimeout(t);
     }
-
-    return () => observer.disconnect();
-  }, []);
+  }, [inView, fired, delay]);
+  const count = useCountUp(raw, 1800, fired);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      {/* Background images with overlay */}
-      <div className="absolute inset-0">
-        {HERO_IMAGES.map((img, idx) => (
-          <div
-            key={idx}
-            className={`absolute inset-0 transition-all duration-1000 ${
-              idx === currentImageIndex
-                ? 'opacity-100 scale-100'
-                : 'opacity-0 scale-105'
-            }`}
-          >
-            <Image
-              src={img}
-              alt="Professional software development"
-              fill
-              className="object-cover"
-              priority={idx === 0}
-              quality={100}
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/70" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-          </div>
-        ))}
-      </div>
-
-      {/* Main content container */}
-      <div className="container mx-auto px-4 lg:px-8 py-20 lg:py-32 relative z-20">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          
-          {/* Left column - Text content */}
-          <div 
-            ref={contentRef}
-            className={`transition-all duration-700 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
-          >
-          
-
-            {/* Main headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight">
-              <span className="block text-white mb-4">
-                Build Software That
-              </span>
-              <span className="block bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                Transforms Business
-              </span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className="text-xl md:text-2xl text-gray-300 mb-10 leading-relaxed max-w-2xl">
-              We architect and deploy high-performance applications that drive 
-              measurable results. From startups to Fortune 500, we deliver 
-              enterprise-grade solutions with precision.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-5 mb-16">
-              <Link
-                href="/contact"
-                className="group relative px-10 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-4xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/25 hover:-translate-y-1"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="relative z-10 flex items-center justify-center gap-3 text-lg">
-                  Schedule Consultation
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                </span>
-              </Link>
-
-              <Link
-                href="/portfolio"
-                className="group px-10 py-5 bg-blue-500 text-white backdrop-blur-sm font-semibold rounded-4xl border border-white/20 hover:border-emerald-400/50 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1"
-              >
-                <span className="flex items-center justify-center gap-3 text-lg">
-                  View Our Work
-                  <span className="text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                    →
-                  </span>
-                </span>
-              </Link>
-            </div>
-
-            {/* Client logos section - Using lucide icons instead of emojis */}
-            <div className="mb-12">
-              <p className="text-sm text-gray-400 uppercase tracking-wider mb-6">
-                Trusted By Industry Leaders
-              </p>
-              <div className="flex items-center gap-8">
-                <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                  <Building2 className="w-6 h-6 text-gray-300" />
-                </div>
-                <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                  <Globe className="w-6 h-6 text-gray-300" />
-                </div>
-                <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                  <Users className="w-6 h-6 text-gray-300" />
-                </div>
-                <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                  <Shield className="w-6 h-6 text-gray-300" />
-                </div>
-                <span className="text-sm text-gray-500 ml-2">+ More Enterprise Clients</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right column - Floating person image with stats */}
-          <div className="relative">
-            {/* Floating person image - Replace with your PNG */}
-            <div className="relative ">
-             <Image
-                src="/images/images/heroo2.png"
-                alt="Software Engineer"
-               width={600}
-                height={800}
-                  className="object-cover w-full h-full"
-              />  
-            </div>
-
-          
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 hidden lg:block">
-          <div className="flex flex-col items-center">
-            <span className="text-sm text-gray-500 mb-2 animate-pulse">
-              Scroll to explore
-            </span>
-            <div className="w-6 h-10 rounded-full border border-gray-600 flex justify-center">
-              <div className="w-1 h-3 rounded-full bg-emerald-400 mt-2 animate-bounce" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent pointer-events-none" />
-    </section>
+    <div ref={ref} className="flex flex-col items-center justify-center stat-card-inner">
+      <motion.span
+        className="font-black leading-none tabular-nums"
+        initial={{ opacity: 0, y: 12 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, delay: delay / 1000 }}
+        style={{ fontSize: "clamp(1.6rem, 3.5vw, 3rem)", color: "var(--color-text)", letterSpacing: "-0.04em" }}
+      >
+        {count}{suffix}
+      </motion.span>
+      <motion.span
+        className="mt-1 font-semibold text-center"
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.5, delay: delay / 1000 + 0.15 }}
+        style={{ fontSize: "clamp(0.72rem, 1.1vw, 0.88rem)", color: "var(--color-text-muted)" }}
+      >
+        {title}
+      </motion.span>
+      <motion.span
+        className="mt-0.5 text-center"
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.5, delay: delay / 1000 + 0.25 }}
+        style={{ fontSize: "0.65rem", color: "var(--color-text-faint)", letterSpacing: "0.03em" }}
+      >
+        {sub}
+      </motion.span>
+    </div>
   );
-};
+}
 
-export default Hero;
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+export function HeroSection() {
+  const { isDark, colors } = useTheme();
+
+  return (
+    <>
+      <section
+        className="relative flex items-center overflow-hidden"
+        style={{ background: "var(--color-bg)", minHeight: "100svh", paddingBottom: "80px" }}
+      >
+        {/* Studio light bloom */}
+        <div className="absolute pointer-events-none" style={{
+          top: "-20%", left: "50%", transform: "translateX(-50%)",
+          width: "80vw", height: "80vw", maxWidth: "900px", maxHeight: "900px",
+          background: `radial-gradient(ellipse at 50% 0%, ${colors.emeraldBg} 0%, transparent 70%)`,
+        }} />
+        <div className="absolute hidden pointer-events-none lg:block" style={{
+          top: "10%", right: "-10%", width: "50vw", height: "50vw",
+          maxWidth: "600px", maxHeight: "600px",
+          background: `radial-gradient(ellipse at 80% 30%, ${colors.emeraldBg} 0%, transparent 65%)`,
+        }} />
+
+        <div className="relative z-10 w-full px-6 mx-auto lg:px-16"
+          style={{ maxWidth: "1360px", paddingTop: "clamp(96px, 12vw, 128px)" }}
+        >
+          <div className="flex flex-col lg:grid lg:items-center"
+            style={{ gridTemplateColumns: "52fr 48fr", gap: "clamp(2rem, 4vw, 4rem)" }}
+          >
+            {/* LEFT */}
+            <motion.div className="flex flex-col"
+              initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, ease: [0.32, 0.72, 0, 1], delay: 0.08 }}
+              style={{ gap: "clamp(1.5rem, 2.5vw, 2rem)" }}
+            >
+              {/* Tag */}
+              <motion.div className="flex items-center gap-2"
+                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.45, delay: 0.18 }}
+              >
+                <span className="block w-5 h-px" style={{ background: "var(--color-emerald)" }} />
+                <span style={{ fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.15em", color: "var(--color-emerald)", textTransform: "uppercase" }}>
+                  Software & AI — Nairobi
+                </span>
+              </motion.div>
+
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.22, ease: [0.32, 0.72, 0, 1] }}
+                style={{ fontSize: "clamp(2.8rem, 6.2vw, 5.5rem)", fontWeight: 900, lineHeight: 1.0, letterSpacing: "-0.04em", color: "var(--color-text)" }}
+              >
+                We <CyclingWord />
+                <br />Software.
+              </motion.h1>
+
+              {/* Body */}
+              <motion.p
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.32 }}
+                style={{ fontSize: "clamp(0.88rem, 1.4vw, 1rem)", lineHeight: 1.8, color: "var(--color-text-muted)", maxWidth: "26rem" }}
+              >
+                Softrinx engineers high-performance web, mobile, and AI solutions
+                for businesses that need to move fast and last long.
+              </motion.p>
+
+              {/* CTAs */}
+              <motion.div className="flex flex-wrap gap-3"
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Link href="/contact"
+                  className="group inline-flex items-center gap-2 font-bold rounded-lg transition-all duration-200 hover:-translate-y-px active:scale-[0.98]"
+                  style={{ background: "var(--color-emerald)", color: "#040805", padding: "0.8rem 1.6rem", fontSize: "clamp(0.82rem, 1.3vw, 0.9rem)", boxShadow: `0 0 28px var(--color-emerald-glow)` }}
+                >
+                  Get A Quote
+                  <ArrowUpRight size={15} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+                <Link href="/portfolio"
+                  className="inline-flex items-center gap-2 font-semibold transition-all duration-200 rounded-lg group hover:border-opacity-50"
+                  style={{ background: "transparent", color: "var(--color-text-muted)", border: `1px solid var(--color-border-mid)`, padding: "0.8rem 1.6rem", fontSize: "clamp(0.82rem, 1.3vw, 0.9rem)" }}
+                >
+                  View Work
+                  <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
+              </motion.div>
+            </motion.div>
+
+            {/* RIGHT — Lottie */}
+            <motion.div className="items-center justify-center hidden lg:flex"
+              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.25 }}
+              style={{ height: "clamp(400px, 50vw, 640px)", marginTop: "-40px", marginBottom: "-40px" }}
+            >
+              <LottieAnimation />
+            </motion.div>
+          </div>
+
+          {/* Mobile Lottie */}
+          <motion.div className="flex items-center justify-center mt-8 lg:hidden"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            style={{ height: "clamp(200px, 55vw, 280px)" }}
+          >
+            <LottieAnimation />
+          </motion.div>
+        </div>
+
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 w-full pointer-events-none"
+          style={{ height: 100, background: "linear-gradient(to top, var(--color-surface), transparent)" }} />
+      </section>
+
+      {/* STATS */}
+      <div className="relative z-20 w-full" style={{ marginTop: "-72px" }}>
+        {/* Trust badges */}
+        <div className="justify-center hidden gap-3 px-6 mb-4 lg:flex">
+          {[
+            { name: "Google", starColor: "#facc15", badgeColor: colors.emerald },
+            { name: "Clutch", starColor: "#facc15", badgeColor: colors.emerald },
+          ].map((b) => (
+            <div key={b.name} className="flex items-center gap-2.5 px-4 py-2 rounded-full"
+              style={{ background: colors.bgSurface, border: `1px solid ${colors.border}` }}
+            >
+              <Star size={12} style={{ color: b.badgeColor, fill: b.badgeColor }} />
+              <span style={{ fontSize: "0.75rem", fontWeight: 700, color: colors.textPrimary }}>{b.name}</span>
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => <Star key={i} size={10} style={{ color: "#facc15", fill: "#facc15" }} />)}
+              </div>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: colors.textFaint }}>5.0/5.0</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Stats — 2×2 mobile, 4-col desktop with 1px dividers between each */}
+        <div className="w-full overflow-hidden stats-grid">
+          {[
+            { raw: 50,  suffix: "+",  title: "Projects Shipped",    sub: "Across all industries",            delay: 0   },
+            { raw: 3,   suffix: "yr", title: "In Business",         sub: "Working with passion",             delay: 150 },
+            { raw: 100, suffix: "%",  title: "Client Satisfaction", sub: "We don't stop until you're happy", delay: 300 },
+            { raw: 15,  suffix: "+",  title: "Industries Served",   sub: "From fintech to healthcare",       delay: 450 },
+          ].map((s, i) => (
+            <div key={s.title} className="stat-cell">
+              <StatCard {...s} />
+            </div>
+          ))}
+        </div>
+
+        <style>{`
+          /* Wrapper: border color = divider color, gap = divider thickness */
+          .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--color-border);
+            border-top: 1px solid var(--color-border);
+          }
+          /* Each cell fills with surface so only the 1px gaps show as dividers */
+          .stat-cell {
+            background: var(--color-surface);
+          }
+          .stat-card-inner {
+            padding: 1.1rem 0.6rem;
+          }
+          /* Desktop: 4 columns in a single row = 3 vertical dividers */
+          @media (min-width: 640px) {
+            .stats-grid {
+              grid-template-columns: repeat(4, 1fr);
+            }
+            .stat-card-inner {
+              padding: 2.25rem 1.25rem;
+            }
+          }
+        `}</style>
+      </div>
+    </>
+  );
+}
+
+export default HeroSection;

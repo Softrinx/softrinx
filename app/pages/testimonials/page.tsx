@@ -1,477 +1,312 @@
-// app/testimonials/page.tsx
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Star, Quote } from "lucide-react";
-import Navigation from "@/components/layout/Navigation";
-import Footer from "@/components/layout/Footer";
-import "@/styles/testimonials.scss";
+import Link from "next/link";
+import { useTheme } from "@/contexts/themeContext";
 
-export default function TestimonialsPage() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const autoplayRef = useRef<NodeJS.Timeout | null>(null);
+// ─── Real client stories — sourced from actual projects ───────────────────────
+const TESTIMONIALS = [
+  {
+    id: "memora",
+    quote: "They didn't just build a website — they built a brand identity that lets our photography breathe online. Every pixel serves the emotion.",
+    author: "Memora Visuals",
+    role: "Photography Studio · Kenya",
+    avatar: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=200&h=200&fit=crop&crop=center",
+    result: "Live · Converting · Client proud",
+    category: "Web · Branding",
+    link: "https://memoravisuals.com",
+    size: "large",
+  },
+  {
+    id: "agrilens",
+    quote: "A farmer photographs a diseased crop and gets an AI diagnosis in seconds. Softrinx made something that actually matters to smallholder farmers.",
+    author: "AgriLens",
+    role: "AI AgriTech · Kenya",
+    avatar: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200&h=200&fit=crop&crop=center",
+    result: "Protecting yields across Kenya",
+    category: "AI · Web App",
+    link: "https://agrilens-farmer.vercel.app/",
+    size: "small",
+  },
+  {
+    id: "intellimark",
+    quote: "Our lecturers now have AI that grades, tracks, and adapts. Assessment creation went from hours to minutes across our entire cohort.",
+    author: "IntelliMark",
+    role: "EdTech AI Platform · University",
+    avatar: "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=200&h=200&fit=crop&crop=center",
+    result: "Deployed across university cohorts",
+    category: "EdTech · AI",
+    link: "https://intellimark.pages.dev/",
+    size: "small",
+  },
+  {
+    id: "tabootalks",
+    quote: "Dating apps are all swipe, no substance. Softrinx understood what we wanted — authentic connection — and delivered something that actually feels human.",
+    author: "TabooTalks",
+    role: "Connections Platform · Germany",
+    avatar: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=200&h=200&fit=crop&crop=faces",
+    result: "Live in Germany · Growing",
+    category: "Social · Web App",
+    link: "https://www.tabootalks.de/",
+    size: "medium",
+  },
+  {
+    id: "farmsense",
+    quote: "Precision agriculture without expensive hardware — we couldn't believe it was possible. FarmSense is helping farmers across three counties.",
+    author: "FarmSense",
+    role: "Smart Farming · Kenya",
+    avatar: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=200&h=200&fit=crop&crop=center",
+    result: "Precision farming for all",
+    category: "AgriTech · Web App",
+    link: "https://farm-sense-mu.vercel.app/",
+    size: "small",
+  },
+  {
+    id: "djafro",
+    quote: "A full streaming app — custom video player, offline mode, subscriptions — shipped to Google Play on time and on budget. Exactly what we envisioned.",
+    author: "DjAfro StreamBox",
+    role: "Mobile Streaming · Google Play",
+    avatar: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=200&h=200&fit=crop&crop=center",
+    result: "Live on Google Play Store",
+    category: "Mobile · Streaming",
+    link: "https://djafromovies.vercel.app/",
+    size: "medium",
+  },
+];
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "David Chen",
-      company: "FinTech Solutions Inc.",
-      role: "CEO",
-      quote: "Softrinx delivered a transformative financial platform that exceeded our expectations. Their team's technical expertise and commitment to understanding our unique business needs resulted in a solution that has increased our operational efficiency by 35%. They weren't just developers; they were strategic partners in our digital transformation.",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300",
-      logo: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=200",
-      stars: 5,
-      category: "fintech"
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      company: "HealthPlus",
-      role: "CTO",
-      quote: "The patient management system built by Softrinx revolutionized our healthcare practice. Not only did they deliver a HIPAA-compliant solution on time and within budget, but they also incorporated AI-driven features that have improved our diagnostic accuracy. Their attention to security and user experience has made all the difference.",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300",
-      logo: "https://images.unsplash.com/photo-1612026348880-28c19898b34b?w=200",
-      stars: 5,
-      category: "healthcare"
-    },
-    {
-      id: 3,
-      name: "Michael Rodriguez",
-      company: "Global Retail Corp",
-      role: "Digital Transformation Director",
-      quote: "We approached Softrinx to revamp our legacy e-commerce platform, and they delivered beyond our expectations. The new system handles 10x more traffic, has increased conversions by 28%, and integrates seamlessly with our inventory management. Their team was responsive, professional, and genuinely invested in our success.",
-      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300",
-      logo: "https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?w=200",
-      stars: 5,
-      category: "ecommerce"
-    },
-    {
-      id: 4,
-      name: "Emily Zhang",
-      company: "EdTech Innovations",
-      role: "Product Manager",
-      quote: "The learning management system developed by Softrinx has transformed how we deliver educational content. Their team demonstrated a deep understanding of educational technologies and user engagement. The platform's intuitive design and robust features have received overwhelmingly positive feedback from both educators and students.",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300",
-      logo: "https://images.unsplash.com/photo-1610844264834-843a0653767c?w=200",
-      stars: 4,
-      category: "education"
-    },
-    {
-      id: 5,
-      name: "James Wilson",
-      company: "Manufacturing Solutions",
-      role: "Operations Director",
-      quote: "Softrinx built a custom ERP system that integrated our entire manufacturing process. The real-time analytics and automation features have reduced our production costs by 22% and eliminated most of the manual data entry errors. Their team took the time to understand our complex workflows and delivered a solution that truly addressed our pain points.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300",
-      logo: "https://images.unsplash.com/photo-1563203369-26f2e4a5ccb7?w=200",
-      stars: 5,
-      category: "manufacturing"
-    },
-    {
-      id: 6,
-      name: "Olivia Martinez",
-      company: "Travel Experiences",
-      role: "Marketing Director",
-      quote: "The mobile app developed by Softrinx has been instrumental in our company's growth. The intuitive booking interface and personalized recommendation engine have increased our customer engagement and bookings by over 40%. Their team's focus on user experience and performance optimization has made our app stand out in a competitive market.",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300",
-      logo: "https://images.unsplash.com/photo-1572055582936-8e45677f79fe?w=200",
-      stars: 5,
-      category: "travel"
-    }
-  ];
+const PARTNERS = [
+  { name: "Healthmaster",     logo: "/images/images/hm.png" },
+  { name: "Uamas",            logo: "/images/images/uamas.png" },
+  { name: "Alx",              logo: "/images/images/alx.png" },
+  { name: "DjAfro StreamBox", logo: "/images/images/afro.png" },
+];
 
-  const featuredProjects = [
-    {
-      client: "FinTech Solutions",
-      title: "AI-Powered Investment Platform",
-      description: "Developed a machine learning algorithm that predicts market trends with 87% accuracy, resulting in significantly improved portfolio performance for clients.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800"
-    },
-    {
-      client: "HealthPlus",
-      title: "Patient Management System",
-      description: "Created a HIPAA-compliant platform that reduced administrative work by 40% and improved patient satisfaction scores by 35%.",
-      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800"
-    },
-    {
-      client: "Global Retail",
-      title: "Omnichannel E-commerce Solution",
-      description: "Built a scalable platform handling 20,000+ concurrent users with 99.99% uptime, integrating physical and online sales channels.",
-      image: "https://images.unsplash.com/photo-1586880244406-556ebe35f282?w=800"
-    }
-  ];
-
-  const nextTestimonial = () => {
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevTestimonial = () => {
-    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-  };
-
-  useEffect(() => {
-    // Auto-advance slider
-    autoplayRef.current = setInterval(() => {
-      nextTestimonial();
-    }, 8000);
-
-    return () => {
-      if (autoplayRef.current) {
-        clearInterval(autoplayRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (sliderRef.current) {
-      sliderRef.current.style.transform = `translateX(-${activeIndex * 100}%)`;
-    }
-  }, [activeIndex]);
-
-  const [visibleStats, setVisibleStats] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisibleStats(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const statsSection = document.querySelector(".stats-section");
-    if (statsSection) {
-      observer.observe(statsSection);
-    }
-
-    return () => {
-      if (statsSection) {
-        observer.unobserve(statsSection);
-      }
-    };
-  }, []);
+// ─── Card ─────────────────────────────────────────────────────────────────────
+function TCard({ t, index }: { t: typeof TESTIMONIALS[0]; index: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <main>
-      <Navigation />
-      
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-b from-black via-gray-900 to-emerald-900 testimonials-hero">
-        <div className="absolute inset-0 testimonials-pattern opacity-10"></div>
-        
-        <div className="container relative z-10 px-4 mx-auto">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="mb-6 text-5xl font-bold text-white md:text-7xl testimonials-title">
-              Our <span className="text-emerald-400">Success Stories</span>
-            </h1>
-            <p className="mb-10 text-xl text-gray-300 testimonials-subtitle">
-              Don&apos;t just take our word for it. Hear what our clients have to say about our work and the results we&apos;ve delivered.
-            </p>
+    <motion.a
+      href={t.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      ref={ref}
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay: index * 0.06, ease: [0.32, 0.72, 0, 1] }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="t-card"
+      data-size={t.size}
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        border: "1px solid var(--color-border)",
+        background: "var(--color-surface)",
+        padding: "clamp(1.1rem, 2.5vw, 1.75rem)",
+        textDecoration: "none",
+        cursor: "pointer",
+      }}
+    >
+      {/* Top: category + arrow */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem", marginBottom: "1rem" }}>
+        <span style={{
+          fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
+          color: "var(--color-emerald)", border: "1px solid var(--color-emerald-border)",
+          background: "var(--color-emerald-bg)", padding: "0.2rem 0.5rem", flexShrink: 0,
+        }}>
+          {t.category}
+        </span>
+        <motion.span
+          animate={{ opacity: hovered ? 1 : 0.28, x: hovered ? 0 : -2, y: hovered ? 0 : 2 }}
+          transition={{ duration: 0.2 }}
+          style={{ color: "var(--color-emerald)", flexShrink: 0, display: "flex" }}>
+          <ArrowUpRight size={15} />
+        </motion.span>
+      </div>
+
+      {/* Quote */}
+      <p style={{
+        fontSize: "clamp(0.82rem, 1.15vw, 0.93rem)",
+        lineHeight: 1.72, color: "var(--color-text)",
+        letterSpacing: "-0.01em", flex: 1, marginBottom: "1.25rem",
+      }}>
+        "{t.quote}"
+      </p>
+
+      {/* Result */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+        <div style={{ width: 4, height: 4, background: "var(--color-emerald)", flexShrink: 0 }} />
+        <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--color-emerald)", letterSpacing: "0.04em" }}>
+          {t.result}
+        </span>
+      </div>
+
+      {/* Author */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+        <div style={{ width: "38px", height: "38px", border: "1px solid var(--color-emerald-border)", flexShrink: 0, overflow: "hidden" }}>
+          <img src={t.avatar} alt={t.author} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+        <div style={{ minWidth: 0 }}>
+          <p style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--color-text)", letterSpacing: "-0.02em", marginBottom: "0.1rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {t.author}
+          </p>
+          <p style={{ fontSize: "0.64rem", fontWeight: 600, color: "var(--color-text-faint)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {t.role}
+          </p>
+        </div>
+      </div>
+
+      {/* Hover bottom line */}
+      <motion.div
+        style={{ position: "absolute", bottom: 0, left: 0, height: "2px", background: "var(--color-emerald)" }}
+        animate={{ width: hovered ? "100%" : "0%" }}
+        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+      />
+    </motion.a>
+  );
+}
+
+// ─── Partners infinite carousel — pure CSS, no JS state ───────────────────────
+function Partners() {
+  // 4× so seam is never visible: animates 0 → -50% then CSS loops
+  const items = [...PARTNERS, ...PARTNERS, ...PARTNERS, ...PARTNERS];
+  return (
+    <div style={{ position: "relative", overflow: "hidden", height: "64px" }}>
+      <div style={{ position: "absolute", inset: "0 auto 0 0", width: "100px", background: "linear-gradient(to right, var(--color-bg), transparent)", zIndex: 10, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", inset: "0 0 0 auto", width: "100px", background: "linear-gradient(to left, var(--color-bg), transparent)", zIndex: 10, pointerEvents: "none" }} />
+      <div className="p-track" style={{ display: "flex", alignItems: "center", gap: "3.5rem", width: "max-content", height: "100%" }}>
+        {items.map((p, i) => (
+          <div key={i} className="p-logo" style={{ flexShrink: 0 }}>
+            <Image src={p.logo} alt={p.name} width={110} height={34} className="object-contain" style={{ height: "34px", width: "auto" }} />
           </div>
-        </div>
-        
-        <div className="absolute bottom-0 left-0 w-full pointer-events-none">
-          <svg 
-            viewBox="0 0 1440 120" 
-            fill="none" 
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-auto"
-            preserveAspectRatio="none"
-          >
-            <path 
-              d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" 
-              fill="white"
-            />
-          </svg>
-        </div>
-      </section>
-      
-      {/* Featured Testimonial Slider */}
-      <section className="py-20 bg-white featured-testimonials">
-  <div className="container px-4 mx-auto">
-    <div className="relative">
-
-      {/* Slider Track */}
-      <div className="max-w-6xl mx-auto overflow-hidden">
-        <div
-          ref={sliderRef}
-          className="flex transition-transform duration-700 ease-in-out snap-x snap-mandatory"
-          style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-        >
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={testimonial.id}
-              className="flex-shrink-0 w-full px-4 snap-center"
-            >
-              {/* Card */}
-              <div className="p-8 bg-white shadow-xl rounded-2xl md:p-12 testimonial-card">
-                <div className="flex flex-col gap-8 md:flex-row">
-                  
-                  {/* Left Section */}
-                  <div className="md:w-1/3">
-                    <div className="relative mb-6 overflow-hidden aspect-square rounded-xl">
-                      <Image
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        fill
-                        className="object-cover"
-                        priority={index === 0}
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    </div>
-
-                    <div>
-                      <div className="relative w-32 h-12 mb-4">
-                        <Image
-                          src={testimonial.logo}
-                          alt={testimonial.company}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {testimonial.name}
-                      </h3>
-
-                      <p className="font-medium text-emerald-600">
-                        {testimonial.role}
-                      </p>
-
-                      <p className="text-gray-500">{testimonial.company}</p>
-
-                      {/* Stars */}
-                      <div className="flex mt-3">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-5 h-5 ${
-                              i < testimonial.stars
-                                ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Section */}
-                  <div className="flex flex-col justify-center md:w-2/3">
-                    <Quote className="w-12 h-12 mb-6 text-emerald-500/20" />
-
-                    <p className="mb-6 text-xl leading-relaxed text-gray-700">
-                      {testimonial.quote}
-                    </p>
-
-                    <a
-                      href={`/case-studies/${testimonial.category}`}
-                      className="inline-flex items-center font-medium text-emerald-600 hover:text-emerald-700"
-                    >
-                      Read full case study
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </a>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
-
-      {/* Controls */}
-      <div className="flex justify-center gap-4 mt-8">
-        <button
-          onClick={prevTestimonial}
-          className="p-3 text-gray-700 bg-gray-100 rounded-full hover:bg-emerald-100 hover:text-emerald-600"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-
-        {/* Dots */}
-        <div className="flex space-x-2">
-          {testimonials.map((_, index) => (
-            <button
-              key={index}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === activeIndex ? "bg-emerald-500 w-8" : "bg-gray-300"
-              }`}
-              onClick={() => setActiveIndex(index)}
-            />
-          ))}
-        </div>
-
-        <button
-          onClick={nextTestimonial}
-          className="p-3 text-gray-700 bg-gray-100 rounded-full hover:bg-emerald-100 hover:text-emerald-600"
-        >
-          <ArrowRight className="w-5 h-5" />
-        </button>
-      </div>
-
     </div>
-  </div>
-</section>
+  );
+}
 
-      
-      {/* Results Section */}
-      <section className="py-20 bg-gray-50 stats-section">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto mb-16 text-center">
-            <h2 className="mb-4 text-4xl font-bold">Real Results</h2>
-            <div className="w-20 h-1 mx-auto mb-6 bg-emerald-500"></div>
-            <p className="text-xl text-gray-600">
-              Our solutions deliver measurable impact across industries. Here&apos;s what we&apos;ve achieved for our clients.
-            </p>
-          </div>
-          
-          <div className="grid max-w-5xl grid-cols-1 gap-8 mx-auto md:grid-cols-2 lg:grid-cols-4">
-            {[
-              { value: "500+", label: "Projects Delivered", delay: 0 },
-              { value: "35%", label: "Average Efficiency Improvement", delay: 100 },
-              { value: "99.9%", label: "Uptime for Critical Systems", delay: 200 },
-              { value: "28%", label: "Average Revenue Increase", delay: 300 }
-            ].map((stat, index) => (
-              <div 
-                key={index}
-                className="p-8 text-center bg-white shadow-lg rounded-xl stat-card"
-                style={{ 
-                  transitionDelay: `${stat.delay}ms`,
-                  opacity: visibleStats ? 1 : 0,
-                  transform: visibleStats ? "translateY(0)" : "translateY(30px)" 
-                }}
-              >
-                <div className="mb-3 text-5xl font-bold text-emerald-600 counter">
-                  {stat.value}
-                </div>
-                <div className="text-gray-600">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      
-      {/* Featured Case Studies */}
-      <section className="py-20 bg-white">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto mb-16 text-center">
-            <h2 className="mb-4 text-4xl font-bold">Featured Case Studies</h2>
-            <div className="w-20 h-1 mx-auto mb-6 bg-emerald-500"></div>
-            <p className="text-xl text-gray-600">
-              Explore detailed case studies showing how we&apos;ve helped businesses overcome challenges and achieve their goals.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {featuredProjects.map((project, index) => (
-              <div 
-                key={index} 
-                className="overflow-hidden transition-all duration-500 shadow-lg group rounded-xl hover:shadow-2xl case-study-card"
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 p-6">
-                    <p className="mb-1 font-medium text-emerald-400">{project.client}</p>
-                    <h3 className="text-xl font-bold text-white">{project.title}</h3>
-                  </div>
-                </div>
-                <div className="p-6 bg-white">
-                  <p className="mb-4 text-gray-600">{project.description}</p>
-                  <a
-                    href={`/case-studies/${project.client.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="inline-flex items-center font-medium transition-colors text-emerald-600 hover:text-emerald-700"
-                  >
-                    Read case study
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="mt-12 text-center">
-            <a
-              href="/case-studies"
-              className="inline-flex items-center px-8 py-4 font-medium text-white transition-colors rounded-lg shadow-md bg-emerald-500 hover:bg-emerald-600"
+// ─── Section ──────────────────────────────────────────────────────────────────
+export default function Testimonials() {
+  const headerRef = useRef(null);
+  const inView = useInView(headerRef, { once: true, margin: "-40px" });
+
+  return (
+    <section style={{ background: "var(--color-bg)", paddingTop: "clamp(64px,10vw,100px)", paddingBottom: "clamp(64px,10vw,100px)", borderTop: "1px solid var(--color-border)" }}>
+      <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+
+        {/* Header */}
+        <div ref={headerRef} className="flex flex-col gap-6 mb-12 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <motion.div className="flex items-center gap-3 mb-5"
+              initial={{ opacity: 0, x: -10 }} animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.4 }}>
+              <span style={{ display: "block", width: "2rem", height: "1px", background: "var(--color-emerald)" }} />
+              <span style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "var(--color-emerald)", textTransform: "uppercase" }}>
+                Client Stories
+              </span>
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: 0.07, ease: [0.32, 0.72, 0, 1] }}
+              style={{ fontSize: "clamp(2.2rem, 5vw, 4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}
             >
-              View All Case Studies
-            </a>
+              Real projects.<br />
+              <span style={{ color: "var(--color-emerald)" }}>Real results.</span>
+            </motion.h2>
           </div>
-        </div>
-      </section>
-      
-      {/* Client Logos */}
-      <section className="py-20 bg-gray-50">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto mb-16 text-center">
-            <h2 className="mb-4 text-4xl font-bold">Trusted By</h2>
-            <div className="w-20 h-1 mx-auto mb-6 bg-emerald-500"></div>
-            <p className="text-xl text-gray-600">
-              We&apos;ve helped companies of all sizes across multiple industries achieve their technology goals.
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.13 }}
+            style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "0.75rem" }}>
+            <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: "var(--color-text-muted)", maxWidth: "22rem" }}>
+              Every card is a live product. Click any to see it in the wild.
             </p>
-          </div>
-          
-          <div className="flex flex-wrap items-center justify-center max-w-5xl gap-8 mx-auto md:gap-12 client-logos">
-            {[
-              "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=200",
-              "https://images.unsplash.com/photo-1612026348880-28c19898b34b?w=200",
-              "https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?w=200",
-              "https://images.unsplash.com/photo-1610844264834-843a0653767c?w=200",
-              "https://images.unsplash.com/photo-1563203369-26f2e4a5ccb7?w=200",
-              "https://images.unsplash.com/photo-1572055582936-8e45677f79fe?w=200"
-            ].map((logo, index) => (
-              <div key={index} className="relative w-32 h-20 transition-all duration-300 grayscale hover:grayscale-0 logo-item">
-                <Image
-                  src={logo}
-                  alt={`Client logo ${index + 1}`}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            ))}
-          </div>
+            <Link href="/portfolio" className="inline-flex items-center gap-2 font-semibold transition-colors duration-200 group"
+              style={{ color: "var(--color-emerald)", fontSize: "0.82rem" }}>
+              Full portfolio <ArrowUpRight size={13} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+          </motion.div>
         </div>
-      </section>
-      
-      {/* CTA Section */}
-      <section className="relative py-20 overflow-hidden bg-gradient-to-r from-emerald-600 to-blue-500">
-        <div className="absolute inset-0 testimonial-cta-pattern opacity-10"></div>
-        
-        <div className="container relative z-10 px-4 mx-auto">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="mb-6 text-4xl font-bold text-white">Ready to Join Our Success Stories?</h2>
-            <p className="mb-8 text-xl text-white/90">
-              Let&apos;s discuss how we can help your business achieve similar results through innovative technology solutions.
-            </p>
-            <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <a
-                href="/contact"
-                className="px-8 py-4 font-semibold transition-colors bg-white rounded-full shadow-lg text-emerald-600 hover:bg-gray-100 hover:shadow-xl"
-              >
-                Start Your Project
-              </a>
-              <a
-                href="/case-studies"
-                className="px-8 py-4 font-semibold text-white transition-colors border-2 rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20"
-              >
-                Explore More Case Studies
-              </a>
-            </div>
-          </div>
+
+        {/* Grid */}
+        <div className="gap-px mb-16 t-grid" style={{ display: "grid", background: "var(--color-border)" }}>
+          {TESTIMONIALS.map((t, i) => <TCard key={t.id} t={t} index={i} />)}
         </div>
-      </section>
-      
-      <Footer />
-    </main>
+
+        {/* Partners */}
+        <div>
+          <motion.p className="mb-8 text-center"
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+            style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.18em", color: "var(--color-text-faint)", textTransform: "uppercase" }}>
+            Trusted collaborations
+          </motion.p>
+          <Partners />
+        </div>
+
+      </div>
+
+      <style>{`
+        /* ── Testimonial grid ── */
+
+        /* Mobile: 1 col — all cards same, no spans, nothing overflows */
+        .t-grid { grid-template-columns: 1fr; }
+        .t-card  {
+          grid-column: span 1 !important;
+          grid-row:    span 1 !important;
+          min-height: 190px;
+        }
+
+        /* Tablet: 2 equal cols, still no spans */
+        @media (min-width: 580px) {
+          .t-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Desktop: 3-col bento with intentional size spans */
+        @media (min-width: 1024px) {
+          .t-grid { grid-template-columns: repeat(3, 1fr); }
+
+          .t-card[data-size="large"] {
+            grid-column: span 2 !important;
+            grid-row:    span 1 !important;
+            min-height: 250px;
+          }
+          .t-card[data-size="medium"] {
+            grid-column: span 1 !important;
+            grid-row:    span 2 !important;
+          }
+          .t-card[data-size="small"] {
+            grid-column: span 1 !important;
+            grid-row:    span 1 !important;
+            min-height: 230px;
+          }
+        }
+
+        /* ── Partners infinite scroll ── */
+        .p-logo {
+          opacity: 0.35;
+          filter: grayscale(1);
+          transition: opacity 0.3s, filter 0.3s;
+        }
+        .p-logo:hover { opacity: 1; filter: grayscale(0); }
+
+        @keyframes p-scroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .p-track {
+          animation: p-scroll 26s linear infinite;
+          will-change: transform;
+        }
+        .p-track:hover { animation-play-state: paused; }
+      `}</style>
+    </section>
   );
 }

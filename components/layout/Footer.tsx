@@ -1,272 +1,413 @@
 "use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { 
-  MapPin, Mail, Phone, Facebook, Twitter, Linkedin, Instagram, 
-  Github, ArrowRight, ChevronRight, Send
-} from 'lucide-react';
+import { useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, useInView } from "framer-motion";
+import {
+  ArrowUpRight,
+  Mail,
+  Phone,
+  MapPin,
+  Twitter,
+  Linkedin,
+  Github,
+  Facebook,
+} from "lucide-react";
+import { useTheme } from "@/contexts/themeContext";
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const footerLinks = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Portfolio", href: "/portfolio" },
+  { label: "Contact", href: "/contact" },
+];
+
+const contact = [
+  {
+    icon: Mail,
+    label: "info@softrinx.com",
+    href: "mailto:info@softrinx.com",
+  },
+  {
+    icon: Phone,
+    label: "+254 750 109798",
+    href: "tel:+254750109798",
+  },
+  {
+    icon: MapPin,
+    label: "Nyeri, Kenya",
+    href: "https://maps.google.com/?q=Nyeri,Kenya",
+  },
+];
+
+const socials = [
+  {
+    name: "Twitter",
+    icon: Twitter,
+    href: "https://x.com/_softrinx",
+  },
+  {
+    name: "GitHub",
+    icon: Github,
+    href: "https://github.com/Softrinx",
+  },
+  {
+    name: "LinkedIn",
+    icon: Linkedin,
+    href: "https://www.linkedin.com/company/softrinx",
+  },
+  {
+    name: "Facebook",
+    icon: Facebook,
+    href: "https://www.facebook.com/share/1C9Vim8B4P/",
+  },
+];
+
+// ─── Main footer ──────────────────────────────────────────────────────────────
+export default function Footer() {
+  const { colors } = useTheme();
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="relative text-white bg-gradient-to-b from-gray-900 to-black">
-      {/* Top curved shape */}
-      <div className="relative">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[60px]">
-          <path 
-            d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
-            className="fill-white"
-          ></path>
-        </svg>
-      </div>
-
-      {/* Small CTA Section */}
-      <div className="container px-4 py-8 mx-auto mb-12">
-        <div className="relative p-6 overflow-hidden shadow-xl bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl md:p-8">
-          <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
-            backgroundSize: '30px 30px'
-          }}></div>
-          
-          <div className="relative z-10 flex flex-col items-center justify-between gap-6 md:flex-row">
+    <footer
+      ref={ref}
+      style={{
+        background: "var(--color-bg)",
+        borderTop: `1px solid var(--color-border)`,
+      }}
+    >
+      {/* ─── CTA Banner ─────────────────────────────────────────────────── */}
+      <div
+        style={{
+          background: "var(--color-emerald)",
+          borderBottom: `1px solid var(--color-border)`,
+        }}
+      >
+        <div
+          className="px-6 py-12 mx-auto lg:px-16 md:py-16"
+          style={{ maxWidth: "1360px" }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+            className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center"
+          >
             <div>
-              <h3 className="mb-2 text-2xl font-bold md:text-3xl">Ready to start your project?</h3>
-              <p className="text-sm text-white/90 md:text-base">
-                Let&apos;s discuss your ideas and transform them into exceptional digital experiences
+              <h3
+                style={{
+                  fontSize: "clamp(1.6rem, 3vw, 2.2rem)",
+                  fontWeight: 900,
+                  letterSpacing: "-0.03em",
+                  color: "#040805",
+                  marginBottom: "0.5rem",
+                  lineHeight: 1.15,
+                }}
+              >
+                Have a project in mind?
+              </h3>
+              <p
+                style={{
+                  fontSize: "0.92rem",
+                  color: "rgba(4,8,5,0.7)",
+                  maxWidth: "500px",
+                }}
+              >
+                Let's build something exceptional together. Our team is ready to
+                turn your vision into reality.
               </p>
             </div>
-            
-            <Link 
+            <Link
               href="/contact"
-              className="flex items-center px-6 py-3 font-semibold transition-all duration-300 bg-white shadow-lg group text-emerald-600 hover:bg-gray-100 rounded-xl hover:shadow-2xl hover:scale-105 whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-8 py-4 font-bold transition-all duration-200 group"
+              style={{
+                background: "#040805",
+                color: "#34d399",
+                fontSize: "0.88rem",
+                letterSpacing: "0.02em",
+                flexShrink: 0,
+              }}
             >
-              Get in Touch
-              <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+              Start Your Project
+              <motion.span
+                animate={{ x: 0, y: 0 }}
+                whileHover={{ x: 4, y: -4 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ArrowUpRight size={18} />
+              </motion.span>
             </Link>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Main Footer Content */}
-      <div className="container px-4 pb-12 mx-auto">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-12 lg:gap-12">
-          {/* Company Info - Spans 4 columns */}
-          <div className="space-y-6 lg:col-span-4">
-            <Link href="/" className="inline-block group">
-              <Image 
-                src="/images/images/logo3.png" 
-                alt="Softrinx Logo" 
-                width={180} 
-                height={45} 
-                className="w-auto h-12 transition-transform duration-300 brightness-0 invert group-hover:scale-105"
+      {/* ─── Main Footer Grid with Vertical Lines ───────────────────────── */}
+      <div
+        className="px-6 py-16 mx-auto lg:px-16"
+        style={{ maxWidth: "1360px" }}
+      >
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-12 lg:gap-0">
+          {/* Brand column — spans 5 */}
+          <motion.div
+            className="lg:col-span-5 lg:pr-16"
+            style={{
+              borderRight: "1px solid var(--color-border)",
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <Link href="/" className="inline-block mb-6">
+              <Image
+                src="/images/images/logo.png"
+                alt="Softrinx"
+                width={160}
+                height={40}
+                style={{ height: "auto", width: "160px" }}
               />
             </Link>
-            
-            <p className="pr-8 text-sm leading-relaxed text-gray-400">
-              Softrinx is a leading software development agency specializing in cutting-edge digital solutions. 
-              We transform businesses through innovative technology, exceptional design, and strategic thinking.
+            <p
+              style={{
+                fontSize: "0.88rem",
+                lineHeight: 1.7,
+                color: "var(--color-text-muted)",
+                marginBottom: "2rem",
+                maxWidth: "360px",
+              }}
+            >
+              Enterprise software development for startups and established businesses. 
+              We build scalable systems that drive real results.
             </p>
-            
-            {/* Social Links */}
-            <div>
-              <h5 className="mb-4 text-sm font-semibold tracking-wider text-gray-300 uppercase">Follow Us</h5>
-              <div className="flex flex-wrap gap-3">
-                <a 
-                  href="https://facebook.com" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 transition-all duration-300 border group bg-gray-800/50 rounded-xl hover:bg-emerald-600 border-gray-700/50 hover:border-emerald-500 hover:scale-110"
-                >
-                  <Facebook size={18} className="transition-transform group-hover:scale-110" />
-                </a>
-                <a 
-                  href="https://twitter.com" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 transition-all duration-300 border group bg-gray-800/50 rounded-xl hover:bg-emerald-600 border-gray-700/50 hover:border-emerald-500 hover:scale-110"
-                >
-                  <Twitter size={18} className="transition-transform group-hover:scale-110" />
-                </a>
-                <a 
-                  href="https://linkedin.com" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 transition-all duration-300 border group bg-gray-800/50 rounded-xl hover:bg-emerald-600 border-gray-700/50 hover:border-emerald-500 hover:scale-110"
-                >
-                  <Linkedin size={18} className="transition-transform group-hover:scale-110" />
-                </a>
-                <a 
-                  href="https://instagram.com" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 transition-all duration-300 border group bg-gray-800/50 rounded-xl hover:bg-emerald-600 border-gray-700/50 hover:border-emerald-500 hover:scale-110"
-                >
-                  <Instagram size={18} className="transition-transform group-hover:scale-110" />
-                </a>
-                <a 
-                  href="https://github.com" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 transition-all duration-300 border group bg-gray-800/50 rounded-xl hover:bg-emerald-600 border-gray-700/50 hover:border-emerald-500 hover:scale-110"
-                >
-                  <Github size={18} className="transition-transform group-hover:scale-110" />
-                </a>
-              </div>
-            </div>
-          </div>
 
-          {/* Quick Links - Spans 2 columns */}
-          <div className="lg:col-span-2">
-            <h4 className="relative inline-block mb-6 text-lg font-bold text-white">
-              Quick Links
-              <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500"></span>
+            {/* Status indicator */}
+            <div className="flex items-center gap-2 mb-6">
+              <div
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  background: "var(--color-emerald)",
+                  borderRadius: "50%",
+                  animation: "pulse 2s ease-in-out infinite",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  color: "var(--color-text-muted)",
+                  letterSpacing: "0.03em",
+                }}
+              >
+                All systems operational
+              </span>
+            </div>
+
+            {/* Social links */}
+            <div className="flex items-center gap-2">
+              {socials.map((s, i) => {
+                const Icon = s.icon;
+                return (
+                  <a
+                    key={i}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group"
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      border: `1px solid var(--color-border)`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "var(--color-emerald)";
+                      e.currentTarget.style.background = "var(--color-emerald-bg)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "var(--color-border)";
+                      e.currentTarget.style.background = "transparent";
+                    }}
+                  >
+                    <Icon size={15} style={{ color: "var(--color-text-muted)" }} />
+                  </a>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Navigation links - spans 4 */}
+          <motion.div
+            className="lg:col-span-4 lg:px-12"
+            style={{
+              borderRight: "1px solid var(--color-border)",
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.15 }}
+          >
+            <h4
+              style={{
+                fontSize: "0.7rem",
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                color: "var(--color-text-faint)",
+                textTransform: "uppercase",
+                marginBottom: "1.5rem",
+              }}
+            >
+              Navigation
             </h4>
             <ul className="space-y-3">
-              {[
-                { name: 'About Us', link: '/about' },
-                { name: 'Services', link: '/services' },
-                { name: 'Portfolio', link: '/portfolio' },
-                { name: 'Case Studies', link: '/case-studies' },
-                { name: 'Blog', link: '/blog' },
-                { name: 'Careers', link: '/careers' },
-              ].map((item, i) => (
+              {footerLinks.map((link, i) => (
                 <li key={i}>
-                  <Link 
-                    href={item.link}
-                    className="flex items-center text-sm text-gray-400 transition-all duration-300 hover:text-emerald-400 group"
+                  <Link
+                    href={link.href}
+                    style={{
+                      fontSize: "0.92rem",
+                      color: "var(--color-text-muted)",
+                      transition: "color 0.2s",
+                      display: "block",
+                      fontWeight: 500,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = "var(--color-text)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = "var(--color-text-muted)";
+                    }}
                   >
-                    <ChevronRight className="w-4 h-4 mr-1 transition-all transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 text-emerald-500" />
-                    <span className="transition-transform group-hover:translate-x-1">{item.name}</span>
+                    {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          {/* Services - Spans 3 columns */}
-          <div className="lg:col-span-3">
-            <h4 className="relative inline-block mb-6 text-lg font-bold text-white">
-              Our Services
-              <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500"></span>
+          {/* Contact info - spans 3 */}
+          <motion.div
+            className="lg:col-span-3 lg:pl-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <h4
+              style={{
+                fontSize: "0.7rem",
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                color: "var(--color-text-faint)",
+                textTransform: "uppercase",
+                marginBottom: "1.5rem",
+              }}
+            >
+              Get in Touch
             </h4>
-            <ul className="space-y-3">
-              {[
-                { name: 'Custom Software Development', link: '/services/software-development' },
-                { name: 'Mobile App Development', link: '/services/mobile-development' },
-                { name: 'UI/UX Design', link: '/services/ui-ux-design' },
-                { name: 'Cloud Solutions', link: '/services/cloud-services' },
-                { name: 'AI & Machine Learning', link: '/services/ai-solutions' },
-                { name: 'DevOps & Security', link: '/services/devops' },
-              ].map((item, i) => (
-                <li key={i}>
-                  <Link 
-                    href={item.link}
-                    className="flex items-center text-sm text-gray-400 transition-all duration-300 hover:text-emerald-400 group"
-                  >
-                    <ChevronRight className="w-4 h-4 mr-1 transition-all transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 text-emerald-500" />
-                    <span className="transition-transform group-hover:translate-x-1">{item.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact & Newsletter - Spans 3 columns */}
-          <div className="lg:col-span-3">
-            <h4 className="relative inline-block mb-6 text-lg font-bold text-white">
-              Get In Touch
-              <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500"></span>
-            </h4>
-            
-            <ul className="mb-8 space-y-4">
-              <li>
-                <a 
-                  href="https://goo.gl/maps/softrinx" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-start text-sm text-gray-400 transition-colors hover:text-emerald-400 group"
-                >
-                  <MapPin className="w-5 h-5 mr-3 mt-0.5 text-emerald-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                  <span>
-                    Nyeri Town, Nyeri County
-                    <br />
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="mailto:info@softrinx.com" 
-                  className="flex items-center text-sm text-gray-400 transition-colors hover:text-emerald-400 group"
-                >
-                  <Mail className="flex-shrink-0 w-5 h-5 mr-3 transition-transform text-emerald-500 group-hover:scale-110" />
-                  <span>info@softrinx.com</span>
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="tel:+254 750 109798" 
-                  className="flex items-center text-sm text-gray-400 transition-colors hover:text-emerald-400 group"
-                >
-                  <Phone className="flex-shrink-0 w-5 h-5 mr-3 transition-transform text-emerald-500 group-hover:scale-110" />
-                  <span>+254 750 109798</span>
-                </a>
-              </li>
+            <ul className="space-y-4">
+              {contact.map((c, i) => {
+                const Icon = c.icon;
+                return (
+                  <li key={i}>
+                    <a
+                      href={c.href}
+                      target={c.icon === MapPin ? "_blank" : undefined}
+                      rel={c.icon === MapPin ? "noopener noreferrer" : undefined}
+                      className="flex items-start gap-3 group"
+                      style={{ transition: "all 0.2s" }}
+                    >
+                      <Icon
+                        size={16}
+                        style={{
+                          color: "var(--color-emerald)",
+                          flexShrink: 0,
+                          marginTop: "2px",
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: "0.88rem",
+                          color: "var(--color-text-muted)",
+                          transition: "color 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.target as HTMLSpanElement).style.color = "var(--color-text)";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.target as HTMLSpanElement).style.color =
+                            "var(--color-text-muted)";
+                        }}
+                      >
+                        {c.label}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
 
-            {/* Newsletter */}
-            <div className="p-5 border bg-gray-800/30 rounded-xl border-gray-700/50 backdrop-blur-sm">
-              <h5 className="flex items-center gap-2 mb-3 text-sm font-semibold text-white">
-                <Send className="w-4 h-4 text-emerald-500" />
-                Newsletter
-              </h5>
-              <p className="mb-4 text-xs text-gray-400">Stay updated with our latest insights and tech trends.</p>
-              <div className="flex">
-                <input 
-                  type="email" 
-                  placeholder="Your email address" 
-                  className="bg-gray-900/50 border border-gray-700 rounded-l-lg px-4 py-2.5 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-200 text-sm placeholder-gray-500"
-                />
-                <button 
-                  type="button" 
-                  className="px-4 text-white transition-all duration-300 rounded-r-lg bg-emerald-600 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-500/50"
-                >
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
+            {/* Business hours */}
+            <div className="pt-6 mt-8" style={{ borderTop: "1px solid var(--color-border)" }}>
+              <p style={{ fontSize: "0.75rem", color: "var(--color-text-faint)", marginBottom: "0.5rem" }}>
+                Business Hours
+              </p>
+              <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", fontWeight: 500 }}>
+                Mon - Fri: 8:00 - 18:00 EAT
+              </p>
+              <p style={{ fontSize: "0.75rem", color: "var(--color-emerald)", marginTop: "0.5rem" }}>
+                Emergency support 24/7
+              </p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-gray-800/50">
-        <div className="container px-4 py-6 mx-auto">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <p className="text-sm text-center text-gray-500 md:text-left">
-              © {currentYear} <span className="font-semibold text-emerald-500">Softrinx</span>. All rights reserved.
+      {/* ─── Bottom bar ──────────────────────────────────────────────────── */}
+      <div
+        style={{
+          borderTop: `1px solid var(--color-border)`,
+        }}
+      >
+        <div
+          className="px-6 py-6 mx-auto lg:px-16"
+          style={{ maxWidth: "1360px" }}
+        >
+          <motion.div
+            className="flex flex-col items-center justify-center gap-2 md:flex-row"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <p
+              style={{
+                fontSize: "0.82rem",
+                color: "var(--color-text-faint)",
+              }}
+            >
+              © {year} Softrinx. All rights reserved.
             </p>
-
-            <div className="flex flex-wrap justify-center gap-6">
-              <Link href="/privacy-policy" className="text-sm text-gray-500 transition-colors hover:text-emerald-400 hover:underline underline-offset-4">
-                Privacy Policy
-              </Link>
-              <Link href="/terms-of-service" className="text-sm text-gray-500 transition-colors hover:text-emerald-400 hover:underline underline-offset-4">
-                Terms of Service
-              </Link>
-              <Link href="/cookie-policy" className="text-sm text-gray-500 transition-colors hover:text-emerald-400 hover:underline underline-offset-4">
-                Cookie Policy
-              </Link>
-              <Link href="/sitemap" className="text-sm text-gray-500 transition-colors hover:text-emerald-400 hover:underline underline-offset-4">
-                Sitemap
-              </Link>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </div>
+
+      {/* Pulse animation */}
+      <style jsx global>{`
+        @keyframes pulse {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.4;
+          }
+        }
+      `}</style>
     </footer>
   );
-};
-
-export default Footer;
+}
