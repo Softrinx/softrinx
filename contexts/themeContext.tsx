@@ -89,7 +89,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const value: ThemeContextValue = {
     mode,
     isDark: mode === "dark",
-    colors: COLORS[mode],
+    colors: COLORS[mode] as ThemeColors,
     toggle,
   };
 
