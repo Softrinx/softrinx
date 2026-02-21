@@ -10,35 +10,51 @@ import { useTheme } from "@/contexts/themeContext";
 const CASES = [
   {
     number: "01",
-    category: "Cloud Infrastructure",
-    title: "Unlocking Scalability for a Fintech at 10× Growth",
-    result: "99.98% uptime · 3× faster deploys",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=900&h=600&fit=crop",
-    size: "large", // takes 2 cols
+    category: "Music Streaming",
+    title: "Djafro StreamBox — 1,000+ Downloads on Google Play",
+    result: "1k+ downloads · Live on Play Store",
+    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=900&h=600&fit=crop",
+    size: "large",
   },
   {
     number: "02",
-    category: "Mobile App",
-    title: "Award-Winning Health App, 200k Downloads",
-    result: "4.9★ App Store · 200k users",
-    image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=600&fit=crop",
+    category: "HealthTech",
+    title: "HealthMaster App — In Active Beta Testing",
+    result: "Beta live · Real users onboarded",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=600&fit=crop",
     size: "small",
   },
   {
     number: "03",
-    category: "E-Commerce Platform",
-    title: "Rebuilt Retail Platform, 40% Revenue Uplift",
-    result: "+40% revenue · -60% cart abandonment",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=600&fit=crop",
+    category: "Community Platform",
+    title: "TabooTalks — Used by People Across Germany",
+    result: "Active users · Germany market",
+    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=600&fit=crop",
     size: "small",
   },
   {
     number: "04",
-    category: "AI Integration",
-    title: "LLM-Powered Support Cut Tickets by Half",
-    result: "52% fewer tickets · $180k saved/yr",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&h=600&fit=crop",
+    category: "AgriTech",
+    title: "AgriLens — Helping Farmers Make Smarter Decisions",
+    result: "Used by farmers daily · Field-tested",
+    image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=900&h=600&fit=crop",
     size: "large",
+  },
+  {
+    number: "05",
+    category: "Creative Agency",
+    title: "Memora Visuals — Digital Presence for a Creative Studio",
+    result: "Live & converting · Brand established",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop",
+    size: "small",
+  },
+  {
+    number: "06",
+    category: "Travel & Rentals",
+    title: "WereNtOnline — Tourists Booking Kenya Coast Rentals Online",
+    result: "Active bookings · Kenya Coast market",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=600&fit=crop",
+    size: "small",
   },
 ];
 
@@ -52,7 +68,6 @@ function CaseCard({
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [hovered, setHovered] = useState(false);
-  const { colors } = useTheme();
 
   return (
     <motion.div
@@ -79,13 +94,13 @@ function CaseCard({
           animate={{ scale: hovered ? 1.04 : 1 }}
           transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
         />
-        {/* Dark scrim — always present, deepens on hover */}
+        {/* Dark scrim */}
         <motion.div
           className="absolute inset-0"
           animate={{ background: hovered ? "rgba(8,11,9,0.55)" : "rgba(8,11,9,0.25)" }}
           transition={{ duration: 0.35 }}
         />
-        {/* Category tag — top left */}
+        {/* Category tag */}
         <div className="absolute top-4 left-4">
           <span style={{
             fontSize: "0.62rem",
@@ -100,7 +115,7 @@ function CaseCard({
             {c.category}
           </span>
         </div>
-        {/* Number — top right */}
+        {/* Number */}
         <div className="absolute top-4 right-4">
           <span style={{
             fontSize: "0.65rem",
@@ -126,7 +141,6 @@ function CaseCard({
           }}>
             {c.title}
           </h3>
-          {/* Result pill */}
           <span style={{
             fontSize: "0.7rem",
             fontWeight: 600,
@@ -137,7 +151,7 @@ function CaseCard({
           </span>
         </div>
 
-        {/* Arrow — animates on hover */}
+        {/* Arrow */}
         <motion.div
           animate={{
             x: hovered ? 0 : -4,
@@ -164,7 +178,7 @@ function CaseCard({
         </motion.div>
       </div>
 
-      {/* Bottom emerald line — slides in on hover */}
+      {/* Bottom emerald line on hover */}
       <motion.div
         className="absolute bottom-0 left-0 h-[2px]"
         animate={{ width: hovered ? "100%" : "0%" }}
@@ -177,7 +191,6 @@ function CaseCard({
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 export default function CaseStudy() {
-  const { colors } = useTheme();
   const headerRef = useRef(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-40px" });
 
@@ -238,7 +251,7 @@ export default function CaseStudy() {
               maxWidth: "22rem",
               textAlign: "right",
             }}>
-              Real projects. Real metrics. Every case study here came with a deadline, a constraint, and a result we're proud of.
+              Real products. Real users. From Kenya's coast to Germany — these are the things we've built and shipped.
             </p>
             <Link
               href="/portfolio"
@@ -246,73 +259,72 @@ export default function CaseStudy() {
               style={{ color: "var(--color-emerald)", fontSize: "0.85rem" }}
             >
               All work
-              <motion.span
-                animate={{ x: 0 }}
-                whileHover={{ x: 4 }}
-                transition={{ duration: 0.2 }}
-              >
+              <motion.span animate={{ x: 0 }} whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
                 <ArrowUpRight size={15} />
               </motion.span>
             </Link>
           </motion.div>
         </div>
 
-        {/* Grid — 3 columns, large cards span 2 */}
+        {/* Grid */}
         <div
-          className="grid gap-px"
-          style={{
-            gridTemplateColumns: "repeat(3, 1fr)",
-            background: "var(--color-border)", // gap color = border lines
-          }}
+          className="gap-px case-study-grid"
+          style={{ display: "grid", background: "var(--color-border)" }}
         >
           {CASES.map((c, i) => (
             <CaseCard key={c.number} c={c} index={i} />
           ))}
         </div>
 
-        {/* Bottom row — thin metrics band */}
+        {/* Metrics band */}
         <motion.div
           className="grid grid-cols-2 mt-px lg:grid-cols-4"
-          style={{
-            background: "var(--color-border)",
-            gap: "1px",
-          }}
+          style={{ background: "var(--color-border)", gap: "1px" }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           {[
-            { value: "50+", label: "Projects Delivered" },
-            { value: "100%", label: "Client Satisfaction" },
-            { value: "15+", label: "Industries" },
-            { value: "3yr", label: "In Business" },
+            { value: "6+",   label: "Products Shipped" },
+            { value: "3",    label: "Countries Reached" },
+            { value: "1k+",  label: "End Users" },
+            { value: "100%", label: "Still in Production" },
           ].map((m) => (
-            <div
-              key={m.label}
-              className="flex items-center gap-4 px-6 py-4"
-              style={{ background: "var(--color-surface)" }}
-            >
-              <span style={{
-                fontSize: "clamp(1.2rem, 2vw, 1.6rem)",
-                fontWeight: 900,
-                letterSpacing: "-0.04em",
-                color: "var(--color-text)",
-              }}>
+            <div key={m.label} className="flex items-center gap-3 px-5 py-4"
+              style={{ background: "var(--color-surface)" }}>
+              <span style={{ fontSize: "clamp(1.1rem, 2vw, 1.6rem)", fontWeight: 900, letterSpacing: "-0.04em", color: "var(--color-text)" }}>
                 {m.value}
               </span>
-              <span style={{
-                fontSize: "0.72rem",
-                fontWeight: 500,
-                color: "var(--color-text-faint)",
-                letterSpacing: "0.04em",
-                lineHeight: 1.3,
-              }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 500, color: "var(--color-text-faint)", letterSpacing: "0.04em", lineHeight: 1.3 }}>
                 {m.label}
               </span>
             </div>
           ))}
         </motion.div>
+
+        <style>{`
+          .case-study-grid {
+            grid-template-columns: 1fr;
+          }
+          .case-study-grid > * {
+            grid-column: span 1 !important;
+          }
+          @media (min-width: 640px) {
+            .case-study-grid {
+              grid-template-columns: repeat(2, 1fr);
+            }
+          }
+          @media (min-width: 1024px) {
+            .case-study-grid {
+              grid-template-columns: repeat(3, 1fr);
+            }
+            .case-study-grid > *:nth-child(1),
+            .case-study-grid > *:nth-child(4) {
+              grid-column: span 2 !important;
+            }
+          }
+        `}</style>
       </div>
     </section>
   );

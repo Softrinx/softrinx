@@ -61,16 +61,24 @@ const SERVICES = [
   },
 ];
 
-// Infinite carousel rows — duplicate for seamless loop
 const ROW_A = [...SERVICES, ...SERVICES, ...SERVICES];
 const ROW_B = [...SERVICES, ...SERVICES, ...SERVICES].reverse();
 
 // ─── Scroll-reveal ────────────────────────────────────────────────────────────
-function Reveal({ children, delay = 0, y = 20 }: { children: React.ReactNode; delay?: number; y?: number }) {
+function Reveal({
+  children,
+  delay = 0,
+  y = 20,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  y?: number;
+}) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
-    <motion.div ref={ref}
+    <motion.div
+      ref={ref}
       initial={{ opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.55, delay, ease: [0.32, 0.72, 0, 1] }}
@@ -81,23 +89,34 @@ function Reveal({ children, delay = 0, y = 20 }: { children: React.ReactNode; de
 }
 
 // ─── Carousel row ─────────────────────────────────────────────────────────────
-function CarouselRow({ items, direction }: { items: typeof ROW_A; direction: "left" | "right" }) {
-  const { colors } = useTheme();
-  const dur = 40; // seconds for one full loop
-
+function CarouselRow({
+  items,
+  direction,
+}: {
+  items: typeof ROW_A;
+  direction: "left" | "right";
+}) {
   return (
-    <div className="w-full overflow-hidden" style={{ maskImage: "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)" }}>
+    <div
+      className="w-full overflow-hidden"
+      style={{
+        maskImage:
+          "linear-gradient(90deg, transparent, black 10%, black 90%, transparent)",
+      }}
+    >
       <motion.div
         className="flex gap-4 w-max"
-        animate={{ x: direction === "left" ? ["0%", "-33.333%"] : ["-33.333%", "0%"] }}
-        transition={{ duration: dur, repeat: Infinity, ease: "linear" }}
+        animate={{
+          x: direction === "left" ? ["0%", "-33.333%"] : ["-33.333%", "0%"],
+        }}
+        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
       >
         {items.map((s, i) => {
           const Icon = s.icon;
           return (
             <div
               key={i}
-              className="flex items-center flex-shrink-0 gap-3 px-5 py-3 rounded-none"
+              className="flex items-center flex-shrink-0 gap-3 px-5 py-3"
               style={{
                 border: `1px solid var(--color-border)`,
                 background: "var(--color-card)",
@@ -122,16 +141,19 @@ function CarouselRow({ items, direction }: { items: typeof ROW_A; direction: "le
 // ─── Services Section ─────────────────────────────────────────────────────────
 export default function Services() {
   const [active, setActive] = useState(0);
-  const { colors, isDark } = useTheme();
+  const { isDark } = useTheme();
   const sectionRef = useRef(null);
 
-  // Auto-advance
   useEffect(() => {
     const t = setInterval(() => setActive((p) => (p + 1) % SERVICES.length), 5000);
     return () => clearInterval(t);
   }, []);
 
   const ActiveIcon = SERVICES[active].icon;
+
+  // Each row is exactly this tall. Both columns use this to lock grid height.
+  const ROW_H = 72;
+  const PANEL_H = SERVICES.length * ROW_H + (SERVICES.length - 1); // rows + borders
 
   return (
     <section
@@ -151,23 +173,12 @@ export default function Services() {
 
         <div className="flex flex-col gap-6 mb-16 lg:flex-row lg:items-end lg:justify-between">
           <Reveal delay={0.08}>
-            <h2 style={{
-              fontSize: "clamp(2.2rem, 5vw, 4.5rem)",
-              fontWeight: 900,
-              letterSpacing: "-0.04em",
-              lineHeight: 1.0,
-              color: "var(--color-text)",
-            }}>
+            <h2 style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
               Our<br />Services.
             </h2>
           </Reveal>
           <Reveal delay={0.14}>
-            <p style={{
-              fontSize: "clamp(0.88rem, 1.4vw, 1rem)",
-              lineHeight: 1.8,
-              color: "var(--color-text-muted)",
-              maxWidth: "28rem",
-            }}>
+            <p style={{ fontSize: "clamp(0.88rem, 1.4vw, 1rem)", lineHeight: 1.8, color: "var(--color-text-muted)", maxWidth: "28rem" }}>
               From idea to production, we cover the full engineering stack.
               Every service is delivered with precision, speed, and long-term thinking.
             </p>
@@ -178,10 +189,15 @@ export default function Services() {
         <Reveal delay={0.1} y={32}>
           <div
             className="grid overflow-hidden lg:grid-cols-2"
-            style={{ border: `1px solid var(--color-border)` }}
+            style={{
+              border: `1px solid var(--color-border)`,
+              // Lock the entire grid to a fixed height — nothing inside
+              // can ever cause it to grow or shrink.
+              height: `${PANEL_H}px`,
+            }}
           >
-            {/* LEFT — accordion list */}
-            <div style={{ borderRight: `1px solid var(--color-border)` }}>
+            {/* ── LEFT — every row is exactly ROW_H px, no exceptions ── */}
+            <div style={{ borderRight: `1px solid var(--color-border)`, height: "100%" }}>
               {SERVICES.map((s, i) => {
                 const isActive = i === active;
                 const Icon = s.icon;
@@ -189,24 +205,29 @@ export default function Services() {
                   <button
                     key={i}
                     onClick={() => setActive(i)}
-                    className="w-full text-left transition-all duration-300 group"
+                    className="w-full text-left"
                     style={{
+                      // FIXED height — this is the entire secret.
+                      // No AnimatePresence, no height:auto, no expanding text.
+                      // Only background color and icon/text color change.
+                      height: `${ROW_H}px`,
+                      boxSizing: "border-box",
                       borderBottom: i < SERVICES.length - 1 ? `1px solid var(--color-border)` : "none",
                       background: isActive ? "var(--color-emerald-bg)" : "transparent",
-                      padding: "clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 3vw, 2rem)",
+                      padding: "0 clamp(1.25rem, 3vw, 2rem)",
+                      transition: "background 0.3s ease",
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4" style={{ width: "100%" }}>
                       {/* Number */}
                       <span style={{
-                        fontSize: "0.68rem",
-                        fontWeight: 700,
-                        letterSpacing: "0.1em",
+                        fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.1em",
                         color: isActive ? "var(--color-emerald)" : "var(--color-text-faint)",
                         fontVariantNumeric: "tabular-nums",
-                        transition: "color 0.2s",
-                        flexShrink: 0,
-                        width: "1.5rem",
+                        transition: "color 0.25s",
+                        flexShrink: 0, width: "1.5rem",
                       }}>
                         {s.number}
                       </span>
@@ -216,51 +237,32 @@ export default function Services() {
                         width: "36px", height: "36px",
                         border: `1px solid ${isActive ? "var(--color-emerald-border)" : "var(--color-border)"}`,
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        flexShrink: 0,
-                        transition: "border-color 0.2s",
+                        flexShrink: 0, transition: "border-color 0.25s",
                       }}>
-                        <Icon size={16} style={{ color: isActive ? "var(--color-emerald)" : "var(--color-text-faint)", transition: "color 0.2s" }} />
+                        <Icon size={16} style={{ color: isActive ? "var(--color-emerald)" : "var(--color-text-faint)", transition: "color 0.25s" }} />
                       </div>
 
-                      {/* Title + desc */}
-                      <div className="flex-1 min-w-0">
-                        <p style={{
-                          fontSize: "clamp(0.82rem, 1.2vw, 0.95rem)",
-                          fontWeight: 700,
-                          color: isActive ? "var(--color-text)" : "var(--color-text-muted)",
-                          transition: "color 0.2s",
-                          marginBottom: isActive ? "0.35rem" : 0,
-                        }}>
-                          {s.title}
-                        </p>
-                        <AnimatePresence>
-                          {isActive && (
-                            <motion.p
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-                              style={{
-                                fontSize: "0.78rem",
-                                lineHeight: 1.65,
-                                color: "var(--color-text-muted)",
-                                overflow: "hidden",
-                              }}
-                            >
-                              {s.description}
-                            </motion.p>
-                          )}
-                        </AnimatePresence>
-                      </div>
+                      {/* Title — single line, never wraps or expands */}
+                      <p style={{
+                        flex: 1,
+                        fontSize: "clamp(0.82rem, 1.2vw, 0.95rem)",
+                        fontWeight: 700,
+                        color: isActive ? "var(--color-text)" : "var(--color-text-muted)",
+                        transition: "color 0.25s",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        margin: 0,
+                      }}>
+                        {s.title}
+                      </p>
 
-                      {/* Active indicator */}
+                      {/* Active dot */}
                       <div style={{
-                        width: "6px", height: "6px",
-                        borderRadius: "50%",
+                        width: "6px", height: "6px", borderRadius: "50%",
                         background: isActive ? "var(--color-emerald)" : "transparent",
                         border: `1px solid ${isActive ? "var(--color-emerald)" : "var(--color-border)"}`,
-                        flexShrink: 0,
-                        transition: "all 0.25s",
+                        flexShrink: 0, transition: "all 0.25s",
                       }} />
                     </div>
                   </button>
@@ -268,66 +270,63 @@ export default function Services() {
               })}
             </div>
 
-            {/* RIGHT — detail panel */}
+            {/* ── RIGHT — all animated content, locked to same PANEL_H ── */}
             <div
               className="relative flex-col justify-between hidden lg:flex"
               style={{
                 padding: "clamp(2rem, 4vw, 3rem)",
                 background: "var(--color-surface)",
-                minHeight: "480px",
+                height: "100%",
+                // overflow hidden so the fade animation never causes scroll
+                overflow: "hidden",
               }}
             >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
-                  className="flex flex-col h-full gap-6"
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.32, ease: [0.32, 0.72, 0, 1] }}
+                  style={{ display: "flex", flexDirection: "column", height: "100%", gap: "clamp(0.6rem, 1.2vw, 1rem)" }}
                 >
-                  {/* Icon box */}
+                  {/* Icon */}
                   <div style={{
                     width: "52px", height: "52px",
                     border: `1px solid var(--color-emerald-border)`,
                     background: "var(--color-emerald-bg)",
                     display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0,
                   }}>
                     <ActiveIcon size={24} style={{ color: "var(--color-emerald)" }} />
                   </div>
 
                   {/* Title */}
                   <h3 style={{
-                    fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
-                    fontWeight: 900,
-                    letterSpacing: "-0.04em",
-                    lineHeight: 1.0,
-                    color: "var(--color-text)",
+                    fontSize: "clamp(1.4rem, 2.8vw, 2.4rem)",
+                    fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.05,
+                    color: "var(--color-text)", margin: 0,
                   }}>
                     {SERVICES[active].title}
                   </h3>
 
                   {/* Description */}
                   <p style={{
-                    fontSize: "clamp(0.88rem, 1.3vw, 1rem)",
-                    lineHeight: 1.8,
-                    color: "var(--color-text-muted)",
-                    maxWidth: "28rem",
+                    fontSize: "clamp(0.82rem, 1.2vw, 0.95rem)",
+                    lineHeight: 1.75, color: "var(--color-text-muted)",
+                    maxWidth: "28rem", margin: 0,
                   }}>
                     {SERVICES[active].description}
                   </p>
 
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mt-auto">
+                  <div className="flex flex-wrap gap-2" style={{ marginTop: "auto" }}>
                     {SERVICES[active].tags.map((tag) => (
                       <span key={tag} style={{
-                        fontSize: "0.7rem",
-                        fontWeight: 600,
-                        letterSpacing: "0.06em",
+                        fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.06em",
                         padding: "0.3rem 0.75rem",
                         border: `1px solid var(--color-border-mid)`,
-                        color: "var(--color-text-muted)",
-                        textTransform: "uppercase",
+                        color: "var(--color-text-muted)", textTransform: "uppercase",
                       }}>
                         {tag}
                       </span>
@@ -373,10 +372,7 @@ export default function Services() {
 
       {/* ── CTA — split sharp panel ── */}
       <Reveal y={24}>
-        <div
-          className="grid grid-cols-1 lg:grid-cols-2"
-          style={{ borderTop: `1px solid var(--color-border)` }}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ borderTop: `1px solid var(--color-border)` }}>
           {/* Left — emerald */}
           <div
             className="relative flex flex-col justify-between overflow-hidden"
@@ -386,35 +382,20 @@ export default function Services() {
               borderRight: `1px solid rgba(255,255,255,0.12)`,
             }}
           >
-            {/* Subtle diagonal line texture */}
             <div className="absolute inset-0 pointer-events-none" style={{
               backgroundImage: "repeating-linear-gradient(45deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 8px)",
             }} />
-
             <div className="relative z-10">
               <p style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "rgba(0,0,0,0.5)", textTransform: "uppercase", marginBottom: "1.5rem" }}>
                 Start a Project
               </p>
-              <h3 style={{
-                fontSize: "clamp(1.8rem, 4vw, 3rem)",
-                fontWeight: 900,
-                letterSpacing: "-0.04em",
-                lineHeight: 1.0,
-                color: "#040805",
-                marginBottom: "2.5rem",
-              }}>
+              <h3 style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#040805", marginBottom: "2.5rem" }}>
                 Ready to Build<br />Something Real?
               </h3>
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-3 font-bold transition-all duration-200 group"
-                style={{
-                  background: "#040805",
-                  color: "var(--color-emerald)",
-                  padding: "0.85rem 1.75rem",
-                  fontSize: "0.88rem",
-                  letterSpacing: "0.02em",
-                }}
+                style={{ background: "#040805", color: "var(--color-emerald)", padding: "0.85rem 1.75rem", fontSize: "0.88rem", letterSpacing: "0.02em" }}
               >
                 Get A Quote
                 <ArrowUpRight size={16} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -423,25 +404,12 @@ export default function Services() {
           </div>
 
           {/* Right — dark surface */}
-          <div
-            className="flex flex-col justify-between"
-            style={{
-              background: "var(--color-surface)",
-              padding: "clamp(2.5rem, 5vw, 4rem)",
-            }}
-          >
+          <div className="flex flex-col justify-between" style={{ background: "var(--color-surface)", padding: "clamp(2.5rem, 5vw, 4rem)" }}>
             <div>
               <p style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "var(--color-text-faint)", textTransform: "uppercase", marginBottom: "1.5rem" }}>
                 Or Learn More
               </p>
-              <h3 style={{
-                fontSize: "clamp(1.4rem, 3vw, 2.2rem)",
-                fontWeight: 700,
-                letterSpacing: "-0.03em",
-                lineHeight: 1.1,
-                color: "var(--color-text)",
-                marginBottom: "1rem",
-              }}>
+              <h3 style={{ fontSize: "clamp(1.4rem, 3vw, 2.2rem)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, color: "var(--color-text)", marginBottom: "1rem" }}>
                 Explore how we've helped companies ship faster and grow smarter.
               </h3>
               <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: "var(--color-text-muted)", maxWidth: "22rem" }}>

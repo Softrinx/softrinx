@@ -164,7 +164,7 @@ export default function Footer() {
           >
             <Link href="/" className="inline-block mb-6">
               <Image
-                src="/images/images/logo3.png"
+                src="/images/images/logo.png"
                 alt="Softrinx"
                 width={160}
                 height={40}

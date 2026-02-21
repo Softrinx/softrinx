@@ -1,331 +1,615 @@
-// app/about/page.tsx
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView } from "framer-motion";
-import { 
-  Users, Award, Clock, Zap, ChevronRight, 
-  Globe, Code, Smartphone, BrainCircuit, 
-  PenToolIcon,
-  RocketIcon,
-  LifeBuoyIcon,
-  Linkedin,
-  Target,
-  Lightbulb,
-  Shield,
-  ArrowRight,
-  CheckCircle2,
-  Star
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import {
+  ArrowUpRight, ArrowRight, Linkedin, Github, Twitter,
+  MapPin, Mail, Code2, Zap, Globe, Shield, Target, ExternalLink,
 } from "lucide-react";
-
+import { useTheme } from "@/contexts/themeContext";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
-import OurApproachSection from "@/components/sections/approach";
-import WhyChooseUsSection from "@/components/sections/Us";
-import TestimonialsSection from "@/components/sections/TestimonialsSection";
 
-export default function AboutPage() {
-  const heroRef = useRef(null);
-  const approachRef = useRef(null);
-  const whyChooseRef = useRef(null);
-  const statsRef = useRef(null);
-  const testimonialsRef = useRef(null);
-  const teamRef = useRef(null);
-  const ctaRef = useRef(null);
-  
-  const isApproachInView = useInView(approachRef, { once: true, amount: 0.3 });
-  const isWhyChooseInView = useInView(whyChooseRef, { once: true, amount: 0.3 });
-  const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 });
-  const isTestimonialsInView = useInView(testimonialsRef, { once: true, amount: 0.2 });
-  const isTeamInView = useInView(teamRef, { once: true, amount: 0.3 });
-  const isCtaInView = useInView(ctaRef, { once: true, amount: 0.5 });
-
-  const [parallaxY, setParallaxY] = useState(0);
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-
+// ─── Lottie ───────────────────────────────────────────────────────────────────
+function LottieAnimation() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setParallaxY(scrollY * 0.3);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    let anim: any, cancelled = false;
+    import("lottie-web").then((lottie) => {
+      if (cancelled || !containerRef.current) return;
+      anim = lottie.default.loadAnimation({
+        container: containerRef.current!,
+        renderer: "svg", loop: true, autoplay: true,
+        path: "/animations/services.json",
+      });
+      anim.addEventListener("DOMLoaded", () => { if (!cancelled) setLoaded(true); });
+    });
+    return () => { cancelled = true; anim?.destroy(); };
   }, []);
-
-  // Stats counter animation
-  const [counters, setCounters] = useState({
-    years: 0,
-    customers: 0,
-    projects: 0,
-    awards: 0
-  });
-
-  useEffect(() => {
-    if (isStatsInView) {
-      const duration = 2000;
-      const steps = 60;
-      const interval = duration / steps;
-      
-      const targets = { years: 5, customers: 1500, projects: 800, awards: 15 };
-      let step = 0;
-
-      const timer = setInterval(() => {
-        step++;
-        const progress = step / steps;
-        
-        setCounters({
-          years: Math.floor(targets.years * progress),
-          customers: Math.floor(targets.customers * progress),
-          projects: Math.floor(targets.projects * progress),
-          awards: Math.floor(targets.awards * progress)
-        });
-
-        if (step >= steps) {
-          clearInterval(timer);
-          setCounters(targets);
-        }
-      }, interval);
-
-      return () => clearInterval(timer);
-    }
-  }, [isStatsInView]);
-
-  // Team Members Data
-  const teamMembers = [
-    {
-      id: 1,
-      name: "Clint Simiyu",
-      role: "Founder & CEO",
-      bio: "With over 5 years of experience in software development, Clint leads our vision and strategic direction.",
-      image: "/images/images/simiyu.jpg",
-      social: {
-        linkedin: "https://linkedin.com/in/clint-simiyu/",
-        twitter: "https://twitter.com",
-        github: "https://github.com/Clint171",
-        email: "clintsimiyu004@gmail.com"
-      }
-    },
-    {
-      id: 2,
-      name: "Baruk Ali",
-      role: "CTO",
-      bio: "Baruk oversees our technical strategy and ensures we're using the latest technologies to deliver exceptional results.",
-      image: "/images/images/baruk.jpg",
-      social: {
-        linkedin: "https://www.linkedin.com/in/mohammed-ali-mbaruk-56785639b",
-        twitter: "https://x.com/Baruk_KE",
-        github: "https://github.com/Baruk1-netizen",
-        email: "baruk.developer@gmail.com"
-      }
-    },
-    {
-      id: 3,
-      name: "Walter Onyango",
-      role: "Lead Developer",
-      bio: "Walter heads our development team, architecting robust solutions that meet the complex needs of our enterprise clients.",
-      image: "/images/images/walter.jpg",
-      social: {
-        linkedin: "https://linkedin.com/in/walter-onyango",
-        twitter: "https://x.com/taya_dev",
-        github: "https://github.com/waltertaya",
-        email: "taya.developer@gmail.com"
-      }
-    },
-    {
-      id: 4,
-      name: "Brian Chege",
-      role: "Fullstack Web and Mobile Developer",
-      bio: "Brian specializes in building scalable web and mobile applications, ensuring seamless user experiences across all platforms.",
-      image: "/images/images/brian.jpg",
-      social: {
-        linkedin: "https://linkedin.com",
-        twitter: "https://x.com/https://twitter.com/chegephil24",
-        github: "https://github.com/CHEGEBB/CHEGEBB",
-        email: "chegephil24@gmail.com"
-      }
-    },
-    {
-      id: 5,
-      name: "Samwel Njuguna",
-      role: "AI Solutions Architect",
-      bio: "Samwel leads our AI initiatives, implementing cutting-edge machine learning solutions for our enterprise clients.",
-      image: "/images/images/samwel.jpg",
-      social: {
-        linkedin: "https://www.linkedin.com/in/samwel-njuguna/",
-        twitter: "https://x.com/Njuguna128801",
-        github: "https://github.com/lewmas9152",
-        email: "samwelnjuguna190@gmail.com"
-      }
-    }
-  ];
-
-  // Testimonials
-  const testimonials = [
-    {
-      platform: "Trustpilot",
-      rating: 5,
-      text: "Softrinx transformed our legacy system into a modern, cloud-based platform that reduced our operational costs by 40% while improving performance dramatically.",
-      author: "Sarah Mitchell",
-      role: "CTO at TechFlow Solutions",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&q=80",
-      date: "Nov 15, 2024"
-    },
-    {
-      platform: "Google",
-      rating: 5,
-      text: "Working with Softrinx was an absolute pleasure. Their team's expertise in mobile development helped us launch our app 2 months ahead of schedule with exceptional quality.",
-      author: "Marcus Chen",
-      role: "Product Director at FinanceHub",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&q=80",
-      date: "Oct 28, 2024"
-    },
-    {
-      platform: "Trustpilot",
-      rating: 5,
-      text: "The attention to detail and commitment to our success was outstanding. Softrinx didn't just deliver software—they delivered a complete solution that transformed our business.",
-      author: "Elena Rodriguez",
-      role: "CEO at HealthTech Innovations",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&q=80",
-      date: "Dec 2, 2024"
-    }
-  ];
-
-  const approachSections = [
-    {
-      title: "Customized Solutions",
-      description: "We don't believe in one-size-fits-all. Every project begins with deep discovery to understand your unique business challenges, goals, and requirements.",
-      image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&q=80"
-    },
-    {
-      title: "Quality Reliability",
-      description: "Our rigorous testing and quality assurance processes ensure every solution we deliver is robust, secure, and performs flawlessly under real-world conditions.",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&q=80"
-    }
-  ];
-
-  const whyChooseMetrics = [
-    { label: "Strategy", percentage: 70 },
-    { label: "Audience", percentage: 98 },
-    { label: "Keyword", percentage: 85 }
-  ];
-
   return (
-    <main className="bg-white">
-      <Navigation />
-      
-      {/* Hero Section - Dark */}
-      <section 
-        ref={heroRef}
-        className="relative min-h-[70vh] flex items-center overflow-hidden bg-gray-950"
-      >
-        <div className="absolute inset-0">
-          <div 
-            className="absolute inset-0 z-10"
-            style={{ transform: `translateY(${parallaxY}px)` }}
-          >
-            <Image
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=80"
-              alt="Softrinx team collaboration"
-              fill
-              className="object-cover"
-              priority
-              quality={90}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-gray-950/90 via-gray-950/80 to-gray-950/95" />
+    <div className="relative flex items-center justify-center w-full h-full">
+      {!loaded && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-6 h-6 border-2 rounded-full animate-spin"
+            style={{ borderColor: "rgba(255,255,255,0.1)", borderTopColor: "var(--color-emerald)" }} />
+        </div>
+      )}
+      <div ref={containerRef} className="w-full h-full"
+        style={{ opacity: loaded ? 1 : 0, transition: "opacity 0.5s ease" }} />
+    </div>
+  );
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function SectionLabel({ text }: { text: string }) {
+  return (
+    <div className="flex items-center gap-3 mb-5">
+      <span className="block w-8 h-px" style={{ background: "var(--color-emerald)" }} />
+      <span style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.16em", color: "var(--color-emerald)", textTransform: "uppercase" }}>
+        {text}
+      </span>
+    </div>
+  );
+}
+
+function VerticalLines({ side = "right" }: { side?: "left" | "right" }) {
+  return (
+    <div className="absolute top-0 bottom-0 flex gap-3 pointer-events-none"
+      style={{ [side]: "clamp(8px, 2.5vw, 32px)" }}>
+      {[0, 1, 2].map((i) => (
+        <motion.div key={i} className="w-px" style={{ background: "var(--color-border)" }}
+          initial={{ scaleY: 0 }} animate={{ scaleY: 1 }}
+          transition={{ duration: 1.2, delay: i * 0.15, ease: [0.32, 0.72, 0, 1] }} />
+      ))}
+    </div>
+  );
+}
+
+// ─── Team ─────────────────────────────────────────────────────────────────────
+const TEAM = [
+  {
+    name: "Clint Simiyu", role: "CEO & Co-Founder", domain: "Architecture & Strategy",
+    bio: "CS graduate, DeKUT Nyeri. Leads technical vision, client strategy, and the overall direction of Softrinx.",
+    image: "/images/images/clint.png",
+    linkedin: "https://linkedin.com/in/clint-simiyu/", github: "https://github.com/Clint171", twitter: "https://twitter.com",
+  },
+  {
+    name: "Baruk Ali", role: "COO & Co-Founder", domain: "Operations & Growth",
+    bio: "Oversees operations, partnerships, and delivery. Ensures every project runs on time and to specification.",
+    image: "/images/images/baruk2.png",
+    linkedin: "https://www.linkedin.com/in/mohammed-ali-mbaruk-56785639b", github: "https://github.com/Baruk1-netizen", twitter: "https://x.com/Baruk_KE",
+  },
+  {
+    name: "Walter Onyango", role: "Co-Founder & Lead Developer", domain: "Full-Stack Engineering",
+    bio: "Architects robust, scalable systems. Our backbone on backend infrastructure and API design.",
+    image: "/images/images/walter.png",
+    linkedin: "https://linkedin.com/in/walter-onyango", github: "https://github.com/waltertaya", twitter: "https://x.com/taya_dev",
+  },
+  {
+    name: "Brian Chege", role: "CTO , Co-Founder & Lead Mobile Dev", domain: "Web & Mobile",
+    bio: "Builds seamless cross-platform experiences. Leads all mobile app development at Softrinx.",
+    image: "/images/images/brian.jpeg",
+    linkedin: "https://linkedin.com", github: "https://github.com/CHEGEBB", twitter: "https://twitter.com/chegephil24",
+  },
+  {
+    name: "Samwel Njuguna", role: "Co-Founder & Lead AI Engineer", domain: "AI / ML",
+    bio: "Leads all AI and ML initiatives. Turns LLMs and intelligent automation into real, shipped products.",
+    image: "/images/images/sam2.png",
+    linkedin: "https://www.linkedin.com/in/samwel-njuguna/", github: "https://github.com/lewmas9152", twitter: "https://x.com/Njuguna128801",
+  },
+];
+
+function TeamCard({ member, index }: { member: typeof TEAM[0]; index: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div ref={ref}
+      initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.32, 0.72, 0, 1] }}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", position: "relative", overflow: "hidden", cursor: "default" }}>
+      <div className="relative overflow-hidden" style={{ height: "clamp(200px, 24vw, 275px)" }}>
+        <motion.div className="w-full h-full" animate={{ scale: hovered ? 1.03 : 1 }} transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}>
+          <Image src={member.image} alt={member.name} fill className="object-contain object-top"
+            style={{ filter: hovered ? "grayscale(0%)" : "grayscale(15%)", transition: "filter 0.5s" }} />
+        </motion.div>
+        <motion.div className="absolute inset-0"
+          animate={{ background: hovered ? "linear-gradient(to top,rgba(8,11,9,0.8) 0%,rgba(8,11,9,0.05) 55%)" : "linear-gradient(to top,rgba(8,11,9,0.45) 0%,transparent 50%)" }}
+          transition={{ duration: 0.35 }} />
+        <div className="absolute bottom-3 left-3 flex items-center gap-1.5"
+          style={{ background: "rgba(8,11,9,0.85)", border: "1px solid var(--color-emerald-border)", padding: "0.2rem 0.55rem" }}>
+          <span style={{ fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.08em", color: "var(--color-emerald)" }}>{member.domain}</span>
+        </div>
+      </div>
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <h3 style={{ fontSize: "clamp(0.9rem, 1.2vw, 1rem)", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--color-text)", lineHeight: 1.2 }}>{member.name}</h3>
+            <span style={{ fontSize: "0.62rem", fontWeight: 700, color: "var(--color-emerald)", letterSpacing: "0.06em", textTransform: "uppercase" }}>{member.role}</span>
+          </div>
+          <div className="flex gap-1.5 shrink-0">
+            {[{ href: member.linkedin, Icon: Linkedin }, { href: member.github, Icon: Github }, { href: member.twitter, Icon: Twitter }].map(({ href, Icon }) => (
+              <a key={href} href={href} target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center transition-all duration-200"
+                style={{ width: 26, height: 26, border: "1px solid var(--color-border)", color: "var(--color-text-faint)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-emerald-border)"; (e.currentTarget as HTMLElement).style.color = "var(--color-emerald)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)"; (e.currentTarget as HTMLElement).style.color = "var(--color-text-faint)"; }}>
+                <Icon size={11} />
+              </a>
+            ))}
           </div>
         </div>
-        
-        <div className="container relative z-20 px-4 pt-32 pb-20 mx-auto">
-          <div className="max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h1 className="mb-6 text-5xl font-bold text-white md:text-7xl">
-                We&apos;re on a mission to{" "}
-                <span className="text-transparent bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text">
-                  build better software
-                </span>{" "}
-                for a digital world
-              </h1>
+        <p style={{ fontSize: "0.77rem", lineHeight: 1.68, color: "var(--color-text-muted)" }}>{member.bio}</p>
+      </div>
+      <motion.div className="absolute bottom-0 left-0 h-[2px]"
+        animate={{ width: hovered ? "100%" : "0%" }} transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+        style={{ background: "var(--color-emerald)" }} />
+    </motion.div>
+  );
+}
+
+// ─── Real client work ─────────────────────────────────────────────────────────
+const WORK = [
+  {
+    client: "Irenee", product: "HealthMaster", category: "Health · Mobile & Web",
+    description: "A dual-platform health app helping patients adhere to medication schedules through smart reminders, progress tracking, and physician dashboards.",
+    result: "Improved medication adherence across patient base",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop",
+  },
+  {
+    client: "BritechMedia", product: "Brand & Digital Platform", category: "Media · Web",
+    description: "Full digital presence and brand platform for BritechMedia — designed, built, and shipped end-to-end by Softrinx.",
+    result: "Complete digital identity delivered",
+    image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=500&fit=crop",
+  },
+  {
+    client: "DjAfro", product: "StreamBox", category: "Entertainment · Mobile",
+    description: "A full-featured movies and content streaming mobile app — custom player, offline downloads, and subscription management built from scratch.",
+    result: "End-to-end streaming app shipped",
+    image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&h=500&fit=crop",
+  },
+  {
+    client: "Mercy", product: "Decluttr", category: "Marketplace · Web & Mobile",
+    description: "A donation and resale platform where users list items they no longer need — connecting givers and buyers in a clean, purposeful flow.",
+    result: "Peer-to-peer marketplace live",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=500&fit=crop",
+  },
+];
+
+function WorkCard({ w, index }: { w: typeof WORK[0]; index: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div ref={ref}
+      initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.32, 0.72, 0, 1] }}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ background: "var(--color-bg)", border: "1px solid var(--color-border)", position: "relative", overflow: "hidden", cursor: "default" }}>
+      <div className="relative overflow-hidden" style={{ height: "clamp(150px, 18vw, 210px)" }}>
+        <motion.img src={w.image} alt={w.product} className="object-cover w-full h-full"
+          animate={{ scale: hovered ? 1.04 : 1 }} transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }} />
+        <motion.div className="absolute inset-0"
+          animate={{ background: hovered ? "rgba(8,11,9,0.55)" : "rgba(8,11,9,0.28)" }} transition={{ duration: 0.35 }} />
+        <div className="absolute top-3 left-3">
+          <span style={{ fontSize: "0.56rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--color-emerald)", background: "rgba(8,11,9,0.8)", padding: "0.2rem 0.55rem", border: "1px solid var(--color-emerald-border)" }}>
+            {w.category}
+          </span>
+        </div>
+      </div>
+      <div className="flex items-start justify-between gap-4 p-5">
+        <div className="flex-1 min-w-0">
+          <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.1em", color: "var(--color-text-faint)", textTransform: "uppercase", marginBottom: "0.25rem" }}>{w.client}</div>
+          <h3 style={{ fontSize: "clamp(0.9rem, 1.4vw, 1.05rem)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, color: "var(--color-text)", marginBottom: "0.5rem" }}>{w.product}</h3>
+          <p style={{ fontSize: "0.74rem", lineHeight: 1.65, color: "var(--color-text-muted)", marginBottom: "0.6rem" }}>{w.description}</p>
+          <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "var(--color-emerald)", letterSpacing: "0.04em" }}>{w.result}</span>
+        </div>
+        <motion.div animate={{ x: hovered ? 0 : -4, y: hovered ? 0 : 4, opacity: hovered ? 1 : 0.3 }} transition={{ duration: 0.25 }}
+          style={{ width: 32, height: 32, border: "1px solid var(--color-emerald-border)", background: hovered ? "var(--color-emerald)" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 0.25s" }}>
+          <ArrowUpRight size={13} style={{ color: hovered ? "#040805" : "var(--color-emerald)" }} />
+        </motion.div>
+      </div>
+      <motion.div className="absolute bottom-0 left-0 h-[2px]"
+        animate={{ width: hovered ? "100%" : "0%" }} transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+        style={{ background: "var(--color-emerald)" }} />
+    </motion.div>
+  );
+}
+
+// ─── Values ───────────────────────────────────────────────────────────────────
+const VALUES = [
+  { icon: Code2, title: "Craft over output", body: "We write code we're proud to put our names on. Quality isn't a phase — it's the whole process." },
+  { icon: Zap, title: "Speed without shortcuts", body: "Deadlines are real. We move fast through clear systems, not by cutting corners." },
+  { icon: Shield, title: "Radical transparency", body: "You always know where your project stands. No surprises, no excuses — just honest progress." },
+  { icon: Globe, title: "Built in Africa, for the world", body: "We build from Nyeri with global standards. Context-aware, globally competitive." },
+];
+
+function ValueCard({ v, index, inView }: { v: typeof VALUES[0]; index: number; inView: boolean }) {
+  const [hovered, setHovered] = useState(false);
+  const Icon = v.icon;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.09 }}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ padding: "clamp(1.5rem, 2.5vw, 2rem)", border: "1px solid var(--color-border)", background: hovered ? "var(--color-card-hover)" : "var(--color-card)", position: "relative", overflow: "hidden", transition: "background 0.25s", cursor: "default" }}>
+      <div className="flex items-center justify-center mb-5"
+        style={{ width: 38, height: 38, border: hovered ? "1px solid var(--color-emerald-border)" : "1px solid var(--color-border)", background: hovered ? "var(--color-emerald-bg)" : "transparent", transition: "all 0.25s" }}>
+        <Icon size={16} style={{ color: hovered ? "var(--color-emerald)" : "var(--color-text-faint)" }} />
+      </div>
+      <h4 style={{ fontSize: "0.9rem", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--color-text)", marginBottom: "0.5rem" }}>{v.title}</h4>
+      <p style={{ fontSize: "0.78rem", lineHeight: 1.72, color: "var(--color-text-muted)" }}>{v.body}</p>
+      <motion.div className="absolute bottom-0 left-0 h-[2px]"
+        animate={{ width: hovered ? "100%" : "0%" }} transition={{ duration: 0.35 }}
+        style={{ background: "var(--color-emerald)" }} />
+    </motion.div>
+  );
+}
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  { text: "The HealthMaster app completely changed how our patients manage their medication. Softrinx understood the clinical requirements and delivered beyond what we expected.", author: "Irenee", role: "Client — HealthMaster", initial: "I" },
+  { text: "Working with Softrinx on our brand platform was seamless. They took our vision seriously and built something we're genuinely proud to show the world.", author: "BritechMedia", role: "Client — Brand & Digital Platform", initial: "B" },
+  { text: "Decluttr came to life exactly as we imagined it. The team was communicative, fast, and delivered a polished product that our users love.", author: "Mercy", role: "Client — Decluttr", initial: "M" },
+];
+
+// ─── Process ──────────────────────────────────────────────────────────────────
+const PROCESS = [
+  { num: "01", title: "Discover", body: "Deep dive into goals, users, and constraints. We map the problem before touching the keyboard." },
+  { num: "02", title: "Architect", body: "System design, tech stack, API contracts. Every structural decision made upfront, deliberately." },
+  { num: "03", title: "Build", body: "Iterative sprints. You see real working progress every week — not just at the end." },
+  { num: "04", title: "Ship", body: "CI/CD, staging, go-live checklist. We monitor and iterate after launch, not disappear." },
+];
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+export default function AboutPage() {
+  const { colors } = useTheme();
+
+  const valuesRef = useRef(null);
+  const processRef = useRef(null);
+  const teamRef = useRef(null);
+  const testimonialRef = useRef(null);
+  const ctaRef = useRef(null);
+
+  const valuesInView = useInView(valuesRef, { once: true, margin: "-60px" });
+  const processInView = useInView(processRef, { once: true, margin: "-60px" });
+  const teamInView = useInView(teamRef, { once: true, margin: "-60px" });
+  const testimonialInView = useInView(testimonialRef, { once: true, margin: "-60px" });
+  const ctaInView = useInView(ctaRef, { once: true, margin: "-60px" });
+
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setActiveTestimonial((i) => (i + 1) % TESTIMONIALS.length), 5000);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <main style={{ background: "var(--color-bg)" }}>
+      <Navigation />
+
+      {/* ══ HERO ═══════════════════════════════════════════════════════════════ */}
+      <section className="relative flex items-center overflow-hidden"
+        style={{ minHeight: "100svh", background: "var(--color-bg)" }}>
+        <div className="absolute pointer-events-none" style={{
+          top: "-20%", left: "55%", transform: "translateX(-50%)",
+          width: "70vw", height: "70vw", maxWidth: "800px", maxHeight: "800px",
+          background: `radial-gradient(ellipse at 50% 0%, ${colors.emeraldBg} 0%, transparent 70%)`,
+        }} />
+        <VerticalLines side="right" />
+
+        <div className="relative z-10 w-full px-6 mx-auto lg:px-16"
+          style={{ maxWidth: "1360px", paddingTop: "clamp(110px, 14vw, 144px)", paddingBottom: "clamp(64px, 8vw, 96px)" }}>
+          <div className="flex flex-col-reverse gap-12 lg:grid lg:items-center"
+            style={{ gridTemplateColumns: "45fr 55fr" }}>
+
+            {/* LEFT — Lottie */}
+            <motion.div className="flex items-center justify-center"
+              initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.85, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
+              style={{ height: "clamp(280px, 36vw, 500px)" }}>
+              <LottieAnimation />
             </motion.div>
-            
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="max-w-3xl mb-12 text-xl text-gray-300"
-            >
-              For over a decade, we&apos;ve been helping businesses transform their ideas into powerful, 
-              scalable, and user-friendly applications that drive real results.
-            </motion.p>
+
+            {/* RIGHT — Text */}
+            <motion.div className="flex flex-col"
+              initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.08, ease: [0.32, 0.72, 0, 1] }}
+              style={{ gap: "clamp(1.2rem, 2vw, 1.8rem)" }}>
+              <div className="flex items-center gap-3">
+                <span className="block w-8 h-px" style={{ background: "var(--color-emerald)" }} />
+                <span style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.16em", color: "var(--color-emerald)", textTransform: "uppercase" }}>
+                  About Softrinx
+                </span>
+              </div>
+
+              <h1 style={{ fontSize: "clamp(2.6rem, 5.5vw, 5rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
+                The engineers
+                <br />
+                <span style={{ color: "var(--color-emerald)" }}>behind</span>
+                <br />
+                the work.
+              </h1>
+
+              <p style={{ fontSize: "clamp(0.88rem, 1.3vw, 1rem)", lineHeight: 1.82, color: "var(--color-text-muted)", maxWidth: "30rem" }}>
+                Softrinx is a full-spectrum tech solutions company built by engineers — covering software, web, mobile, AI/ML, networking and IT. Whether you're a startup, enterprise, or individual, we deliver the expertise you need, all in one place.
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                {[{ label: "Nyeri, Kenya", icon: MapPin }, { label: "Founded 2024", icon: Target }, { label: "info@softrinx.com", icon: Mail }]
+                  .map(({ label, icon: Icon }) => (
+                    <div key={label} className="flex items-center gap-2"
+                      style={{ border: "1px solid var(--color-border)", padding: "0.35rem 0.8rem", background: "var(--color-card)" }}>
+                      <Icon size={11} style={{ color: "var(--color-emerald)" }} />
+                      <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "var(--color-text-muted)", letterSpacing: "0.03em" }}>{label}</span>
+                    </div>
+                  ))}
+              </div>
+
+              <div className="flex flex-wrap gap-3 pt-1">
+                <Link href="/contact"
+                  className="inline-flex items-center gap-2 font-bold transition-all duration-200 group hover:-translate-y-px"
+                  style={{ background: "var(--color-emerald)", color: "#040805", padding: "0.8rem 1.6rem", fontSize: "0.88rem", boxShadow: `0 0 24px var(--color-emerald-glow)` }}>
+                  Work With Us
+                  <ArrowUpRight size={15} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+                <Link href="/portfolio"
+                  className="inline-flex items-center gap-2 font-semibold transition-all duration-200"
+                  style={{ color: "var(--color-text-muted)", border: "1px solid var(--color-border-mid)", padding: "0.8rem 1.6rem", fontSize: "0.88rem", background: "transparent" }}>
+                  View Portfolio <ArrowRight size={14} />
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-0 left-0 w-full pointer-events-none"
+          style={{ height: 80, background: "linear-gradient(to top, var(--color-surface), transparent)" }} />
+      </section>
+
+      {/* ══ WHO WE ARE + MISSION + VISION ══════════════════════════════════════ */}
+      <section style={{
+        background: "var(--color-surface)",
+        borderTop: "1px solid var(--color-border)", borderBottom: "1px solid var(--color-border)",
+        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
+      }}>
+        <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+
+          {/* Who we are — 2 col */}
+          <div className="grid mb-20 gap-14 lg:grid-cols-2 lg:gap-24">
+            <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}>
+              <SectionLabel text="Who We Are" />
+              <h2 style={{ fontSize: "clamp(2rem, 4.5vw, 3.6rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
+                From Nyeri.
+                <br />
+                <span style={{ color: "var(--color-emerald)" }}>For everywhere.</span>
+              </h2>
+            </motion.div>
+
+            <motion.div className="flex flex-col" style={{ gap: "1.2rem" }}
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}>
+              <p style={{ fontSize: "clamp(0.88rem, 1.3vw, 0.97rem)", lineHeight: 1.85, color: "var(--color-text-muted)" }}>
+                Softrinx is a full-spectrum tech solutions company built by engineers, developers, and specialists across tech. From software engineering, web development, mobile apps, AI/ML, networking and IT — we bring a complete team to solve any tech challenge.
+              </p>
+              <p style={{ fontSize: "clamp(0.88rem, 1.3vw, 0.97rem)", lineHeight: 1.85, color: "var(--color-text-muted)" }}>
+                We started in 2024 as a group of Computer Science graduates from Dedan Kimathi University of Technology in Nyeri. Five engineers who believed world-class software can be built from anywhere. Whether you're a startup, an enterprise scaling fast, or an individual with a bold idea — Softrinx delivers the expertise you need, all in one place.
+              </p>
+              <div className="flex items-center gap-4 pt-4" style={{ borderTop: "1px solid var(--color-border)" }}>
+                <span className="block w-12 h-px" style={{ background: "var(--color-emerald)" }} />
+                <span style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", color: "var(--color-text-faint)", textTransform: "uppercase" }}>
+                  DeKUT alumni · Nyeri-built · globally ready
+                </span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Mission & Vision */}
+          <div className="grid grid-cols-1 gap-px lg:grid-cols-2" style={{ background: "var(--color-border)" }}>
+            {[
+              {
+                label: "Mission", icon: Target,
+                heading: "Empowering through technology.",
+                body: "To empower startups, enterprises, individuals, businesses and companies with accessible, reliable technology solutions that transform challenges into opportunities.",
+              },
+              {
+                label: "Vision", icon: Globe,
+                heading: "The world's go-to tech partner.",
+                body: "To be the trusted go-to technology partner globally — where any tech issue finds a solution and every digital ambition becomes reality.",
+              },
+            ].map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <motion.div key={item.label}
+                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                  transition={{ duration: 0.55, delay: i * 0.1 }}
+                  style={{ padding: "clamp(2rem, 3.5vw, 3rem)", background: "var(--color-surface)", position: "relative" }}>
+                  {i === 0 && <div className="absolute top-0 left-0 w-full h-[2px]" style={{ background: "var(--color-emerald)" }} />}
+                  <div className="flex items-center gap-3 mb-5">
+                    <div style={{ width: 36, height: 36, border: "1px solid var(--color-emerald-border)", background: "var(--color-emerald-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Icon size={16} style={{ color: "var(--color-emerald)" }} />
+                    </div>
+                    <span style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.15em", color: "var(--color-emerald)", textTransform: "uppercase" }}>{item.label}</span>
+                  </div>
+                  <h3 style={{ fontSize: "clamp(1.1rem, 2vw, 1.5rem)", fontWeight: 900, letterSpacing: "-0.03em", color: "var(--color-text)", marginBottom: "1rem", lineHeight: 1.2 }}>{item.heading}</h3>
+                  <p style={{ fontSize: "0.85rem", lineHeight: 1.78, color: "var(--color-text-muted)" }}>{item.body}</p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-     <OurApproachSection/>
-      <WhyChooseUsSection/>
-
-      {/* Stats Section - Light */}
-      <section ref={statsRef} className="py-24 bg-white">
-        <div className="container px-4 mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isStatsInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="mb-16 text-center"
-          >
-            <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">Our Stats</h2>
-            <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              Numbers that reflect our commitment to excellence and the trust our clients place in us.
+      {/* ══ VALUES ═════════════════════════════════════════════════════════════ */}
+      <section ref={valuesRef} style={{
+        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
+        background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)",
+      }}>
+        <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+          <div className="flex flex-col justify-between gap-8 mb-14 lg:flex-row lg:items-end">
+            <div>
+              <SectionLabel text="Our Values" />
+              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
+                What we<br />stand for.
+              </h2>
+            </div>
+            <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: "var(--color-text-muted)", maxWidth: "22rem" }}>
+              Not corporate platitudes. These are the actual principles that govern how we hire, how we build, and how we treat every client.
             </p>
-          </motion.div>
+          </div>
+          <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4" style={{ background: "var(--color-border)" }}>
+            {VALUES.map((v, i) => <ValueCard key={v.title} v={v} index={i} inView={valuesInView} />)}
+          </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
-            {[
-              { icon: Clock, value: counters.years, label: "Years", subtitle: "Working With Passion" },
-              { icon: Users, value: counters.customers, label: "Customer", subtitle: "Satisfied Customer" },
-              { icon: Target, value: counters.projects, label: "Project", subtitle: "We Have Completed" },
-              { icon: Award, value: counters.awards, label: "Awards", subtitle: "Achievement For Service" }
-            ].map((stat, idx) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 30 }}
-                animate={isStatsInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="text-center group"
-              >
-                <div className="inline-flex items-center justify-center w-20 h-20 mb-6 transition-all duration-300 rounded-full bg-emerald-100 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white group-hover:scale-110">
-                  <stat.icon className="w-10 h-10" />
-                </div>
-                <div className="mb-2 text-5xl font-bold text-gray-900">
-                  {stat.value}{stat.label === "Customer" ? "K" : stat.label === "Project" ? "" : ""}
-                </div>
-                <div className="mb-1 text-xl font-semibold text-gray-700">{stat.label}</div>
-                <div className="text-sm text-gray-500">{stat.subtitle}</div>
+      {/* ══ PROCESS ════════════════════════════════════════════════════════════ */}
+      <section ref={processRef} style={{
+        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
+        background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)",
+      }}>
+        <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+          <div className="mb-14">
+            <SectionLabel text="How We Work" />
+            <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
+              The Softrinx<br />playbook.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4" style={{ background: "var(--color-border)" }}>
+            {PROCESS.map((step, i) => (
+              <motion.div key={step.num}
+                initial={{ opacity: 0, y: 20 }} animate={processInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                style={{ padding: "clamp(1.5rem, 2.5vw, 2rem)", background: "var(--color-surface)", position: "relative" }}>
+                {i === 0 && <div className="absolute top-0 left-0 w-full h-[2px]" style={{ background: "var(--color-emerald)" }} />}
+                <span style={{ display: "block", fontSize: "clamp(3rem, 5vw, 5rem)", fontWeight: 900, letterSpacing: "-0.06em", lineHeight: 1, color: "var(--color-border-mid)", marginBottom: "1rem", userSelect: "none" }}>
+                  {step.num}
+                </span>
+                <h4 style={{ fontSize: "1rem", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--color-text)", marginBottom: "0.6rem" }}>{step.title}</h4>
+                <p style={{ fontSize: "0.8rem", lineHeight: 1.72, color: "var(--color-text-muted)" }}>{step.body}</p>
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Client logos */}
-          <div className="mt-20">
-            <p className="mb-10 font-semibold text-center text-gray-600">
-              We Take Care Of More Than 1.5k Trusted Allies
+      {/* ══ TEAM ═══════════════════════════════════════════════════════════════ */}
+      <section ref={teamRef} style={{
+        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
+        background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)",
+      }}>
+        <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+          <div className="flex flex-col justify-between gap-8 mb-14 lg:flex-row lg:items-end">
+            <div>
+              <SectionLabel text="The Team" />
+              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
+                Five engineers.<br />One standard.
+              </h2>
+            </div>
+            <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: "var(--color-text-muted)", maxWidth: "22rem" }}>
+              Everyone here ships production code, talks to clients, and owns their domain completely. No silos, no middlemen.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-12 opacity-40 grayscale">
-              {["Health Master", "Alx", "IntelliMark", "Aws", "Github"].map((company, idx) => (
-                <motion.div
-                  key={company}
-                  initial={{ opacity: 0 }}
-                  animate={isStatsInView ? { opacity: 0.4 } : {}}
-                  transition={{ duration: 0.6, delay: idx * 0.1 }}
-                  className="transition-all duration-300 hover:opacity-100 hover:grayscale-0"
-                >
-                  <div className="text-2xl font-bold text-gray-600">{company}</div>
+          </div>
+          <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-3" style={{ background: "var(--color-border)" }}>
+            {TEAM.map((member, i) => <TeamCard key={member.name} member={member} index={i} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ CLIENT WORK ════════════════════════════════════════════════════════ */}
+      <section style={{
+        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
+        background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)",
+      }}>
+        <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+          <div className="flex flex-col justify-between gap-8 mb-14 lg:flex-row lg:items-end">
+            <div>
+              <SectionLabel text="Work We've Done" />
+              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
+                Real clients.<br />Real products.
+              </h2>
+            </div>
+            <Link href="/portfolio" className="inline-flex items-center self-start gap-2 font-semibold transition-colors duration-200 group lg:self-auto"
+              style={{ color: "var(--color-emerald)", fontSize: "0.85rem" }}>
+              Full portfolio
+              <ArrowUpRight size={15} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4" style={{ background: "var(--color-border)" }}>
+            {WORK.map((w, i) => <WorkCard key={w.product} w={w} index={i} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ TESTIMONIALS ═══════════════════════════════════════════════════════ */}
+      <section ref={testimonialRef} style={{
+        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
+        background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)",
+        position: "relative", overflow: "hidden",
+      }}>
+        {/* Giant bg quote mark */}
+        <div className="absolute pointer-events-none select-none" style={{
+          top: "8%", right: "-2%", fontSize: "clamp(12rem, 22vw, 22rem)",
+          fontWeight: 900, lineHeight: 1, color: "var(--color-border)", userSelect: "none",
+        }}>"</div>
+
+        <div className="relative px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+          <div className="mb-14"><SectionLabel text="What Clients Say" /></div>
+
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-24" style={{ alignItems: "center" }}>
+            {/* Left — animated quote */}
+            <div>
+              <AnimatePresence mode="wait">
+                <motion.div key={activeTestimonial}
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}>
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(5)].map((_, i) => <div key={i} style={{ width: 6, height: 6, background: "var(--color-emerald)" }} />)}
+                  </div>
+                  <blockquote style={{ fontSize: "clamp(1.05rem, 2vw, 1.5rem)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.38, color: "var(--color-text)", marginBottom: "2rem" }}>
+                    "{TESTIMONIALS[activeTestimonial].text}"
+                  </blockquote>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center font-black"
+                      style={{ width: 40, height: 40, background: "var(--color-emerald-bg)", border: "1px solid var(--color-emerald-border)", color: "var(--color-emerald)", fontSize: "0.9rem", flexShrink: 0 }}>
+                      {TESTIMONIALS[activeTestimonial].initial}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--color-text)", letterSpacing: "-0.01em" }}>{TESTIMONIALS[activeTestimonial].author}</div>
+                      <div style={{ fontSize: "0.7rem", fontWeight: 500, color: "var(--color-text-faint)" }}>{TESTIMONIALS[activeTestimonial].role}</div>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+              <div className="flex gap-2 mt-8">
+                {TESTIMONIALS.map((_, i) => (
+                  <button key={i} onClick={() => setActiveTestimonial(i)} style={{
+                    width: i === activeTestimonial ? 28 : 6, height: 6, border: "none", cursor: "pointer", padding: 0,
+                    background: i === activeTestimonial ? "var(--color-emerald)" : "var(--color-border-mid)",
+                    transition: "all 0.3s ease",
+                  }} />
+                ))}
+              </div>
+            </div>
+
+            {/* Right — list */}
+            <div className="flex flex-col gap-px" style={{ background: "var(--color-border)" }}>
+              {TESTIMONIALS.map((t, i) => (
+                <motion.div key={i}
+                  initial={{ opacity: 0, x: 16 }} animate={testimonialInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
+                  onClick={() => setActiveTestimonial(i)}
+                  style={{
+                    padding: "1.25rem 1.5rem", cursor: "pointer", transition: "all 0.25s",
+                    background: i === activeTestimonial ? "var(--color-emerald-bg)" : "var(--color-surface)",
+                    borderLeft: `3px solid ${i === activeTestimonial ? "var(--color-emerald)" : "transparent"}`,
+                  }}>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 800, letterSpacing: "-0.01em", marginBottom: "0.2rem", color: i === activeTestimonial ? "var(--color-text)" : "var(--color-text-muted)" }}>{t.author}</div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--color-text-faint)" }}>{t.role}</div>
                 </motion.div>
               ))}
             </div>
@@ -333,194 +617,67 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <TestimonialsSection/>
-
-      {/* Team Section - Light */}
-      <section ref={teamRef} className="py-24 bg-white">
-        <div className="container px-4 mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isTeamInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="mb-16 text-center"
-          >
-            <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">Team Members</h2>
-            <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              Meet the talented individuals who bring passion, expertise, and innovation to every project we deliver.
-            </p>
-          </motion.div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {teamMembers.map((member, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                animate={isTeamInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="relative group"
-              >
-                <div className="relative mb-6 overflow-hidden rounded-2xl">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    width={400}
-                    height={500}
-                    className="w-full h-[400px] object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
-                  />
-                  
-                  {/* Overlay with social icons */}
-                  <div className="absolute inset-0 flex items-end justify-center pb-8 transition-opacity duration-500 opacity-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent group-hover:opacity-100">
-                    <div className="flex gap-3">
-                      <a 
-                        href={member.social.linkedin}
-                        className="flex items-center justify-center w-10 h-10 transition-colors bg-white rounded-full hover:bg-emerald-500 hover:text-white"
-                      >
-                        <Linkedin className="w-5 h-5" />
-                      </a>
-                      {member.social.twitter && (
-                        <a 
-                          href={member.social.twitter}
-                          className="flex items-center justify-center w-10 h-10 transition-colors bg-white rounded-full hover:bg-emerald-500 hover:text-white"
-                        >
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                          </svg>
-                        </a>
-                      )}
-                   
-                     
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <h3 className="mb-1 text-2xl font-bold text-gray-900">{member.name}</h3>
-                  <p className="mb-3 font-medium text-emerald-600">{member.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section - Dark with Background */}
-      <section ref={ctaRef} className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&q=80"
-            alt="Contact us"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gray-950/90" />
-        </div>
-
-        <div className="container relative z-10 px-4 mx-auto">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isCtaInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="inline-block mb-8">
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-emerald-500/20 blur-3xl" />
-                  <div className="relative flex flex-col items-center justify-center w-32 h-32 border-4 rounded-full border-emerald-500">
-                    <div className="text-4xl font-bold text-white">10</div>
-                    <div className="text-sm text-emerald-400">Years</div>
-                  </div>
-                </div>
+      {/* ══ CTA ════════════════════════════════════════════════════════════════ */}
+      <section ref={ctaRef} style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)", position: "relative", overflow: "hidden" }}>
+        <VerticalLines side="left" />
+        <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
+          <div className="grid grid-cols-1 gap-px lg:grid-cols-2" style={{ background: "var(--color-border)" }}>
+            {/* Left — emerald */}
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={ctaInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+              className="relative overflow-hidden"
+              style={{ padding: "clamp(3rem, 6vw, 6rem) clamp(1.5rem, 4vw, 4rem)", background: "var(--color-emerald)" }}>
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.08 }}>
+                <defs>
+                  <pattern id="diag" width="32" height="32" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                    <line x1="0" y1="0" x2="0" y2="32" stroke="#000" strokeWidth="1.5" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#diag)" />
+              </svg>
+              <div className="relative z-10">
+                <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "#040805", marginBottom: "1.5rem" }}>
+                  Ready to build<br />something real?
+                </h2>
+                <Link href="/contact"
+                  className="inline-flex items-center gap-2 font-bold transition-all duration-200 group hover:-translate-y-px"
+                  style={{ background: "#040805", color: "var(--color-emerald)", padding: "0.85rem 1.8rem", fontSize: "0.88rem" }}>
+                  Start a project
+                  <ArrowUpRight size={15} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
               </div>
+            </motion.div>
 
-              <h2 className="mb-6 text-4xl font-bold text-white md:text-6xl">
-                Ready to Unlock the Potential of Your Business?
-              </h2>
-              
-              <p className="max-w-2xl mx-auto mb-10 text-xl text-gray-300">
-                Let&apos;s discuss your project and explore how we can help you achieve your business goals with cutting-edge software solutions.
+            {/* Right — dark */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={ctaInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.08, ease: [0.32, 0.72, 0, 1] }}
+              style={{ padding: "clamp(3rem, 6vw, 6rem) clamp(1.5rem, 4vw, 4rem)", background: "var(--color-bg)", display: "flex", flexDirection: "column", justifyContent: "center", gap: "2rem" }}>
+              <p style={{ fontSize: "clamp(0.88rem, 1.4vw, 1rem)", lineHeight: 1.82, color: "var(--color-text-muted)", maxWidth: "28rem" }}>
+                We work with funded startups, established enterprises, and ambitious teams who want software that performs — not just software that exists.
               </p>
-
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 px-10 py-5 text-lg font-bold text-white transition-all duration-300 bg-transparent border-2 rounded-full border-emerald-500 hover:bg-emerald-500 group"
-              >
-                Contact  Us
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Link>
+              <div className="flex flex-col gap-3">
+                {["No retainer lock-ins", "Fixed-price or T&M — your call", "Full source code, always yours"].map((item) => (
+                  <div key={item} className="flex items-center gap-3">
+                    <div style={{ width: 6, height: 6, background: "var(--color-emerald)", flexShrink: 0 }} />
+                    <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--color-text-muted)" }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-5">
+                <Link href="/contact" className="inline-flex items-center gap-2 font-semibold transition-colors duration-200 group"
+                  style={{ color: "var(--color-emerald)", fontSize: "0.85rem" }}>
+                  Get in touch <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                </Link>
+                <a href="mailto:info@softrinx.com" className="inline-flex items-center gap-2 font-semibold"
+                  style={{ color: "var(--color-text-faint)", fontSize: "0.82rem" }}>
+                  info@softrinx.com <ExternalLink size={12} />
+                </a>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Latest Articles Preview - Optional Light Section */}
-      <section className="py-24 bg-white">
-        <div className="container px-4 mx-auto">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">The Latest Article</h2>
-            <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              Stay informed with insights, best practices, and industry trends from our team of experts.
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            {[1, 2, 3].map((item) => (
-              <motion.div
-                key={item}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: item * 0.1 }}
-                className="group"
-              >
-                <div className="relative mb-6 overflow-hidden rounded-2xl">
-                  <Image
-                    src={`https://images.unsplash.com/photo-${
-                      item === 1 ? '1697577418970-95d99b5a55cf' : 
-                      item === 2 ? '1517245386807-bb43f82c33c4' : 
-                      '1516321318423-f06f85e504b3'
-                    }?w=600&q=80`}
-                    alt="Article"
-                    width={400}
-                    height={250}
-                    className="object-cover w-full h-64 transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute px-4 py-2 text-sm font-semibold text-white rounded-full top-4 left-4 bg-emerald-500">
-                    Technology
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 mb-3 text-sm text-gray-500">
-                  <span>By Admin</span>
-                  <span>•</span>
-                  <span>Dec {item}, 2024</span>
-                </div>
-                <h3 className="mb-3 text-xl font-bold text-gray-900 transition-colors group-hover:text-emerald-600">
-                  {item === 1 && "How AI is Transforming Software Development"}
-                  {item === 2 && "Best Practices for Scalable Web Applications"}
-                  {item === 3 && "The Future of Mobile App Development"}
-                </h3>
-                <Link 
-                  href="/blog"
-                  className="inline-flex items-center font-semibold transition-all text-emerald-600 hover:gap-2 group"
-                >
-                  Read More
-                  <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link
-              href="/blog"
-              className="inline-flex items-center px-8 py-4 font-semibold text-white transition-colors bg-gray-900 rounded-full hover:bg-emerald-600"
-            >
-              View All Articles
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Link>
-          </div>
-        </div>
-      </section>
-      
       <Footer />
     </main>
   );

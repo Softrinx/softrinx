@@ -81,7 +81,7 @@ const Navigation = () => {
             {/* Logo */}
             <Link href="/" className="flex items-center flex-shrink-0 mr-10">
               <Image
-                src="/images/images/logo3.png"
+                src="/images/images/logo.png"
                 alt="Softrinx Logo"
                 width={150} height={40}
                 className="w-auto transition-all duration-300 h-9"

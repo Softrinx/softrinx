@@ -99,31 +99,31 @@ function StatCard({ raw, suffix, title, sub, delay }: {
   const count = useCountUp(raw, 1800, fired);
 
   return (
-    <div ref={ref} className="flex flex-col items-center justify-center flex-1 px-6 py-10">
+    <div ref={ref} className="flex flex-col items-center justify-center stat-card-inner">
       <motion.span
         className="font-black leading-none tabular-nums"
         initial={{ opacity: 0, y: 12 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay: delay / 1000 }}
-        style={{ fontSize: "clamp(2rem, 3.5vw, 3rem)", color: "var(--color-text)", letterSpacing: "-0.04em" }}
+        style={{ fontSize: "clamp(1.6rem, 3.5vw, 3rem)", color: "var(--color-text)", letterSpacing: "-0.04em" }}
       >
         {count}{suffix}
       </motion.span>
       <motion.span
-        className="mt-2 font-semibold text-center"
+        className="mt-1 font-semibold text-center"
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
         transition={{ duration: 0.5, delay: delay / 1000 + 0.15 }}
-        style={{ fontSize: "clamp(0.78rem, 1.1vw, 0.9rem)", color: "var(--color-text-muted)" }}
+        style={{ fontSize: "clamp(0.72rem, 1.1vw, 0.88rem)", color: "var(--color-text-muted)" }}
       >
         {title}
       </motion.span>
       <motion.span
-        className="mt-1 text-center"
+        className="mt-0.5 text-center"
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
         transition={{ duration: 0.5, delay: delay / 1000 + 0.25 }}
-        style={{ fontSize: "0.7rem", color: "var(--color-text-faint)", letterSpacing: "0.03em" }}
+        style={{ fontSize: "0.65rem", color: "var(--color-text-faint)", letterSpacing: "0.03em" }}
       >
         {sub}
       </motion.span>
@@ -264,23 +264,46 @@ export function HeroSection() {
           ))}
         </div>
 
-        {/* Stats card */}
-        <div className="flex flex-col w-full overflow-hidden sm:flex-row"
-          style={{ background: "var(--color-surface)", borderTop: `1px solid var(--color-border)` }}
-        >
+        {/* Stats — 2×2 mobile, 4-col desktop with 1px dividers between each */}
+        <div className="w-full overflow-hidden stats-grid">
           {[
-            { raw: 50,  suffix: "+",  title: "Projects Shipped",    sub: "Across all industries",          delay: 0   },
-            { raw: 3,   suffix: "yr", title: "In Business",         sub: "Working with passion",           delay: 150 },
+            { raw: 50,  suffix: "+",  title: "Projects Shipped",    sub: "Across all industries",            delay: 0   },
+            { raw: 3,   suffix: "yr", title: "In Business",         sub: "Working with passion",             delay: 150 },
             { raw: 100, suffix: "%",  title: "Client Satisfaction", sub: "We don't stop until you're happy", delay: 300 },
-            { raw: 15,  suffix: "+",  title: "Industries Served",   sub: "From fintech to healthcare",     delay: 450 },
-          ].map((s, i, arr) => (
-            <div key={s.title} className="flex-1"
-              style={{ borderRight: i < arr.length - 1 ? `1px solid var(--color-border)` : "none" }}
-            >
+            { raw: 15,  suffix: "+",  title: "Industries Served",   sub: "From fintech to healthcare",       delay: 450 },
+          ].map((s, i) => (
+            <div key={s.title} className="stat-cell">
               <StatCard {...s} />
             </div>
           ))}
         </div>
+
+        <style>{`
+          /* Wrapper: border color = divider color, gap = divider thickness */
+          .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--color-border);
+            border-top: 1px solid var(--color-border);
+          }
+          /* Each cell fills with surface so only the 1px gaps show as dividers */
+          .stat-cell {
+            background: var(--color-surface);
+          }
+          .stat-card-inner {
+            padding: 1.1rem 0.6rem;
+          }
+          /* Desktop: 4 columns in a single row = 3 vertical dividers */
+          @media (min-width: 640px) {
+            .stats-grid {
+              grid-template-columns: repeat(4, 1fr);
+            }
+            .stat-card-inner {
+              padding: 2.25rem 1.25rem;
+            }
+          }
+        `}</style>
       </div>
     </>
   );
