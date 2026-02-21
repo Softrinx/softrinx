@@ -42,7 +42,7 @@ function LottieAnimation() {
   );
 }
 
-// ─── Projects ─────────────────────────────────────────────────────────────────
+// ─── Projects ─
 const PROJECTS = [
   {
     id: "memora",
