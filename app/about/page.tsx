@@ -225,7 +225,7 @@ const VALUES = [
   { icon: Code2, title: "Craft over output", body: "We write code we're proud to put our names on. Quality isn't a phase — it's the whole process." },
   { icon: Zap, title: "Speed without shortcuts", body: "Deadlines are real. We move fast through clear systems, not by cutting corners." },
   { icon: Shield, title: "Radical transparency", body: "You always know where your project stands. No surprises, no excuses — just honest progress." },
-  { icon: Globe, title: "Built in Africa, for the world", body: "We build from Nyeri with global standards. Context-aware, globally competitive." },
+  { icon: Globe, title: "Built in Africa, for the world", body: "We build From Vision. For Everyone. with global standards. Context-aware, globally competitive." },
 ];
 
 function ValueCard({ v, index, inView }: { v: typeof VALUES[0]; index: number; inView: boolean }) {
@@ -384,7 +384,7 @@ export default function AboutPage() {
               transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}>
               <SectionLabel text="Who We Are" />
               <h2 style={{ fontSize: "clamp(2rem, 4.5vw, 3.6rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
-                From Nyeri.
+                From Vision. For Everyone..
                 <br />
                 <span style={{ color: "var(--color-emerald)" }}>For everywhere.</span>
               </h2>
