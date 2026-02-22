@@ -21,7 +21,7 @@ const CASES = [
     category: "HealthTech",
     title: "HealthMaster App — In Active Beta Testing",
     result: "Beta live · Real users onboarded",
-    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=600&fit=crop",
+    image: "/images/graphic.webp",
     size: "small",
   },
   {
@@ -45,7 +45,7 @@ const CASES = [
     category: "Creative Agency",
     title: "Memora Visuals — Digital Presence for a Creative Studio",
     result: "Live & converting · Brand established",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop",
+    image: "/images/memora.png",
     size: "small",
   },
   {
@@ -53,9 +53,16 @@ const CASES = [
     category: "Travel & Rentals",
     title: "WereNtOnline — Tourists Booking Kenya Coast Rentals Online",
     result: "Active bookings · Kenya Coast market",
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=600&fit=crop",
+    image: "/images/werent.png",
     size: "small",
-  },
+  },{
+    number:"07",
+    category:"Chrome web extension",
+    title:"Explain It to Me - AI Text Simplifier",
+    result:"Transform complex text into clear explanations with AI - from beginner to expert level",
+    image:"/images/extension.png",
+    size:"small"
+  }
 ];
 
 // ─── Single card ──────────────────────────────────────────────────────────────
