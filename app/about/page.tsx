@@ -71,14 +71,14 @@ function VerticalLines({ side = "right" }: { side?: "left" | "right" }) {
 // ─── Team ─────────────────────────────────────────────────────────────────────
 const TEAM = [
   {
-    name: "Clint Simiyu", role: "CEO & Co-Founder", domain: "Architecture & Strategy",
-    bio: "CS graduate, DeKUT Nyeri. Leads technical vision, client strategy, and the overall direction of Softrinx.",
+    name: "Clint Simiyu", role: "CEO , founder and software engineer", domain: "Architecture & Strategy",
+    bio: "Leads technical vision, client strategy, and the overall direction of Softrinx.Backend guru and problem solver",
     image: "/images/images/clint.png",
     linkedin: "https://linkedin.com/in/clint-simiyu/", github: "https://github.com/Clint171", twitter: "https://twitter.com",
   },
   {
-    name: "Baruk Ali", role: "COO & Co-Founder", domain: "Operations & Growth",
-    bio: "Oversees operations, partnerships, and delivery. Ensures every project runs on time and to specification.",
+    name: "Baruk Ali", role: "COO, co-founder & software engineer", domain: "Operations & Growth",
+    bio: "Oversees technical operations, partnerships, and delivery. Ensures every project runs on time and to specification.",
     image: "/images/images/baruk2.png",
     linkedin: "https://www.linkedin.com/in/mohammed-ali-mbaruk-56785639b", github: "https://github.com/Baruk1-netizen", twitter: "https://x.com/Baruk_KE",
   },

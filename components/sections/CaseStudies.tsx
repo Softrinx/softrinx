@@ -13,7 +13,7 @@ const CASES = [
     category: "Music Streaming",
     title: "Djafro StreamBox — 1,000+ Downloads on Google Play",
     result: "1k+ downloads · Live on Play Store",
-    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=900&h=600&fit=crop",
+    image: "/images/afro.png",
     size: "large",
   },
   {
