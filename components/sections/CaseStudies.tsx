@@ -258,7 +258,7 @@ export default function CaseStudy() {
               maxWidth: "22rem",
               textAlign: "right",
             }}>
-              Real products. Real users. From Kenya's coast to Germany — these are the things we've built and shipped.
+              Real products. Real users. From Kenya&apos;s coast to Germany — these are the things we&apos;ve built and shipped.
             </p>
             <Link
               href="/portfolio"

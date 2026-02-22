@@ -354,7 +354,7 @@ const SELLING = [
   { num: "01", title: "We don't just code — we solve.", body: "Every project starts with understanding the real problem. We ask hard questions before writing a single line. The result is software that actually works for the people using it." },
   { num: "02", title: "Speed without cutting corners.", body: "We've shipped 7 products in under a year. Not because we rushed — because we have systems, clear communication, and engineers who know their craft." },
   { num: "03", title: "Full ownership. Always.", body: "Every repository, every domain, every line of code belongs to you. No lock-ins, no hidden dependencies on us. You can take it anywhere." },
-  { num: "04", title: "From Nyeri. For the world.", body: "We're CS graduates from DeKUT, Nyeri — building products used in Kenya, Germany, and beyond. World-class engineering doesn't require a zip code." },
+  { num: "04", title: "From Vision. For Everyone.. For the world.", body: "We're CS graduates from DeKUT, Nyeri — building products used in Kenya, Germany, and beyond. World-class engineering doesn't require a zip code." },
 ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────

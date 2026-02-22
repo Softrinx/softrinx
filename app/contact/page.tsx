@@ -651,7 +651,7 @@ export default function ContactPage() {
               {[
                 { label: "See our work", href: "/portfolio", desc: "7 live projects across AI, mobile, and web" },
                 { label: "Our services", href: "/services", desc: "Full stack — from idea to production" },
-                { label: "About the team", href: "/about", desc: "5 engineers, 3 years, built from Nyeri" },
+                { label: "About the team", href: "/about", desc: "5 engineers, 3 years, built From Vision. For Everyone." },
               ].map(({ label, href, desc }) => (
                 <Link key={href} href={href}
                   className="flex items-center justify-between gap-4 transition-all duration-200 group"
