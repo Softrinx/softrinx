@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
 import { ThemeProvider } from '@/contexts/themeContext'
+import FloatingButtons from '@/components/FloatingButtons'
 
 const dmSans = localFont({
   src: [
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={dmSans.className}>
         <ThemeProvider>
           {children}
+          <FloatingButtons />
         </ThemeProvider>
       </body>
     </html>
