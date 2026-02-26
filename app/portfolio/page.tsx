@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useRef, useState, useEffect } from "react";
@@ -106,8 +108,23 @@ const PROJECTS = [
     cols: 1, rows: 1,
   },
   {
-    id: "werent",
+    id:"Hmex",
     number: "05",
+    client: "H-mex health tech",
+    headline: "AI NCDs Risk Assessment Tool",
+    pitch: "We built an AI-powered risk assessment tool for non-communicable diseases, tailored for the east African population. Early detection, personalised insights, and a healthier future.",
+    description: "An AI-driven health tech platform designed to assess the risk of non-communicable diseases (NCDs) prevalent in East Africa. By analysing user data, lifestyle factors, and regional health trends, the tool provides early detection and personalised insights to empower individuals to take proactive steps towards better health.",
+    category: "HealthTech · AI",
+    tags: ["AI/ML", "HealthTech", "React", "Python"],
+    result: "Empowering healthier lives in East Africa",
+    link: "https://hmex.vercel.app",
+    playstore: null,
+    image:"/images/hmex.png",
+    cols: 1, rows: 1,
+  },
+  {
+    id: "werent",
+    number: "06",
     client: "WerEntOnline",
     headline: "Real Estate Rental & Leasing",
     pitch: "We built the bridge between landlords and tenants — clean listings, smart filters, seamless enquiries.",
@@ -122,7 +139,7 @@ const PROJECTS = [
   },
   {
     id: "farmsense",
-    number: "06",
+    number: "07",
     client: "FarmSense",
     headline: "Smart Farming Without Hardware",
     pitch: "IoT precision agriculture — without the hardware bill. We democratised smart farming through software alone.",
@@ -137,7 +154,7 @@ const PROJECTS = [
   },
   {
     id: "djafro",
-    number: "07",
+    number: "08",
     client: "DjAfro StreamBox",
     headline: "Movies Streaming App",
     pitch: "A full streaming app — video player, offline mode, subscriptions — built from scratch and shipped to Google Play.",
@@ -148,7 +165,7 @@ const PROJECTS = [
     link: "https://djafromovies.vercel.app/",
     playstore: "https://play.google.com/store/apps/details?id=com.djafro.moviesbox",
     image: "/images/afro.png",
-    cols: 2, rows: 1,
+    cols: 3, rows: 1,
   },
 ];
 
@@ -789,8 +806,8 @@ export default function PortfolioPage() {
             min-height: clamp(500px, 52vw, 700px) !important;
           }
           /* DjAfro — wide (spans 2 cols) */
-          .portfolio-grid > div:nth-child(7) > article {
-            grid-column: span 2;
+          .portfolio-grid > div:nth-child(8) > article {
+            grid-column: span 3;
             min-height: clamp(300px, 26vw, 380px) !important;
           }
         }
