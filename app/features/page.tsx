@@ -649,7 +649,7 @@ export default function FeaturesPage() {
                   Have a feature<br />in mind?
                 </h2>
                 <p style={{ fontSize: "0.9rem", lineHeight: 1.78, color: "var(--color-text-muted)", maxWidth: "26rem" }}>
-                  Tell us what you&apos;re building. We&apos;ll tell you exactly how we'&apos; approach it — no obligation, no fluff.
+                  Tell us what you&apos;re building. We&apos;ll tell you exactly how we&apos; approach it — no obligation, no fluff.
                 </p>
               </div>
               <div className="flex flex-col gap-2.5">
