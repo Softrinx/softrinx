@@ -25,8 +25,8 @@ const SERVICES_LIST = [
 ];
 
 const BUDGETS = [
-  "Below $5,000", "$5k – $15k", "$15k – $30k",
-  "$30k – $75k", "$75k+", "Not sure yet",
+  "Below Ksh 5,000", "Ksh 5k – Ksh 15k", "Ksh 15k – Ksh 30k",
+  "Ksh 30k – Ksh 75k", "Ksh 75k+", "Not sure yet",
 ];
 
 const TIMELINES = [

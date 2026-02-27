@@ -367,10 +367,10 @@ function ContactForm() {
             }}
           >
             <option value="">Select range</option>
-            <option value="10-25k">$10k - $25k</option>
-            <option value="25-50k">$25k - $50k</option>
-            <option value="50-100k">$50k - $100k</option>
-            <option value="100k+">$100k+</option>
+            <option value="10-25k">Ksh 10k - Ksh 25k</option>
+            <option value="25-50k">Ksh 25k - Ksh 50k</option>
+            <option value="50-100k">Ksh 50k - Ksh 100k</option>
+            <option value="100k+">Ksh 100k+</option>
           </select>
         </div>
       </div>
