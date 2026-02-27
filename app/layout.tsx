@@ -22,15 +22,13 @@ export const metadata: Metadata = {
   keywords: 'software development, web development, mobile apps, enterprise solutions',
 }
 
+const GA_ID = 'G-CX70RTK5PX' // ← Replace with your real Measurement ID
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="dark">
-      {/*
-        Anti-flash script — runs before React hydrates.
-        Reads saved theme from localStorage and sets CSS vars immediately
-        so the user never sees a white or wrong-theme flash on load.
-      */}
       <head>
+        {/* Anti-flash script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -57,6 +55,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   document.documentElement.style.background = c.bg;
                 } catch(e) {}
               })();
+            `,
+          }}
+        />
+
+        {/* Google Analytics GA4 */}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_ID}', { page_path: window.location.pathname });
             `,
           }}
         />
