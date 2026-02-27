@@ -339,7 +339,7 @@ export default function AboutPage() {
               </p>
 
               <div className="flex flex-wrap gap-2">
-                {[{ label: "Nyeri, Kenya", icon: MapPin }, { label: "Founded 2024", icon: Target }, { label: "info@softrinx.com", icon: Mail }]
+                {[{ label: "Westlands, Nairobi, Kenya", icon: MapPin }, { label: "Founded 2024", icon: Target }, { label: "info@softrinx.com", icon: Mail }]
                   .map(({ label, icon: Icon }) => (
                     <div key={label} className="flex items-center gap-2"
                       style={{ border: "1px solid var(--color-border)", padding: "0.35rem 0.8rem", background: "var(--color-card)" }}>
@@ -397,7 +397,7 @@ export default function AboutPage() {
                 Softrinx is a full-spectrum tech solutions company built by engineers, developers, and specialists across tech. From software engineering, web development, mobile apps, AI/ML, networking and IT — we bring a complete team to solve any tech challenge.
               </p>
               <p style={{ fontSize: "clamp(0.88rem, 1.3vw, 0.97rem)", lineHeight: 1.85, color: "var(--color-text-muted)" }}>
-                We started in 2024 as a group of Computer Science graduates from Dedan Kimathi University of Technology in Nyeri. Five engineers who believed world-class software can be built from anywhere. Whether you're a startup, an enterprise scaling fast, or an individual with a bold idea — Softrinx delivers the expertise you need, all in one place.
+                We started in 2024 as a group of Computer Science graduates from Dedan Kimathi University of Technology in Westlands, Nairobi. Five engineers who believed world-class software can be built from anywhere. Whether you're a startup, an enterprise scaling fast, or an individual with a bold idea — Softrinx delivers the expertise you need, all in one place.
               </p>
               <div className="flex items-center gap-4 pt-4" style={{ borderTop: "1px solid var(--color-border)" }}>
                 <span className="block w-12 h-px" style={{ background: "var(--color-emerald)" }} />
