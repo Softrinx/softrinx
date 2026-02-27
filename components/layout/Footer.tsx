@@ -38,8 +38,8 @@ const contact = [
   },
   {
     icon: MapPin,
-    label: "Nyeri, Kenya",
-    href: "https://maps.google.com/?q=Nyeri,Kenya",
+    label: "Westlands, Nairobi, Kenya",
+    href: "https://maps.google.com/?q=Westlands, Nairobi,Kenya",
   },
 ];
 

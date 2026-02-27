@@ -843,7 +843,7 @@ export default function ServicesPage() {
                 <span style={{ color: "var(--color-emerald)" }}>actually ship.</span>
               </h2>
               <p style={{ fontSize: "0.9rem", lineHeight: 1.82, color: "var(--color-text-muted)", marginBottom: "2rem" }}>
-                We're not a marketplace or an agency that passes your project to a stranger. We are the engineers who build it — five CS graduates from DeKUT, Nyeri, who treat every project like it's our own startup.
+                We're not a marketplace or an agency that passes your project to a stranger. We are the engineers who build it — five CS graduates from DeKUT, Westlands, Nairobi, who treat every project like it's our own startup.
               </p>
               <Link href="/about" className="inline-flex items-center gap-2 font-semibold transition-colors group"
                 style={{ color: "var(--color-emerald)", fontSize: "0.85rem" }}>
@@ -856,7 +856,7 @@ export default function ServicesPage() {
                 { icon: Users, title: "You talk to the engineer", body: "No account managers. No middlemen. You reach out — you get the engineer building your product." },
                 { icon: Zap, title: "7 products shipped in year one", body: "AgriLens, HealthMaster, StreamBox, Decluttr, IntelliMark — real users, real traction." },
                 { icon: Lock, title: "Full source code. Always yours.", body: "Everything we build belongs to you. Walk away with the repo. No lock-in, ever." },
-                { icon: Globe, title: "Built in Nyeri. Used globally.", body: "Products used in Kenya and Germany. World-class engineering has no zip code requirement." },
+                { icon: Globe, title: "Built in Westlands, Nairobi. Used globally.", body: "Products used in Kenya and Germany. World-class engineering has no zip code requirement." },
                 { icon: Code2, title: "We do it right or we fix it.", body: "If something isn't working post-launch, we fix it. No blame, no extra charge." },
               ].map((item, i) => {
                 const Icon = item.icon;

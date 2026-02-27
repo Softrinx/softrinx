@@ -47,7 +47,7 @@ const highlights = [
 const offices = [
   {
     title: "Headquarters",
-    location: "Nyeri, Kenya",
+    location: "Westlands, Nairobi, Kenya",
     description:
       "Strategy, design, and executive consultations. Where partnerships begin.",
   },

@@ -15,7 +15,7 @@ import Footer from "@/components/layout/Footer";
 const CONTACT_ITEMS = [
   { icon: Mail,  label: "Email",    value: "info@softrinx.com",  href: "mailto:info@softrinx.com",    note: "Reply within 24 hrs" },
   { icon: Phone, label: "Phone",   value: "+254 750 109798",     href: "tel:+254750109798",           note: "Available 24/7" },
-  { icon: MapPin,label: "Office",  value: "Nyeri, Kenya",        href: "https://maps.google.com",     note: "Kimathi Street" },
+  { icon: MapPin,label: "Office",  value: "Westlands, Nairobi, Kenya",        href: "https://maps.google.com",     note: "westlands" },
   { icon: Clock, label: "Hours",   value: "Always on",           href: null,                          note: "Global clients welcome" },
 ];
 
@@ -413,8 +413,8 @@ export default function ContactPage() {
                   borderTop: "1px solid var(--color-border)",
                 }}>
                   <div>
-                    <p style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--color-text)" }}>Nyeri, Kenya</p>
-                    <p style={{ fontSize: "0.62rem", color: "var(--color-text-faint)" }}>Kimathi Street</p>
+                    <p style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--color-text)" }}>Westlands, Nairobi, Kenya</p>
+                    <p style={{ fontSize: "0.62rem", color: "var(--color-text-faint)" }}>westlands</p>
                   </div>
                   <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 font-semibold"
