@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { name: "Home",      path: "/" },
   { name: "About",     path: "/about" },
   { name: "Services",  path: "/services" },
+  { name: "Features",  path: "/features" },
   { name: "Portfolio", path: "/portfolio" },
   { name: "Contact",   path: "/contact" },
 ];
@@ -315,7 +316,6 @@ const Navigation = () => {
             width: "min(300px, 85vw)",
             background: colors.bgSurface,
             borderLeft: `1px solid ${colors.border}`,
-            /* Top-left + bottom-left radius only */
             top: "68px", bottom: 0,
             borderRadius: "16px 0 0 0",
             transform: isOpen ? "translateX(0)" : "translateX(100%)",
@@ -324,7 +324,7 @@ const Navigation = () => {
           }}
         >
 
-          {/* Search row + X close — no separate header, no duplicate toggles */}
+          {/* Search row + X close */}
           <div className="flex items-center flex-shrink-0 gap-2 px-4 pt-5 pb-3" style={{ marginTop: "8px" }}>
             <div className="flex items-center gap-2 flex-1 px-3 py-2.5"
               style={{ background: colors.bgCard, border: `1px solid ${colors.border}`, borderRadius: "6px" }}>
@@ -338,7 +338,6 @@ const Navigation = () => {
                 }}
               />
             </div>
-            {/* X close button — only control in drawer top, no extra theme toggle */}
             <button
               onClick={() => setIsOpen(false)}
               style={{
@@ -371,7 +370,6 @@ const Navigation = () => {
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    {/* Active: filled square dot */}
                     <span style={{
                       width: "5px", height: "5px",
                       background: active ? em : colors.borderMid,
@@ -380,7 +378,6 @@ const Navigation = () => {
                     }} />
                     {item.name}
                   </div>
-                  {/* Right arrow on active */}
                   {active && (
                     <span style={{ fontSize: "0.75rem", color: em, opacity: 0.6 }}>→</span>
                   )}
