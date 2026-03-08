@@ -74,30 +74,35 @@ const TEAM = [
     name: "Clint Simiyu", role: "CEO , founder and software engineer", domain: "Architecture & Strategy",
     bio: "Leads technical vision, client strategy, and the overall direction of Softrinx.Backend guru and problem solver",
     image: "/images/images/clint.png",
+    website: null,
     linkedin: "https://linkedin.com/in/clint-simiyu/", github: "https://github.com/Clint171", twitter: "https://twitter.com",
   },
   {
     name: "Baruk Ali", role: "COO, co-founder & software engineer", domain: "Operations & Growth",
     bio: "Oversees technical operations, partnerships, and delivery. Ensures every project runs on time and to specification.",
     image: "/images/images/baruk2.png",
+    website: null,
     linkedin: "https://www.linkedin.com/in/mohammed-ali-mbaruk-56785639b", github: "https://github.com/Baruk1-netizen", twitter: "https://x.com/Baruk_KE",
   },
   {
     name: "Walter Onyango", role: "Co-Founder & Lead Developer", domain: "Full-Stack Engineering",
     bio: "Architects robust, scalable systems. Our backbone on backend infrastructure and API design.",
     image: "/images/images/walter.png",
+    website: "https://www.artfolio.tech/waltertaya",
     linkedin: "https://linkedin.com/in/walter-onyango", github: "https://github.com/waltertaya", twitter: "https://x.com/taya_dev",
   },
   {
     name: "Brian Chege", role: "CTO , Co-Founder & Lead Mobile Dev", domain: "Web & Mobile",
     bio: "Builds seamless cross-platform experiences. Leads all mobile app development at Softrinx.",
     image: "/images/images/brian.jpeg",
+    website: "https://www.brianchege.me",
     linkedin: "https://linkedin.com", github: "https://github.com/CHEGEBB", twitter: "https://twitter.com/chegephil24",
   },
   {
     name: "Samwel Njuguna", role: "Co-Founder & Lead AI Engineer", domain: "AI / ML",
     bio: "Leads all AI and ML initiatives. Turns LLMs and intelligent automation into real, shipped products.",
     image: "/images/images/sam2.png",
+    website: null,
     linkedin: "https://www.linkedin.com/in/samwel-njuguna/", github: "https://github.com/lewmas9152", twitter: "https://x.com/Njuguna128801",
   },
 ];
@@ -124,6 +129,33 @@ function TeamCard({ member, index }: { member: typeof TEAM[0]; index: number }) 
           style={{ background: "rgba(8,11,9,0.85)", border: "1px solid var(--color-emerald-border)", padding: "0.2rem 0.55rem" }}>
           <span style={{ fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.08em", color: "var(--color-emerald)" }}>{member.domain}</span>
         </div>
+
+        {/* Website pill — slides up on hover, only shown if member has a website */}
+        {member.website && (
+          <motion.a
+            href={member.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 12 }}
+            transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
+            onClick={e => e.stopPropagation()}
+            style={{
+              position: "absolute", bottom: "clamp(2.2rem,4vw,2.8rem)", right: "0.75rem",
+              display: "flex", alignItems: "center", gap: "0.35rem",
+              background: "var(--color-emerald)",
+              color: "#040805",
+              padding: "0.25rem 0.65rem",
+              fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.08em",
+              textDecoration: "none", textTransform: "uppercase",
+              pointerEvents: hovered ? "auto" : "none",
+            }}
+          >
+            <Globe size={10} />
+            Portfolio
+            <ArrowUpRight size={10} />
+          </motion.a>
+        )}
       </div>
       <div className="p-5">
         <div className="flex items-start justify-between gap-3 mb-3">
@@ -306,7 +338,6 @@ export default function AboutPage() {
           <div className="flex flex-col-reverse gap-12 lg:grid lg:items-center"
             style={{ gridTemplateColumns: "45fr 55fr" }}>
 
-            {/* LEFT — Lottie */}
             <motion.div className="flex items-center justify-center"
               initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.85, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
@@ -314,7 +345,6 @@ export default function AboutPage() {
               <LottieAnimation />
             </motion.div>
 
-            {/* RIGHT — Text */}
             <motion.div className="flex flex-col"
               initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.08, ease: [0.32, 0.72, 0, 1] }}
@@ -377,8 +407,6 @@ export default function AboutPage() {
         paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
       }}>
         <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
-
-          {/* Who we are — 2 col */}
           <div className="grid mb-20 gap-14 lg:grid-cols-2 lg:gap-24">
             <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
               transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}>
@@ -408,19 +436,10 @@ export default function AboutPage() {
             </motion.div>
           </div>
 
-          {/* Mission & Vision */}
           <div className="grid grid-cols-1 gap-px lg:grid-cols-2" style={{ background: "var(--color-border)" }}>
             {[
-              {
-                label: "Mission", icon: Target,
-                heading: "Empowering through technology.",
-                body: "To empower startups, enterprises, individuals, businesses and companies with accessible, reliable technology solutions that transform challenges into opportunities.",
-              },
-              {
-                label: "Vision", icon: Globe,
-                heading: "The world's go-to tech partner.",
-                body: "To be the trusted go-to technology partner globally — where any tech issue finds a solution and every digital ambition becomes reality.",
-              },
+              { label: "Mission", icon: Target, heading: "Empowering through technology.", body: "To empower startups, enterprises, individuals, businesses and companies with accessible, reliable technology solutions that transform challenges into opportunities." },
+              { label: "Vision", icon: Globe, heading: "The world's go-to tech partner.", body: "To be the trusted go-to technology partner globally — where any tech issue finds a solution and every digital ambition becomes reality." },
             ].map((item, i) => {
               const Icon = item.icon;
               return (
@@ -445,17 +464,12 @@ export default function AboutPage() {
       </section>
 
       {/* ══ VALUES ═════════════════════════════════════════════════════════════ */}
-      <section ref={valuesRef} style={{
-        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
-        background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)",
-      }}>
+      <section ref={valuesRef} style={{ paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)", background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)" }}>
         <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
           <div className="flex flex-col justify-between gap-8 mb-14 lg:flex-row lg:items-end">
             <div>
               <SectionLabel text="Our Values" />
-              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
-                What we<br />stand for.
-              </h2>
+              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>What we<br />stand for.</h2>
             </div>
             <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: "var(--color-text-muted)", maxWidth: "22rem" }}>
               Not corporate platitudes. These are the actual principles that govern how we hire, how we build, and how we treat every client.
@@ -468,16 +482,11 @@ export default function AboutPage() {
       </section>
 
       {/* ══ PROCESS ════════════════════════════════════════════════════════════ */}
-      <section ref={processRef} style={{
-        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
-        background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)",
-      }}>
+      <section ref={processRef} style={{ paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)", background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)" }}>
         <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
           <div className="mb-14">
             <SectionLabel text="How We Work" />
-            <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
-              The Softrinx<br />playbook.
-            </h2>
+            <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>The Softrinx<br />playbook.</h2>
           </div>
           <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4" style={{ background: "var(--color-border)" }}>
             {PROCESS.map((step, i) => (
@@ -486,9 +495,7 @@ export default function AboutPage() {
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 style={{ padding: "clamp(1.5rem, 2.5vw, 2rem)", background: "var(--color-surface)", position: "relative" }}>
                 {i === 0 && <div className="absolute top-0 left-0 w-full h-[2px]" style={{ background: "var(--color-emerald)" }} />}
-                <span style={{ display: "block", fontSize: "clamp(3rem, 5vw, 5rem)", fontWeight: 900, letterSpacing: "-0.06em", lineHeight: 1, color: "var(--color-border-mid)", marginBottom: "1rem", userSelect: "none" }}>
-                  {step.num}
-                </span>
+                <span style={{ display: "block", fontSize: "clamp(3rem, 5vw, 5rem)", fontWeight: 900, letterSpacing: "-0.06em", lineHeight: 1, color: "var(--color-border-mid)", marginBottom: "1rem", userSelect: "none" }}>{step.num}</span>
                 <h4 style={{ fontSize: "1rem", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--color-text)", marginBottom: "0.6rem" }}>{step.title}</h4>
                 <p style={{ fontSize: "0.8rem", lineHeight: 1.72, color: "var(--color-text-muted)" }}>{step.body}</p>
               </motion.div>
@@ -498,17 +505,12 @@ export default function AboutPage() {
       </section>
 
       {/* ══ TEAM ═══════════════════════════════════════════════════════════════ */}
-      <section ref={teamRef} style={{
-        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
-        background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)",
-      }}>
+      <section ref={teamRef} style={{ paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)", background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)" }}>
         <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
           <div className="flex flex-col justify-between gap-8 mb-14 lg:flex-row lg:items-end">
             <div>
               <SectionLabel text="The Team" />
-              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
-                Five engineers.<br />One standard.
-              </h2>
+              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>Five engineers.<br />One standard.</h2>
             </div>
             <p style={{ fontSize: "0.88rem", lineHeight: 1.75, color: "var(--color-text-muted)", maxWidth: "22rem" }}>
               Everyone here ships production code, talks to clients, and owns their domain completely. No silos, no middlemen.
@@ -521,22 +523,16 @@ export default function AboutPage() {
       </section>
 
       {/* ══ CLIENT WORK ════════════════════════════════════════════════════════ */}
-      <section style={{
-        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
-        background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)",
-      }}>
+      <section style={{ paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)", background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)" }}>
         <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
           <div className="flex flex-col justify-between gap-8 mb-14 lg:flex-row lg:items-end">
             <div>
               <SectionLabel text="Work We've Done" />
-              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>
-                Real clients.<br />Real products.
-              </h2>
+              <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.4rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.0, color: "var(--color-text)" }}>Real clients.<br />Real products.</h2>
             </div>
             <Link href="/portfolio" className="inline-flex items-center self-start gap-2 font-semibold transition-colors duration-200 group lg:self-auto"
               style={{ color: "var(--color-emerald)", fontSize: "0.85rem" }}>
-              Full portfolio
-              <ArrowUpRight size={15} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              Full portfolio <ArrowUpRight size={15} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4" style={{ background: "var(--color-border)" }}>
@@ -546,22 +542,11 @@ export default function AboutPage() {
       </section>
 
       {/* ══ TESTIMONIALS ═══════════════════════════════════════════════════════ */}
-      <section ref={testimonialRef} style={{
-        paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)",
-        background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)",
-        position: "relative", overflow: "hidden",
-      }}>
-        {/* Giant bg quote mark */}
-        <div className="absolute pointer-events-none select-none" style={{
-          top: "8%", right: "-2%", fontSize: "clamp(12rem, 22vw, 22rem)",
-          fontWeight: 900, lineHeight: 1, color: "var(--color-border)", userSelect: "none",
-        }}>"</div>
-
+      <section ref={testimonialRef} style={{ paddingTop: "clamp(72px, 10vw, 112px)", paddingBottom: "clamp(72px, 10vw, 112px)", background: "var(--color-bg)", borderBottom: "1px solid var(--color-border)", position: "relative", overflow: "hidden" }}>
+        <div className="absolute pointer-events-none select-none" style={{ top: "8%", right: "-2%", fontSize: "clamp(12rem, 22vw, 22rem)", fontWeight: 900, lineHeight: 1, color: "var(--color-border)", userSelect: "none" }}>"</div>
         <div className="relative px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
           <div className="mb-14"><SectionLabel text="What Clients Say" /></div>
-
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-24" style={{ alignItems: "center" }}>
-            {/* Left — animated quote */}
             <div>
               <AnimatePresence mode="wait">
                 <motion.div key={activeTestimonial}
@@ -587,27 +572,17 @@ export default function AboutPage() {
               </AnimatePresence>
               <div className="flex gap-2 mt-8">
                 {TESTIMONIALS.map((_, i) => (
-                  <button key={i} onClick={() => setActiveTestimonial(i)} style={{
-                    width: i === activeTestimonial ? 28 : 6, height: 6, border: "none", cursor: "pointer", padding: 0,
-                    background: i === activeTestimonial ? "var(--color-emerald)" : "var(--color-border-mid)",
-                    transition: "all 0.3s ease",
-                  }} />
+                  <button key={i} onClick={() => setActiveTestimonial(i)} style={{ width: i === activeTestimonial ? 28 : 6, height: 6, border: "none", cursor: "pointer", padding: 0, background: i === activeTestimonial ? "var(--color-emerald)" : "var(--color-border-mid)", transition: "all 0.3s ease" }} />
                 ))}
               </div>
             </div>
-
-            {/* Right — list */}
             <div className="flex flex-col gap-px" style={{ background: "var(--color-border)" }}>
               {TESTIMONIALS.map((t, i) => (
                 <motion.div key={i}
                   initial={{ opacity: 0, x: 16 }} animate={testimonialInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.5, delay: i * 0.08 }}
                   onClick={() => setActiveTestimonial(i)}
-                  style={{
-                    padding: "1.25rem 1.5rem", cursor: "pointer", transition: "all 0.25s",
-                    background: i === activeTestimonial ? "var(--color-emerald-bg)" : "var(--color-surface)",
-                    borderLeft: `3px solid ${i === activeTestimonial ? "var(--color-emerald)" : "transparent"}`,
-                  }}>
+                  style={{ padding: "1.25rem 1.5rem", cursor: "pointer", transition: "all 0.25s", background: i === activeTestimonial ? "var(--color-emerald-bg)" : "var(--color-surface)", borderLeft: `3px solid ${i === activeTestimonial ? "var(--color-emerald)" : "transparent"}` }}>
                   <div style={{ fontSize: "0.82rem", fontWeight: 800, letterSpacing: "-0.01em", marginBottom: "0.2rem", color: i === activeTestimonial ? "var(--color-text)" : "var(--color-text-muted)" }}>{t.author}</div>
                   <div style={{ fontSize: "0.7rem", color: "var(--color-text-faint)" }}>{t.role}</div>
                 </motion.div>
@@ -622,7 +597,6 @@ export default function AboutPage() {
         <VerticalLines side="left" />
         <div className="px-6 mx-auto lg:px-16" style={{ maxWidth: "1360px" }}>
           <div className="grid grid-cols-1 gap-px lg:grid-cols-2" style={{ background: "var(--color-border)" }}>
-            {/* Left — emerald */}
             <motion.div initial={{ opacity: 0, x: -20 }} animate={ctaInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
               className="relative overflow-hidden"
@@ -648,7 +622,6 @@ export default function AboutPage() {
               </div>
             </motion.div>
 
-            {/* Right — dark */}
             <motion.div initial={{ opacity: 0, x: 20 }} animate={ctaInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.08, ease: [0.32, 0.72, 0, 1] }}
               style={{ padding: "clamp(3rem, 6vw, 6rem) clamp(1.5rem, 4vw, 4rem)", background: "var(--color-bg)", display: "flex", flexDirection: "column", justifyContent: "center", gap: "2rem" }}>

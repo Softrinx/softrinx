@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import './globals.css'
 import { ThemeProvider } from '@/contexts/themeContext'
 import FloatingButtons from '@/components/FloatingButtons'
+import { ReactLenis } from 'lenis/react'
 
 const dmSans = localFont({
   src: [
@@ -22,13 +23,12 @@ export const metadata: Metadata = {
   keywords: 'software development, web development, mobile apps, enterprise solutions',
 }
 
-const GA_ID = 'G-CX70RTK5PX' // ← Replace with your real Measurement ID
+const GA_ID = 'G-CX70RTK5PX'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="dark">
       <head>
-        {/* Anti-flash script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -58,8 +58,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
-
-        {/* Google Analytics GA4 */}
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
         <script
           dangerouslySetInnerHTML={{
@@ -73,10 +71,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={dmSans.className}>
-        <ThemeProvider>
-          {children}
-          <FloatingButtons />
-        </ThemeProvider>
+        <ReactLenis
+          root
+          options={{
+            lerp: 0.08,
+            duration: 1.4,
+            smoothWheel: true,
+          }}
+        >
+          <ThemeProvider>
+            {children}
+            <FloatingButtons />
+          </ThemeProvider>
+        </ReactLenis>
       </body>
     </html>
   )
